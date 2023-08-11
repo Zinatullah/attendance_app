@@ -16,8 +16,8 @@ const getsingleuser = async (id) => {
 
 //////////////////////////////////////////        Get single users Attendance          ///////////////////////////////////////////////////////////////
 
-const getsingleuserattendance = async (id) => {
-  const response = await axios.get(API_URL + `getsingleuserattendance/${id}`);
+const getsingleuserattendance = async (userData) => {
+  const response = await axios.post(API_URL + `getsingleuserattendance`,  userData);
   return response.data;
 };
 

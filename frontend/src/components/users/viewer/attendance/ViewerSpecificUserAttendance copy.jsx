@@ -83,6 +83,28 @@ const SpecificUserAttendance = () => {
   const userId = location.pathname.split("/")[2];
   const { user } = useSelector((state) => state.auth);
 
+  const dateChanger = (value) => {
+    let mon = new Date(value).toLocaleString("fa-Af", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    return mon.split(" ")[1];
+  };
+
+  const hamal = dateChanger("Mar 21 2023");
+  const sawar = dateChanger(`Apr 21 2023`);
+  const jawza = dateChanger(`May 21 2023`);
+  const saratan = dateChanger(`Jun 21 2023`);
+  const asad = dateChanger(`Jul 21 2023`);
+  const sanbola = dateChanger(`Aug 21 2023`);
+  const mezan = dateChanger(`Sep 21 2023`);
+  const aqrab = dateChanger(`Oct 21 2023`);
+  const qaws = dateChanger(`Nov 21 2023`);
+  const jadi = dateChanger(`Dec 21 2023`);
+  const dalwa = dateChanger(`Jan 21 2023`);
+  const hoot = dateChanger(`Feb 21 2023`);
+
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -91,11 +113,7 @@ const SpecificUserAttendance = () => {
 
   useEffect(() => {
     const handleSubmit = async () => {
-      const userData = {
-        id: userId,
-        month: month,
-      };
-      const data = await dispatch(getsingleuserattendance(userData));
+      const data = await dispatch(getsingleuserattendance(userId));
       const username = await dispatch(getsingleuser(userId));
       setUsername(username.payload);
       setEmployee(data.payload);
@@ -103,6 +121,7 @@ const SpecificUserAttendance = () => {
     handleSubmit();
   }, [userId, month, dispatch]);
 
+  let arr = [];
   const handleChange = (event) => {
     setMonth(event.target.value);
   };
@@ -158,9 +177,6 @@ const SpecificUserAttendance = () => {
   let hijriDate;
   let x;
   let y;
-  let hours;
-  let minutes;
-  let seconds;
 
   return (
     <>
@@ -283,41 +299,41 @@ const SpecificUserAttendance = () => {
                     <option className="text-right pr-12" value="">
                       میاشت انتخاب کړئ
                     </option>
-                    <option className="text-right" value="حمل">
-                      حمل
+                    <option className="text-right" value="۱">
+                      {hamal}
                     </option>
-                    <option className="text-right" value="ثور">
-                      ثور
+                    <option className="text-right" value="۲">
+                      {sawar}
                     </option>
-                    <option className="text-right" value="جوزا">
-                      جوزا
+                    <option className="text-right" value="۳">
+                      {jawza}
                     </option>
-                    <option className="text-right" value="سرطان">
-                      سرطان
+                    <option className="text-right" value="۴">
+                      {saratan}
                     </option>
-                    <option className="text-right" value="اسد">
-                      اسد
+                    <option className="text-right" value="۵">
+                      {asad}
                     </option>
-                    <option className="text-right" value="سنبله">
-                      سنبله
+                    <option className="text-right" value="۶">
+                      {sanbola}
                     </option>
-                    <option className="text-right" value="میزان">
-                      میزان
+                    <option className="text-right" value="۷">
+                      {mezan}
                     </option>
-                    <option className="text-right" value="عقرب">
-                      عقرب
+                    <option className="text-right" value="۸">
+                      {aqrab}
                     </option>
-                    <option className="text-right" value="قوس">
-                      قوس
+                    <option className="text-right" value="۹">
+                      {qaws}
                     </option>
-                    <option className="text-right" value="جدی">
-                      جدی
+                    <option className="text-right" value="۱۰">
+                      {jadi}
                     </option>
-                    <option className="text-right" value="دلو">
-                      دلو
+                    <option className="text-right" value="۱۱">
+                      {dalwa}
                     </option>
-                    <option className="text-right" value="حوت">
-                      حوت
+                    <option className="text-right" value="۱۲">
+                      {hoot}
                     </option>
                   </select>
                 </Grid>
@@ -372,6 +388,29 @@ const SpecificUserAttendance = () => {
               </Grid>
             </form>
           </div>
+          {employee ? (
+            employee.map((element, index) => (
+              <span key={index} className="hidden">
+                {
+                  (generateMonth = new Date(
+                    `'${element.month} ${element.day} ${element.year} '`
+                  ).toLocaleDateString("ar-SA", {
+                    day: "numeric",
+                    month: "narrow",
+                    year: "numeric",
+                    nu: "narrow",
+                  }))
+                }
+                {(y = p2e(month))}
+
+                {(x = a2e(generateMonth.split(" ")[1]))}
+                {x == y ? arr.push(element) : ""}
+              </span>
+            ))
+          ) : (
+            <span></span>
+          )}
+
           <TableContainer component={Paper} className="mt-5">
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
               <TableHead>
@@ -386,8 +425,8 @@ const SpecificUserAttendance = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {employee ? (
-                  employee.map((row, index) => (
+                {arr ? (
+                  arr.map((row, index) => (
                     <React.Fragment key={index}>
                       <StyledTableRow
                         style={{ display: "none" }}
@@ -405,14 +444,43 @@ const SpecificUserAttendance = () => {
                         }
                       >
                         <StyledTableCell component="th" scope="row">
-                          {index + 1}
+                          {DigitConvertor.toPersian(`${index + 1}`)}
                         </StyledTableCell>
                         <StyledTableCell>{username[0].name}</StyledTableCell>
-                        <StyledTableCell>{row.year}</StyledTableCell>
-                        <StyledTableCell>{row.month}</StyledTableCell>
-                        <StyledTableCell>{row.day}</StyledTableCell>
-                        <StyledTableCell>{row.entry_time}</StyledTableCell>
-                        <StyledTableCell>{row.exit_time}</StyledTableCell>
+                        <StyledTableCell style={{ display: "none" }}>
+                          {
+                            (hijriDate = new Date(
+                              `'${row.month} ${row.day} ${row.year}'`
+                            ).toLocaleString("fa-Af", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              nu: "latn",
+                            }))
+                          }
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {hijriDate.split(" ").length === 5
+                            ? hijriDate.split(" ")[3]
+                            : hijriDate.split(" ")[2]}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {hijriDate.split(" ").length === 5
+                            ? hijriDate.split(" ")[1] +
+                              " " +
+                              hijriDate.split(" ")[2]
+                            : hijriDate.split(" ")[1]}
+                          {/* {hijriDate.split(" ")[1]} */}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {hijriDate.split(" ")[0]}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {DigitConvertor.toPersian(row.entry_time)}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {DigitConvertor.toPersian(row.exit_time)}
+                        </StyledTableCell>
                       </StyledTableRow>
                     </React.Fragment>
                   ))

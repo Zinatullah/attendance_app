@@ -45,10 +45,10 @@ export const getsingleuser = createAsyncThunk(
 );
 //////////////////////////////////////////////// Get single user Atteandance //////////////////////////////////////////////////////////////////
 export const getsingleuserattendance = createAsyncThunk(
-  "userattendances/getsingleuserattendance/:id",
-  async (id, thunkAPI) => {
+  "userattendances/getsingleuserattendance",
+  async (userData, thunkAPI) => {
     try {
-      return await attendanceService.getsingleuserattendance(id);
+      return await attendanceService.getsingleuserattendance(userData);
     } catch (error) {
       const message =
         (error.response &&

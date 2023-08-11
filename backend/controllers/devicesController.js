@@ -21,7 +21,7 @@ const getUsers = asyncHandler(async (req, res) => {
     if (device_id == 1) {
       await zkInstance1.createSocket();
       const device1 = await zkInstance1.getUsers();
-      const truncate_query = "truncate table device_users";
+      const truncate_query = "truncate table device1_users";
       connection.query(truncate_query, (err, result) => {
         if (err) {
           console.log(err);
@@ -29,7 +29,7 @@ const getUsers = asyncHandler(async (req, res) => {
         }
       });
       device1.data.map((person) => {
-        const query = `INSERT INTO device_users (user_id, name ) VALUES (${person.userId} , '${person.name}')`;
+        const query = `INSERT INTO device1_users (user_id, name ) VALUES (${person.userId} , '${person.name}')`;
         connection.query(query, (err, result) => {
           if (err) {
             console.log(err);
@@ -40,10 +40,10 @@ const getUsers = asyncHandler(async (req, res) => {
     } else if (device_id == 2) {
       await zkInstance2.createSocket();
       const device2 = await zkInstance2.getUsers();
-      const truncate_query = "truncate table device_users";
+      const truncate_query = "truncate table device2_users";
       await connection.query(truncate_query);
       await device2.data.map((person) => {
-        const query = `INSERT INTO device_users (user_id, name ) VALUES (${person.userId} , '${person.name}')`;
+        const query = `INSERT INTO device2_users (user_id, name ) VALUES (${person.userId} , '${person.name}')`;
         connection.query(query, (err, result) => {
           if (err) {
             res.status(400).send(err);
@@ -54,10 +54,10 @@ const getUsers = asyncHandler(async (req, res) => {
       await zkInstance3.createSocket();
       const device3 = await zkInstance3.getUsers();
 
-      const truncate_query = "truncate table device_users";
+      const truncate_query = "truncate table device3_users";
       connection.query(truncate_query);
       device3.data.map((person) => {
-        const query = `INSERT INTO device_users (user_id, name ) VALUES (${person.userId} , '${person.name}')`;
+        const query = `INSERT INTO device3_users (user_id, name ) VALUES (${person.userId} , '${person.name}')`;
         connection.query(query, (err, result) => {
           if (err) {
             res.status(400).send(err);
@@ -68,10 +68,10 @@ const getUsers = asyncHandler(async (req, res) => {
       await zkInstance4.createSocket();
       const device4 = await zkInstance4.getUsers();
 
-      const truncate_query = "truncate table device_users";
+      const truncate_query = "truncate table device4_users";
       connection.query(truncate_query);
       device4.data.map((person) => {
-        const query = `INSERT INTO device_users (user_id, name ) VALUES (${person.userId} , '${person.name}')`;
+        const query = `INSERT INTO device4_users (user_id, name ) VALUES (${person.userId} , '${person.name}')`;
         connection.query(query, (err, result) => {
           if (err) {
             res.status(400).send(err);
@@ -88,74 +88,98 @@ const getUsers = asyncHandler(async (req, res) => {
 //////////////////////////////////////////        Get all users Attendance        ///////////////////////////////////////////////////////////////
 const getAttendance = asyncHandler(async (req, res) => {
   const device_id = req.params.id;
+
+  const dateChanger = (value) => {
+    let mon = new Date(value).toLocaleString("fa-Af", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      nu: "ps",
+    });
+    return mon;
+  };
+
+  const e2p = (s) => s.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[d]);
+  const e2a = (s) => s.replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d]);
+
+  const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+  const a2e = (s) => s.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+
+  const p2a = (s) =>
+    s.replace(/[۰-۹]/g, (d) => "٠١٢٣٤٥٦٧٨٩"["۰۱۲۳۴۵۶۷۸۹".indexOf(d)]);
+  const a2p = (s) =>
+    s.replace(/[٠-٩]/g, (d) => "۰۱۲۳۴۵۶۷۸۹"["٠١٢٣٤٥٦٧٨٩".indexOf(d)]);
+
+  const query = `SELECT * FROM grand`;
+
   try {
     if (device_id == 1) {
       await zkInstance1.createSocket();
-      const clearTableQuery = "truncate table device_attendances";
+      const clearTableQuery = "truncate table device1_attendances";
       connection.query(clearTableQuery);
-      const attendance1 = await zkInstance1.getAttendances();
-      await attendance1.data.map((person, index) => {
-        const user_id = person.deviceUserId ? person.deviceUserId : 100000;
-        const month = person.recordTime.split(" ")[1];
-        const day = person.recordTime.split(" ")[2];
-        const year = person.recordTime.split(" ")[3];
-        const time = person.recordTime.split(" ")[4];
 
-        const query = `INSERT INTO device_attendances (user_id, year, month, day, time) VALUES (${user_id}, ${year}, '${month}', '${day}', '${time}')`;
+      const attendance1 = await zkInstance1.getAttendances();
+      attendance1.data.map((data) => {
+        const user_id = data.deviceUserId ? data.deviceUserId : 100000;
+
+        const recordTime = data.recordTime;
+        const day = recordTime.split(" ")[1];
+        const month = recordTime.split(" ")[2];
+        const year = recordTime.split(" ")[3];
+
+        const date_time = dateChanger(`'${month}' ${day} ${year}`);
+        const time = recordTime.split(" ")[4];
+        const hijri_day = p2e(date_time.split(" ")[0]);
+        const hijri_month = date_time.split(" ")[1];
+        const hijri_year = p2e(date_time.split(" ")[2]);
+
+        const query = `INSERT INTO device1_attendances (user_id, year, month, day, time) VALUES (${user_id}, ${hijri_year}, '${hijri_month}', '${hijri_day}', '${time}')`;
         connection.query(query);
       });
     } else if (device_id == 2) {
       await zkInstance2.createSocket();
-
-      const clearTableQuery = "truncate table device_attendances";
+      const clearTableQuery = "truncate table device2_attendances";
       connection.query(clearTableQuery);
 
-      const attendance2 = await zkInstance2.getAttendances();
-      attendance2.data.map((person) => {
-        const user_id = person.deviceUserId ? person.deviceUserId : 100000;
-        const month = person.recordTime.split(" ")[1];
-        const day = person.recordTime.split(" ")[2];
-        const year = person.recordTime.split(" ")[3];
-        const time = person.recordTime.split(" ")[4];
-        const query = `INSERT INTO device_attendances (user_id, year, month, day, time) VALUES (${user_id}, ${year}, '${month}', '${day}', '${time}')`;
+      const attendance = await zkInstance2.getAttendances();
+      attendance.data.map((data) => {
+        const user_id = data.deviceUserId ? data.deviceUserId : 100000;
+
+        const recordTime = data.recordTime;
+        const day = recordTime.split(" ")[1];
+        const month = recordTime.split(" ")[2];
+        const year = recordTime.split(" ")[3];
+
+        const date_time = dateChanger(`'${month}' ${day} ${year}`);
+        const time = recordTime.split(" ")[4];
+        const hijri_day = p2e(date_time.split(" ")[0]);
+        const hijri_month = date_time.split(" ")[1];
+        const hijri_year = p2e(date_time.split(" ")[2]);
+
+        const query = `INSERT INTO device2_attendances (user_id, year, month, day, time) VALUES (${user_id}, ${hijri_year}, '${hijri_month}', '${hijri_day}', '${time}')`;
         connection.query(query);
       });
     } else if (device_id == 3) {
       await zkInstance3.createSocket();
-      const clearTableQuery = "truncate table device_attendances";
+      const clearTableQuery = "truncate table device3_attendances";
       connection.query(clearTableQuery);
 
-      const attendance3 = await zkInstance3.getAttendances((percent, total) => {
-        console.log(percent, total);
-      });
-      // console.log(attendance3.data)
-      await attendance3.data.map((person, index) => {
-        // console.log(index)
-        const user_id = person.deviceUserId ? person.deviceUserId : 100000;
-        const month = person.recordTime.split(" ")[1];
-        const day = person.recordTime.split(" ")[2];
-        const year = person.recordTime.split(" ")[3];
-        const time = person.recordTime.split(" ")[4];
+      const attendance = await zkInstance3.getAttendances();
+      attendance.data.map((data) => {
+        const user_id = data.deviceUserId ? data.deviceUserId : 100000;
 
-        const query = `INSERT INTO device_attendances (user_id, year, month, day, time) VALUES (${user_id}, ${year}, '${month}', '${day}', '${time}')`;
-        connection.query(query);
-      });
-    } else if (device_id == 4) {
-      await zkInstance4.createSocket();
+        const recordTime = data.recordTime;
+        const day = recordTime.split(" ")[1];
+        const month = recordTime.split(" ")[2];
+        const year = recordTime.split(" ")[3];
 
-      const clearTableQuery = "truncate table device_attendances";
-      connection.query(clearTableQuery);
+        const date_time = dateChanger(`'${month}' ${day} ${year}`);
+        const time = recordTime.split(" ")[4];
+        const hijri_day = p2e(date_time.split(" ")[0]);
+        const hijri_month = date_time.split(" ")[1];
+        const hijri_year = p2e(date_time.split(" ")[2]);
 
-      const attendance4 = await zkInstance4.getAttendances();
-      attendance4.data.map((person) => {
-        // console.log(person);
-        const user_id = person.deviceUserId;
-        const month = person.recordTime.split(" ")[1];
-        const day = person.recordTime.split(" ")[2];
-        const year = person.recordTime.split(" ")[3];
-        const time = person.recordTime.split(" ")[4];
-
-        const query = `INSERT INTO device_attendances (user_id, year, month, day, time) VALUES (${user_id}, ${year}, '${month}', '${day}', '${time}')`;
+        const query = `INSERT INTO device3_attendances (user_id, year, month, day, time) VALUES (${user_id}, ${hijri_year}, '${hijri_month}', '${hijri_day}', '${time}')`;
         connection.query(query);
       });
     }
@@ -350,9 +374,9 @@ const getAttendancesFromAllDevices = asyncHandler(async (req, res) => {
       });
     };
 
-    addAttendance(device1.data, 'device1');
-    addAttendance(device2.data, 'device2');
-    addAttendance(device3.data, 'device3');
+    addAttendance(device1.data, "device1");
+    addAttendance(device2.data, "device2");
+    addAttendance(device3.data, "device3");
     // res.status(201).json({ message: "Success" });
   } catch (e) {
     console.log(e);

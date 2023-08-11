@@ -52,7 +52,6 @@ const ViewerDashboard = () => {
   };
 
   const handleClearAttendance = (event) => {
-    console.log(event);
     dispatch(clearAttendances(event));
   };
 

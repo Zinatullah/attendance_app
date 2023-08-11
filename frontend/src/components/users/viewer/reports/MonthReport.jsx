@@ -11,7 +11,10 @@ import Slide from "@mui/material/Slide";
 import Grid from "@mui/material/Grid";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getMonthReport, reset } from "./../../../../features/report/reportSlice";
+import {
+  getMonthReport,
+  reset,
+} from "./../../../../features/report/reportSlice";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 
@@ -65,31 +68,20 @@ export default function AttendanceTable() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
-
   const { isSuccess, isError, isLoading, message } = useSelector(
     (state) => state.reports
   );
 
-
   const dispatch = useDispatch();
 
-  let months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
   let current_month = new Date();
-  current_month = months[current_month.getMonth()];
+  current_month = current_month.toLocaleDateString("Fa-AF", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    nu: "ps",
+  });
+  current_month = current_month.split(" ")[1];
 
   const handleChange = (event) => {
     setMonth(event.target.value);
@@ -104,13 +96,15 @@ export default function AttendanceTable() {
     const dd = await dispatch(getMonthReport(month ? month : current_month));
     setData(dd.payload);
     setPage(1);
+    handleChanges(1);
     setCurrentPage(1);
-    reset()
+    reset();
   };
 
   useEffect(() => {
     get_monthly_report();
-    reset()
+    setShow(false);
+    reset();
   }, [month]);
 
   const filterData = () => {
@@ -121,6 +115,16 @@ export default function AttendanceTable() {
   };
 
   useEffect(() => {
+    if (searchQuery.length == 0) {
+      setShow(false);
+      getMonthReport();
+    }
+
+    if (searchQuery.length > 0) {
+      setShow(true);
+    }
+
+    setMonth(month ? month : current_month);
     filterData();
   }, [searchQuery]);
 
@@ -153,57 +157,58 @@ export default function AttendanceTable() {
             <select
               value={month}
               onChange={handleChange}
-              className="border-gray-700 mt-5 mb-5  flex item-end text-xl text-white border-dashed rounded-lg bg-purple-900"
+              className="border-gray-700 mt-5 border-dashed rounded-lg bg-purple-900 text-white"
               style={{
-                marginLeft: "15%",
-                width: "80%",
+                marginLeft: "50px",
+                marginRight: "50px",
+                width: "300px",
               }}
             >
-              <option className="text-center" disabled value="">
+              <option className="text-right pr-12" value="">
                 میاشت انتخاب کړئ
               </option>
-              <option className="text-Left" value={months[0]}>
-                {months[0]}
+              <option className="text-right" value="حمل">
+                حمل
               </option>
-              <option className="text-Left" value={months[1]}>
-                {months[1]}
+              <option className="text-right" value="ثور">
+                ثور
               </option>
-              <option className="text-Left" value={months[2]}>
-                {months[2]}
+              <option className="text-right" value="جوزا">
+                جوزا
               </option>
-              <option className="text-Left" value={months[3]}>
-                {months[3]}
+              <option className="text-right" value="سرطان">
+                سرطان
               </option>
-              <option className="text-Left" value={months[4]}>
-                {months[4]}
+              <option className="text-right" value="اسد">
+                اسد
               </option>
-              <option className="text-Left" value={months[5]}>
-                {months[5]}
+              <option className="text-right" value="سنبله">
+                سنبله
               </option>
-              <option className="text-Left" value={months[6]}>
-                {months[6]}
+              <option className="text-right" value="میزان">
+                میزان
               </option>
-              <option className="text-Left" value={months[7]}>
-                {months[7]}
+              <option className="text-right" value="عقرب">
+                عقرب
               </option>
-              <option className="text-Left" value={months[8]}>
-                {months[8]}
+              <option className="text-right" value="قوس">
+                قوس
               </option>
-              <option className="text-Left" value={months[9]}>
-                {months[9]}
+              <option className="text-right" value="جدی">
+                جدی
               </option>
-              <option className="text-Left" value={months[10]}>
-                {months[10]}
+              <option className="text-right" value="دلو">
+                دلو
               </option>
-              <option className="text-Left" value={months[11]}>
-                {months[11]}
+              <option className="text-right" value="حوت">
+                حوت
               </option>
             </select>
           </Grid>
 
           <Grid item xs={3} sx={{ marginTop: "15px", width: "50%" }}>
             <div>
-              <div className="relative mt-2 rounded-md shadow-sm ">
+              <div className="relative mt-1 rounded-md shadow-sm ">
                 <input
                   type="text"
                   name="price"
@@ -217,7 +222,7 @@ export default function AttendanceTable() {
           </Grid>
 
           <Grid item xs={2} sx={{ marginTop: "15px", marginLeft: "" }}>
-            <div className="relative mt-2 rounded-md shadow-sm flex flex-end">
+            <div className="relative mt-1 mb-2 rounded-md shadow-sm flex flex-end">
               <Button
                 variant="contained"
                 color="secondary"
@@ -244,12 +249,34 @@ export default function AttendanceTable() {
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell>Month</StyledTableCell>
               <StyledTableCell>Days</StyledTableCell>
+              <StyledTableCell>Hours</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredData.length > 0
-              ? filteredData.map((row, index) => (
+            {filteredData.length > 0 ? (
+              show &&
+              filteredData.map((row, index) => (
+                <StyledTableRow key={index}>
+                  <StyledTableCell component="th" scope="row">
+                    {counter + index}
+                  </StyledTableCell>
+                  <StyledTableCell>{row.name}</StyledTableCell>
+                  <StyledTableCell>{row.month}</StyledTableCell>
+                  <StyledTableCell>{row.days}</StyledTableCell>
+                </StyledTableRow>
+              ))
+            ) : (
+              <StyledTableRow style={{display: 'none'}}>
+                <StyledTableCell>None</StyledTableCell>
+              </StyledTableRow>
+            )}
+          </TableBody>
+          <TableBody>
+            {currentItems
+              ? !show &&
+                currentItems.map((row, index) => (
                   <StyledTableRow key={index}>
+                    <StyledTableCell sx={{ display: "none" }}>{console.log(row)}</StyledTableCell>
                     <StyledTableCell component="th" scope="row">
                       {counter + index}
                     </StyledTableCell>
@@ -258,16 +285,7 @@ export default function AttendanceTable() {
                     <StyledTableCell>{row.days}</StyledTableCell>
                   </StyledTableRow>
                 ))
-              : currentItems.map((row, index) => (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell component="th" scope="row">
-                      {counter + index}
-                    </StyledTableCell>
-                    <StyledTableCell>{row.name}</StyledTableCell>
-                    <StyledTableCell>{row.month}</StyledTableCell>
-                    <StyledTableCell>{row.days}</StyledTableCell>
-                  </StyledTableRow>
-                ))}
+              : console.log("Test")}
           </TableBody>
         </Table>
       </TableContainer>
@@ -278,12 +296,14 @@ export default function AttendanceTable() {
           Page: {page}
         </Grid>
         <Grid item xs={7}>
-          <Pagination
-            color="primary"
-            count={totalPages}
-            page={page}
-            onChange={handleChanges}
-          />
+          {
+            <Pagination
+              color="primary"
+              count={totalPages}
+              page={currentPage}
+              onChange={handleChanges}
+            />
+          }
         </Grid>
       </Grid>
     </>

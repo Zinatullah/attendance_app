@@ -14,7 +14,7 @@ const {
 
 router.get("/getSingleUser/:id", getSingleUser);
 router.get("/getMultipleUsers", getMultipleUsers);
-router.get("/getSingleUserAttendance/:id", getSingleUserAttendance);
+router.post("/getSingleUserAttendance", getSingleUserAttendance);
 router.post("/leaveForm", leaveForm);
 router.post("/vacation", vacation);
 router.post("/generalLeaveForm", generalLeaveForm);

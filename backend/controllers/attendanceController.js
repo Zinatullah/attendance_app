@@ -32,10 +32,16 @@ const getMultipleUsers = asyncHandler(async (req, res) => {
 });
 
 const getSingleUserAttendance = asyncHandler(async (req, res) => {
-  const user_id = req.params.id;
-  // console.log(req.params)
-  const query_important = `SELECT year, month, day, MIN(time) AS entry_time, MAX(time) AS exit_time FROM ( SELECT * FROM device_attendances WHERE user_id = ${user_id} ORDER BY day) t GROUP BY year, month, day HAVING COUNT(*) >= 2 ORDER BY year, month, day ASC`;
+  const {id, month } = req.body
 
+  const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+
+  let year = new Date().toLocaleDateString('fa-af');
+  year = p2e(year.split('/')[0])
+
+
+  
+  const query_important = `SELECT year, month, day, MIN(time) AS entry_time, MAX(time) AS exit_time FROM ( SELECT * FROM device1_attendances WHERE user_id = ${id} and month= '${month}' and year = ${year} ORDER BY day) t GROUP BY year, month, day HAVING COUNT(*) >= 2 ORDER BY year, month, day ASC`;
   // `SELECT year, month, day, MAX(time) AS entry_time , MIN(time) AS exit_time FROM (SELECT * from test1 where user_id = 23 order by day) t GROUP BY day HAVING COUNT(*) >= 2 ORDER BY t.day ASC`;
   // `SELECT year, month, day, MAX(time) AS entry_time , MIN(time) AS exit_time FROM (SELECT * from test1 where user_id = ${user_id} order by day) t GROUP BY day HAVING COUNT(*) >= 2 ORDER BY t.day ASC`;
   // `SELECT year, month, day, MIN(time) AS entry_time , MAX(time) AS exit_time FROM (SELECT * from device_attendances where user_id = ${user_id} order by day) t GROUP BY day HAVING COUNT(*) >= 2 ORDER BY t.day ASC`;
@@ -43,6 +49,7 @@ const getSingleUserAttendance = asyncHandler(async (req, res) => {
   // const query = `SELECT * from test1, users where users.user_id = test1.user_id and users.user_id = ${user_id} and test1.user_id = ${user_id}`;
   connection.query(query_important, (err, result) => {
     if (err) {
+      console.log(err)
       res.status(400).json({ message: "No result!!!" });
     } else {
       res.status(201).json(result);

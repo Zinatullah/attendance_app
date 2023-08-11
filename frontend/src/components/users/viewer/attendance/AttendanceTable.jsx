@@ -23,6 +23,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Typography from "@mui/material/Typography";
 
+import {
+  reset,
+  getmultipleusers,
+} from "./../../../../features/attendance/attendanceSlice";
 const XLSX = require("xlsx");
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -64,13 +68,6 @@ export default function AttendanceTable({ users }) {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = users.slice(indexOfFirstItem, indexOfLastItem);
-
-  const handleChanges = (event, value) => {
-    setFilteredData("");
-    setPage(value);
-    setCurrentPage(value);
-  };
-
   const dispatch = useDispatch();
 
   let months = [
@@ -91,19 +88,30 @@ export default function AttendanceTable({ users }) {
   let current_month = new Date();
   current_month = months[current_month.getMonth()];
 
+  const handleChanges = (event, value) => {
+    setFilteredData("");
+    setPage(value);
+    setCurrentPage(value);
+    console.log("1")
+  };
+
+  const get_monthly_report = async () => {
+    const dd = await dispatch(getmultipleusers());
+    setData(dd.payload);
+    reset();
+    console.log("console.log")
+  };
+
   useEffect(() => {
-    const get_monthly_report = async () => {
-      const dd = await dispatch(getMonthReport(month ? month : current_month));
-      setData(dd.payload);
-    };
     get_monthly_report();
+    console.log("Test")
   }, [month]);
 
   const filterData = () => {
     const filteredData = data.filter((item) =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
+    console.log('test')
     setFilteredData(filteredData);
   };
 
@@ -178,29 +186,26 @@ export default function AttendanceTable({ users }) {
                   </StyledTableRow>
                 ))
               : currentItems.map((row, index) => (
-                  <StyledTableRow key={index}>
-                    <StyledTableCell
-                      className="text-right"
-                      component="th"
-                      scope="row"
-                    >
-                      {row.id}
-                    </StyledTableCell>
-                    <StyledTableCell className="">
-                      {row.user_id}
-                    </StyledTableCell>
-                    <StyledTableCell className="">{row.name}</StyledTableCell>
-                    <StyledTableCell className="">
-                      <Button variant="outlined" color="secondary">
-                        <Link
-                          to={`/ViewerSpecificUserAttendance/${row.user_id}`}
-                        >
-                          Details
-                        </Link>
-                      </Button>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
+                <StyledTableRow key={index}>
+                  <StyledTableCell component="th" scope="row">
+                    {console.log(row)}
+                    {row.id}
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row">
+                    {row.user_id}
+                  </StyledTableCell>
+                  <StyledTableCell>{row.name}</StyledTableCell>
+                  <StyledTableCell className="">
+                    <Button variant="outlined" color="secondary">
+                      <Link
+                        to={`/ViewerSpecificUserAttendance/${row.user_id}`}
+                      >
+                        Details
+                      </Link>
+                    </Button>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -208,8 +213,10 @@ export default function AttendanceTable({ users }) {
       <Grid container spacing={2} sx={{ marginBottom: 2 }}>
         <Grid item xs={3}></Grid>
 
-        <Grid xs={2}>Page: {page}</Grid>
-        <Grid xs={7}>
+        <Grid item xs={2}>
+          Page: {page}
+        </Grid>
+        <Grid item xs={7}>
           <Pagination
             color="primary"
             count={totalPages}
