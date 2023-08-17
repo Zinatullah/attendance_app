@@ -12,7 +12,7 @@ const connection = mysql.createConnection({
 const updateGeneralLeave = asyncHandler(async (req, res) => {
   const { id, month, leave_type, start_date, end_date, info } = req.body;
 
-  const query = ` UPDATE general_leave_form SET leave_type='${leave_type}', month=${month}, start_date=${start_date}, end_date=${end_date}, info='${info}' WHERE id = ${id}`;
+  const query = ` UPDATE general_leave_form SET leave_type='${leave_type}', month='${month}', start_date=${start_date}, end_date=${end_date}, info='${info}' WHERE id = ${id}`;
   connection.query(query, (err, result) => {
     if (err) {
       console.log(err);

@@ -4,6 +4,7 @@ import attendanceSlice from '../features/attendance/attendanceSlice'
 import devicesSlice from '../features/devices/devicesSlice'
 import leaveSlice from '../features/leave/leaveSlice'
 import getMonthReport from '../features/report/reportSlice'
+import employeesSlice from '../features/employees/employeesSlice'
 
 
 // import attendanceSlice from '../features/userAttendance/attendanceSlice'
@@ -18,5 +19,6 @@ export const store = configureStore({
     devices: devicesSlice,
     leave: leaveSlice,
     reports: getMonthReport,
+    employees: employeesSlice,
   },
 })

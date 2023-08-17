@@ -10,7 +10,25 @@ const initialState = {
   message: "",
 };
 
-// Update General Leave
+// Monthly report
+export const getDailyReport = createAsyncThunk(
+  "reports/getDailyReport",
+  async (month, thunkAPI) => {
+    try {
+      return await authService.getDailyReport(month);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Monthly report
 export const getMonthReport = createAsyncThunk(
   "reports/getMonthReport",
   async (month, thunkAPI) => {

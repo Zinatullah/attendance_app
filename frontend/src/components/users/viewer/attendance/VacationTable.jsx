@@ -118,18 +118,7 @@ const VacationTable = ({ vacation, username, handleVacation }) => {
                     {element.end_date - element.start_date}
                   </StyledTableCell>
                   <StyledTableCell>
-                    {element.month == 1 ? "محرم" : ""}
-                    {element.month == 2 ? "صفر" : ""}
-                    {element.month == 3 ? "ربیع الآول" : ""}
-                    {element.month == 4 ? "ربیع الآخر" : ""}
-                    {element.month == 5 ? "جمادی الآولی" : ""}
-                    {element.month == 6 ? "جمادی الآخرة" : ""}
-                    {element.month == 7 ? "رجب" : ""}
-                    {element.month == 8 ? "شعبان" : ""}
-                    {element.month == 9 ? "رمضان" : ""}
-                    {element.month == 10 ? "شوال" : ""}
-                    {element.month == 11 ? "ذو القعده" : ""}
-                    {element.month == 12 ? "ذو الحجه" : ""}
+                    {element.month}
                   </StyledTableCell>
                   <StyledTableCell className="w-60 text-right">
                     {element.info}

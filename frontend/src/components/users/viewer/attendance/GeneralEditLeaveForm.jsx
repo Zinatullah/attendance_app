@@ -14,9 +14,7 @@ const LeaveFrom = ({ handleClose, element }) => {
     setMonth(event.target.value);
   };
 
-  const { isError, isSuccess, message } = useSelector(
-    (state) => state.leave
-  );
+  const { isError, isSuccess, message } = useSelector((state) => state.leave);
 
   useEffect(() => {
     if (isError) {
@@ -85,54 +83,43 @@ const LeaveFrom = ({ handleClose, element }) => {
                     disabled
                     defaultValue={element.month}
                   >
-                    {element.month == 1 ? "محرم" : ""}
-                    {element.month == 2 ? "صفر" : ""}
-                    {element.month == 3 ? "ربیع الآول" : ""}
-                    {element.month == 4 ? "ربیع الآخر" : ""}
-                    {element.month == 5 ? "جمادی الآولی" : ""}
-                    {element.month == 6 ? "جمادی الآخرة" : ""}
-                    {element.month == 7 ? "رجب" : ""}
-                    {element.month == 8 ? "شعبان" : ""}
-                    {element.month == 9 ? "رمضان" : ""}
-                    {element.month == 10 ? "شوال" : ""}
-                    {element.month == 11 ? "ذو القعده" : ""}
-                    {element.month == 12 ? "ذو الحجه" : ""}
+                    {element.month}
                   </option>
-                  <option className="text-right" value="1">
-                    محرم
+                  <option className="text-right" value="حمل">
+                    حمل
                   </option>
-                  <option className="text-right" value="2">
-                    صفر
+                  <option className="text-right" value="ثور">
+                    ثور
                   </option>
-                  <option className="text-right" value="3">
-                    ربيع الأول
+                  <option className="text-right" value="جوزا">
+                    جوزا
                   </option>
-                  <option className="text-right" value="4">
-                    ربيع الآخر
+                  <option className="text-right" value="سرطان">
+                    سرطان
                   </option>
-                  <option className="text-right" value="5">
-                    جمادى الأولى
+                  <option className="text-right" value="اسد">
+                    اسد
                   </option>
-                  <option className="text-right" value="6">
-                    جمادى الآخرة
+                  <option className="text-right" value="سنبله">
+                    سنبله
                   </option>
-                  <option className="text-right" value="7">
-                    رجب
+                  <option className="text-right" value="میزان">
+                    میزان
                   </option>
-                  <option className="text-right" value="8">
-                    شعبان
+                  <option className="text-right" value="عقرب">
+                    عقرب
                   </option>
-                  <option className="text-right" value="9">
-                    رمضان
+                  <option className="text-right" value="قوس">
+                    قوس
                   </option>
-                  <option className="text-right" value="10">
-                    شوال
+                  <option className="text-right" value="جدی">
+                    جدی
                   </option>
-                  <option className="text-right" value="11">
-                    ذو القعدة
+                  <option className="text-right" value="دلو">
+                    دلو
                   </option>
-                  <option className="text-right" value="12">
-                    ذو الحجة
+                  <option className="text-right" value="حوت">
+                    حوت
                   </option>
                 </select>
               </div>

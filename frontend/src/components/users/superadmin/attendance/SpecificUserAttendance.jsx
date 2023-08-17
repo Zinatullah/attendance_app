@@ -1,4 +1,3 @@
-import { DigitConvertor } from "persian-digit-tools";
 import {
   getsingleuserattendance,
   getsingleuser,
@@ -22,9 +21,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Slide from "@mui/material/Slide";
-const persianDate = require("persian-date");
 
-const newPersianDate = new persianDate().format();
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {

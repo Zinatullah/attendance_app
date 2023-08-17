@@ -21,26 +21,26 @@ const getSingleUser = asyncHandler(async (req, res) => {
 });
 
 const getMultipleUsers = asyncHandler(async (req, res) => {
-  const query = "select * from device_users";
+  const query = "select * from device3_users";
   connection.query(query, (err, result) => {
     if (err) {
       res.json({ message: "Users not found, an error occured!!!" });
     } else {
+      console.log();
       res.status(201).json(result);
     }
   });
 });
 
 const getSingleUserAttendance = asyncHandler(async (req, res) => {
-  const {id, month } = req.body
+  const { id, month } = req.body;
+  console.log(id, month);
 
   const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
 
-  let year = new Date().toLocaleDateString('fa-af');
-  year = p2e(year.split('/')[0])
+  let year = new Date().toLocaleDateString("fa-af");
+  year = p2e(year.split("/")[0]);
 
-
-  
   const query_important = `SELECT year, month, day, MIN(time) AS entry_time, MAX(time) AS exit_time FROM ( SELECT * FROM device1_attendances WHERE user_id = ${id} and month= '${month}' and year = ${year} ORDER BY day) t GROUP BY year, month, day HAVING COUNT(*) >= 2 ORDER BY year, month, day ASC`;
   // `SELECT year, month, day, MAX(time) AS entry_time , MIN(time) AS exit_time FROM (SELECT * from test1 where user_id = 23 order by day) t GROUP BY day HAVING COUNT(*) >= 2 ORDER BY t.day ASC`;
   // `SELECT year, month, day, MAX(time) AS entry_time , MIN(time) AS exit_time FROM (SELECT * from test1 where user_id = ${user_id} order by day) t GROUP BY day HAVING COUNT(*) >= 2 ORDER BY t.day ASC`;
@@ -49,7 +49,7 @@ const getSingleUserAttendance = asyncHandler(async (req, res) => {
   // const query = `SELECT * from test1, users where users.user_id = test1.user_id and users.user_id = ${user_id} and test1.user_id = ${user_id}`;
   connection.query(query_important, (err, result) => {
     if (err) {
-      console.log(err)
+      console.log(err);
       res.status(400).json({ message: "No result!!!" });
     } else {
       res.status(201).json(result);
@@ -65,7 +65,7 @@ const leaveForm = asyncHandler(async (req, res) => {
   if (!user_id || !leave_type || !month || !start_date || !end_date || !info) {
     res.status(400).json({ message: "Please fill in all the fields" });
   } else {
-    const query = `INSERT INTO leave_form (user_id, leave_type, month, start_date, end_date, info) VALUES (${user_id}, '${leave_type}', ${month}, ${start_date}, ${end_date}, '${info}')`;
+    const query = `INSERT INTO leave_form (user_id, leave_type, month, start_date, end_date, info) VALUES (${user_id}, '${leave_type}', '${month}', ${start_date}, ${end_date}, '${info}')`;
     connection.query(query, (error, result) => {
       if (error) {
         console.log(error);
@@ -80,9 +80,8 @@ const leaveForm = asyncHandler(async (req, res) => {
 
 //////////////////////////////////////////////////////// VACATION Check  /////////////////////////////////////////////////////
 const vacation = asyncHandler(async (req, res) => {
-  const { userId, months } = req.body;
-  const query =
-    await `SELECT * FROM leave_form where user_id = ${userId} and month = '${months}'`;
+  const { userId } = req.body;
+  const query = await `SELECT * FROM leave_form where user_id = ${userId}`;
   connection.query(query, (err, result) => {
     if (err) {
       console.log(err);
@@ -96,7 +95,7 @@ const vacation = asyncHandler(async (req, res) => {
 const generalLeaveForm = asyncHandler(async (req, res) => {
   const { month, leave_type, start_date, end_date, info } = req.body;
 
-  const query = `INSERT INTO general_leave_form ( leave_type, month, start_date, end_date, info) VALUES ('${leave_type}', ${month}, ${start_date}, ${end_date}, '${info}')`;
+  const query = `INSERT INTO general_leave_form ( leave_type, month, start_date, end_date, info) VALUES ('${leave_type}', '${month}', ${start_date}, ${end_date}, '${info}')`;
   connection.query(query, (error, result) => {
     if (error) {
       console.log(error);
@@ -130,7 +129,7 @@ const EditleaveForm = asyncHandler(async (req, res) => {
       console.log(err);
       res.status(404).json({ message: "User not matched" });
     } else {
-      const query = ` UPDATE leave_form SET leave_type=${leave_type}, month=${month}, start_date=${start_date}, end_date=${end_date}, info='${info}' WHERE id = ${id}`;
+      const query = ` UPDATE leave_form SET leave_type=${leave_type}, month='${month}', start_date=${start_date}, end_date=${end_date}, info='${info}' WHERE id = ${id}`;
       connection.query(query, (err, result) => {
         if (err) {
           console.log(err);
@@ -151,9 +150,9 @@ const removeVacation = asyncHandler(async (req, res) => {
   connection.query(query, (error, resutl) => {
     if (error) {
       console.log(error);
-      res.status(400).json({message: "Error occured"});
+      res.status(400).json({ message: "Error occured" });
     } else {
-      res.status(201).json({message: "Item removed"});
+      res.status(201).json({ message: "Item removed" });
     }
   });
 });

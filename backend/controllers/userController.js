@@ -17,6 +17,8 @@ const connection = mysql.createConnection({
 // //@access   public
 const registerUser = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password, user_type } = req.body;
+  console.log("Test")
+  console.log(req.body)
 
   if ((!firstName, !lastName || !email || !password)) {
     res.status(400);

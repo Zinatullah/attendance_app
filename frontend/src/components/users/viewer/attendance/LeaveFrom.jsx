@@ -47,7 +47,7 @@ const LeaveFrom = ({ username, handleClose }) => {
       info: data.get("info"),
     };
     dispatch(leaveForm(userData));
-    handleClose()
+    handleClose();
   };
 
   return (
@@ -117,49 +117,48 @@ const LeaveFrom = ({ username, handleClose }) => {
             <div className="flex items-center rounded">
               <div className="input-group border border-gray-200 w-full">
                 <select
-                  required
                   value={month}
                   onChange={handleChange}
                   className="block appearance-none w-full bg-gray-200 text-right border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 >
-                  <option className="text-right" disabled value="">
+                  <option className="text-right pr-12" value="">
                     میاشت انتخاب کړئ
                   </option>
-                  <option className="text-right" value="1">
-                    محرم
+                  <option className="text-right" value="حمل">
+                    حمل
                   </option>
-                  <option className="text-right" value="2">
-                    صفر
+                  <option className="text-right" value="ثور">
+                    ثور
                   </option>
-                  <option className="text-right" value="3">
-                    ربيع الأول
+                  <option className="text-right" value="جوزا">
+                    جوزا
                   </option>
-                  <option className="text-right" value="4">
-                    ربيع الآخر
+                  <option className="text-right" value="سرطان">
+                    سرطان
                   </option>
-                  <option className="text-right" value="5">
-                    جمادى الأولى
+                  <option className="text-right" value="اسد">
+                    اسد
                   </option>
-                  <option className="text-right" value="6">
-                    جمادى الآخرة
+                  <option className="text-right" value="سنبله">
+                    سنبله
                   </option>
-                  <option className="text-right" value="7">
-                    رجب
+                  <option className="text-right" value="میزان">
+                    میزان
                   </option>
-                  <option className="text-right" value="8">
-                    شعبان
+                  <option className="text-right" value="عقرب">
+                    عقرب
                   </option>
-                  <option className="text-right" value="9">
-                    رمضان
+                  <option className="text-right" value="قوس">
+                    قوس
                   </option>
-                  <option className="text-right" value="10">
-                    شوال
+                  <option className="text-right" value="جدی">
+                    جدی
                   </option>
-                  <option className="text-right" value="11">
-                    ذو القعدة
+                  <option className="text-right" value="دلو">
+                    دلو
                   </option>
-                  <option className="text-right" value="12">
-                    ذو الحجة
+                  <option className="text-right" value="حوت">
+                    حوت
                   </option>
                 </select>
               </div>

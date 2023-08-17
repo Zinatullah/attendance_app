@@ -18,6 +18,7 @@ app.use('/api/reports', require("./routes/reportsRoutes"))
 app.use('/api/userattendance', require("./routes/userAttendanceRoutes"))
 app.use('/api/userattendances', require("./routes/attendanceRoutes"))
 app.use('/api/devices', require("./routes/devicesControllerRoutes"))
+app.use('/api/employees', require("./routes/employeesRoutes"))
 // app.use('/api/goals', require("./routes/goalRoutes"))
 
 app.use(bodyParser.urlencoded({extended: true}))

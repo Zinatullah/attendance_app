@@ -6,7 +6,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
-import { DigitConvertor } from "persian-digit-tools";
 import LeaveFrom from "./LeaveFrom";
 
 import AppBar from "@mui/material/AppBar";
@@ -43,7 +42,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Slide from "@mui/material/Slide";
 import VacationTable from "./VacationTable";
-const persianDate = require("persian-date");
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {

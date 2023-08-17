@@ -24,6 +24,7 @@ import Stack from "@mui/material/Stack";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Typography from "@mui/material/Typography";
+const JDate = require("jalali-date");
 
 const XLSX = require("xlsx");
 
@@ -51,10 +52,43 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AttendanceTable() {
-  const [month, setMonth] = useState("");
-  const [data, setData] = useState([]);
+const MONTHS = [
+  "حمل",
+  "ثور",
+  "جوزا",
+  "سرطان",
+  "اسد",
+  "سنبله",
+  "میزان",
+  "عقرب",
+  "قوس",
+  "جدی",
+  "دلو",
+  "حوت",
+];
 
+const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+export default function AttendanceTable() {
+  let current_month = new Date();
+  current_month = current_month.toLocaleDateString("Fa-AF", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    nu: "ps",
+  });
+
+  let current_year = current_month.split(" ")[2];
+  current_year = p2e(current_year);
+  current_month = current_month.split(" ")[1];
+
+  let index_of_current_month = MONTHS.indexOf(current_month);
+  index_of_current_month = index_of_current_month - 1;
+  let p_month = MONTHS[index_of_current_month];
+
+  const [month, setMonth] = useState(current_month);
+  const [previous_month, setPrevious_month] = useState(p_month);
+
+  const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = React.useState(1);
@@ -66,25 +100,18 @@ export default function AttendanceTable() {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
-  const { isSuccess, isError, isLoading, message } = useSelector(
-    (state) => state.reports
-  );
+  const currentItems = data
+    ? data.slice(indexOfFirstItem, indexOfLastItem)
+    : "";
+  // const currentItems = data;
 
   const dispatch = useDispatch();
 
-  let current_month = new Date();
-  current_month = current_month.toLocaleDateString("Fa-AF", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    nu: "ps",
-  });
-  current_month = current_month.split(" ")[1];
-
   const handleChange = (event) => {
     setMonth(event.target.value);
+    let index_of_current_month = MONTHS.indexOf(event.target.value);
+    index_of_current_month = index_of_current_month - 1;
+    setPrevious_month(MONTHS[index_of_current_month]);
   };
 
   const handleChanges = (e, value) => {
@@ -92,20 +119,29 @@ export default function AttendanceTable() {
     setCurrentPage(value);
   };
 
+  const month_data = {
+    current_month: month,
+    previous_month: previous_month,
+    year: current_year,
+  };
+
   const get_monthly_report = async () => {
-    const dd = await dispatch(getMonthReport(month ? month : current_month));
+    const dd = await dispatch(getMonthReport(month_data));
     setData(dd.payload);
     setPage(1);
     handleChanges(1);
     setCurrentPage(1);
     reset();
   };
+  console.log(data);
 
   useEffect(() => {
-    get_monthly_report();
     setShow(false);
+    get_monthly_report();
     reset();
   }, [month]);
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const filterData = () => {
     const filteredData = data.filter((item) =>
@@ -117,14 +153,11 @@ export default function AttendanceTable() {
   useEffect(() => {
     if (searchQuery.length == 0) {
       setShow(false);
-      getMonthReport();
     }
 
     if (searchQuery.length > 0) {
       setShow(true);
     }
-
-    setMonth(month ? month : current_month);
     filterData();
   }, [searchQuery]);
 
@@ -249,6 +282,7 @@ export default function AttendanceTable() {
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell>Month</StyledTableCell>
               <StyledTableCell>Days</StyledTableCell>
+              <StyledTableCell>Off days</StyledTableCell>
               <StyledTableCell>Hours</StyledTableCell>
             </TableRow>
           </TableHead>
@@ -261,12 +295,15 @@ export default function AttendanceTable() {
                     {counter + index}
                   </StyledTableCell>
                   <StyledTableCell>{row.name}</StyledTableCell>
-                  <StyledTableCell>{row.month}</StyledTableCell>
+                  <StyledTableCell>{month}</StyledTableCell>
                   <StyledTableCell>{row.days}</StyledTableCell>
+                  <StyledTableCell>{}</StyledTableCell>
+                  <StyledTableCell>{(row.full_time * 8) + (row.half_time * 4)}</StyledTableCell>
+                  {/* <StyledTableCell>{row.half_time}</StyledTableCell> */}
                 </StyledTableRow>
               ))
             ) : (
-              <StyledTableRow style={{display: 'none'}}>
+              <StyledTableRow style={{ display: "none" }}>
                 <StyledTableCell>None</StyledTableCell>
               </StyledTableRow>
             )}
@@ -276,13 +313,18 @@ export default function AttendanceTable() {
               ? !show &&
                 currentItems.map((row, index) => (
                   <StyledTableRow key={index}>
-                    <StyledTableCell sx={{ display: "none" }}>{console.log(row)}</StyledTableCell>
+                    <StyledTableCell sx={{ display: "none" }}>
+                      {console.log(row)}
+                    </StyledTableCell>
                     <StyledTableCell component="th" scope="row">
                       {counter + index}
                     </StyledTableCell>
                     <StyledTableCell>{row.name}</StyledTableCell>
-                    <StyledTableCell>{row.month}</StyledTableCell>
+                    <StyledTableCell>{month}</StyledTableCell>
                     <StyledTableCell>{row.days}</StyledTableCell>
+                    <StyledTableCell>{}</StyledTableCell>
+                    <StyledTableCell>{(row.full_time * 8) + (row.half_time * 4)}</StyledTableCell>
+                    {/* <StyledTableCell>{row.half_time}</StyledTableCell> */}
                   </StyledTableRow>
                 ))
               : console.log("Test")}

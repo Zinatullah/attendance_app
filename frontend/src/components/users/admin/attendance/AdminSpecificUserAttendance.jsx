@@ -1,4 +1,3 @@
-import { DigitConvertor } from "persian-digit-tools";
 import {
   getsingleuserattendance,
   getsingleuser,
@@ -22,9 +21,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Slide from "@mui/material/Slide";
-const persianDate = require("persian-date");
-
-const newPersianDate = new persianDate().format();
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -355,7 +351,7 @@ const SpecificUserAttendance = () => {
                         }
                       >
                         <StyledTableCell component="th" scope="row">
-                          {DigitConvertor.toPersian(`${index + 1}`)}
+                          {index}
                         </StyledTableCell>
                         <StyledTableCell>{username[0].name}</StyledTableCell>
                         <StyledTableCell style={{ display: "none" }}>
@@ -387,10 +383,10 @@ const SpecificUserAttendance = () => {
                           {hijriDate.split(" ")[0]}
                         </StyledTableCell>
                         <StyledTableCell>
-                          {DigitConvertor.toPersian(row.entry_time)}
+                          {row.entry_time}
                         </StyledTableCell>
                         <StyledTableCell>
-                          {DigitConvertor.toPersian(row.exit_time)}
+                          {row.exit_time}
                         </StyledTableCell>
                       </StyledTableRow>
                     </React.Fragment>
