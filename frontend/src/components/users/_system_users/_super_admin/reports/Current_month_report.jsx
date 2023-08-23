@@ -60,7 +60,7 @@ const MONTHS = [
   "جوزا",
   "سرطان",
   "اسد",
-  "سنبلهٔ",
+  "سنبله",
   "میزان",
   "عقرب",
   "قوس",
@@ -70,7 +70,7 @@ const MONTHS = [
 ];
 
 const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-export default function AttendanceTable() {
+export default function Current_month_report() {
   let current_month = new Date();
   current_month = current_month.toLocaleDateString("Fa-AF", {
     year: "numeric",
@@ -135,6 +135,8 @@ export default function AttendanceTable() {
     setCurrentPage(1);
     reset();
   };
+  console.log(data);
+
   useEffect(() => {
     setShow(false);
     get_monthly_report();
@@ -189,9 +191,9 @@ export default function AttendanceTable() {
         dir="rtl"
       >
         <div className="text-center text-black text-3xl mb-5">
-          <h1>میاشتنی راپور</h1>
+          <h1>د اوسنی میاشتې راپور</h1>
         </div>
-        <form>
+        {/* <form>
           <Grid container spacing={2}>
             <Grid item xs={5}>
               <select
@@ -277,7 +279,7 @@ export default function AttendanceTable() {
               </div>
             </Grid>
           </Grid>
-        </form>
+        </form> */}
         <TableContainer component={Paper} sx={{ width: "95%", marginLeft: 4 }}>
           <Table
             stickyHeader

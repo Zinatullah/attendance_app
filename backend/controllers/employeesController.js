@@ -8,8 +8,9 @@ const connection = mysql.createConnection({
   database: "zk",
 });
 
-const setUser = asyncHandler(async (req, res) => {
+const setEmployee = asyncHandler(async (req, res) => {
   const { user_id, firstName, lastName, fathername, department } = req.body;
+  console.log(req.body);
 
   const searchQuery = `select user_id from employees_info where user_id = ${user_id}`;
   connection.query(searchQuery, (error, result) => {
@@ -31,7 +32,49 @@ const setUser = asyncHandler(async (req, res) => {
   });
 });
 
+const getEmployees = asyncHandler(async (req, res) => {
+  const query = "SELECT * FROM `employees_info`";
+  connection.query(query, (error, result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "هېڅ کارمند پیدا نشو" });
+    } else {
+      res.status(201).json(result);
+    }
+  });
+});
+
+const updateEmployee = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  const { user_id, firstName, lastName, fathername, department } = req.body;
+  const query = `UPDATE employees_info SET   user_id = ${user_id}, name = '${firstName}', lastname = '${lastName}', fathername = '${fathername}', department = '${department}' WHERE user_id = ${user_id}`;
+  connection.query(query, (error, result)=>{
+    if(error){
+      console.log(error);
+      res.status(404).json({message: "کارکوونکی پیدا نشو"})
+    }else {
+      res.status(201).json({message: "Success"})
+    }
+  })
+});
+
+const removeEmployee = asyncHandler(async (req, res) => {
+  const { id } = req.body;
+  const query = `DELETE FROM employees_info WHERE user_id = ${id}`;
+  console.log(query);
+  connection.query(query, (error, result) => {
+    if (error) {
+      console.log(error);
+      res.status(404).json({ message: "کارکوونکی پیدا نشو" });
+    } else {
+      res.status(201).json({ message: "Success" });
+    }
+  });
+});
+
 module.exports = {
-  setUser,
-  // getUsers,
+  setEmployee,
+  getEmployees,
+  updateEmployee,
+  removeEmployee,
 };

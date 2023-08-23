@@ -8,35 +8,65 @@ const connection = mysql.createConnection({
   database: "zk",
 });
 
-//////////////////////////////////////////////////////// Monthly report  /////////////////////////////////////////////////////
-const getDailyReport = asyncHandler(async (req, res) => {
+//////////////////////////////////////////  Current report  /////////////////////////////////////////////////////
+const current_report = asyncHandler(async (req, res) => {
   const { today, current_month, year } = req.body;
-  const query = `create or replace view dailyReport as select * from device3_attendances where day = '${today}' and month = '${current_month}' and year = '${year}' `
-  connection.query(query, (error, result)=>{
-    if(error){
-      console.log(error)
-      res.status(400).json({message: "Result not found!!!"})
-    }
-  })
 
-  const daily_report_query = `SELECT device3_users.name, dailyreport.user_id, dailyreport.day, dailyreport.month, dailyreport.year, dailyreport.time FROM dailyreport, device3_users where dailyreport.user_id = device3_users.user_id`
-  connection.query(daily_report_query, (error, result)=>{
-    if(error){
-      console.log(error)
-      res.status(400).json({message: "Result not found!!!"})
-    }else {
-      res.status(200).json(result)
-    }
-  })
+  const query = `CREATE or REPLACE VIEW current_report as 
+    SELECT u.name, d.month, d.day, d.time  FROM device2_attendances as d, all_users as u WHERE day = ${today} and month = '${current_month}' and year = ${year} and d.user_id = u.user_id
+    UNION
+    SELECT u.name, d.month, d.day, d.time  FROM device2_attendances as d, all_users as u WHERE day = ${today} and month = '${current_month}' and year = ${year} and d.user_id = u.user_id
+    UNION
+    SELECT u.name, d.month, d.day, d.time  FROM device3_attendances as d, all_users as u WHERE day = ${today} and month = '${current_month}' and year = ${year} and d.user_id = u.user_id`;
 
-  res.status(200);
+  connection.query(query, (error, result) => {
+    if (error) {
+      res.status(400).json({ message: "Result not found!!!" });
+    }
+  });
+
+  const daily_report_query = `select * from current_report`;
+  connection.query(daily_report_query, (error, result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "Result not found!!!" });
+    } else {
+      res.status(200).json(result);
+    }
+  });
 });
 
-//////////////////////////////////////////////////////// Monthly report  /////////////////////////////////////////////////////
+/////////////////////////////////////     Daily report    ////////////////////////////////////////////
+const getDailyReport = asyncHandler(async (req, res) => {
+  const { today, current_month, year } = req.body;
+  const query = `select u.name, d.user_id, d.month, d.day, d.time from device1_attendances as d, all_users as u where day = ${today} and month = '${current_month}' and year = '${year}' and u.user_id = d.user_id
+  UNION select uu.name, dd.user_id, dd.month, dd.day, dd.time from device2_attendances as dd, all_users as uu where day = ${today} and month = '${current_month}' and year = '${year}' 
+  UNION select uuu.name, ddd.user_id, ddd.month, ddd.day, ddd.time from device3_attendances as ddd, all_users as uuu where day = ${today} and month = '${current_month}' and year = '${year}'
+  `;
+
+  connection.query(query, (error, result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "Result not found!!!" });
+    }
+  });
+
+  const daily_report_query = `select * from dailyReport`;
+  connection.query(daily_report_query, (error, result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "Result not found!!!" });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
+////////////////////////////////////////////   Monthly report  ////////////////////////////////
 const getMonthReport = asyncHandler(async (req, res) => {
   const { current_month, previous_month, year } = req.body;
+  console.log(current_month, previous_month)
 
-  //////////////////////////////////////////////////////// Monthly_report_View  /////////////////////////////////////////////////////
   const query = `create or replace view monthly_attendance as SELECT id, user_id, day, month, year, min(time) as entery_time, max(time) exit_time FROM device3_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id HAVING count(day) >= 2  UNION  SELECT id, user_id, day, month, year, min(time) as entery_time, max(time) exit_time FROM device3_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id HAVING count(day) >= 2`;
   connection.query(query, (error) => {
     if (error) {
@@ -80,11 +110,9 @@ const getMonthReport = asyncHandler(async (req, res) => {
               break;
 
             default:
-              console.log("UNKNOW");
               break;
           }
 
-          console.log(half_time_counter);
           const time_query = `INSERT INTO time_counter (user_id, full_time_counter, half_time_counter) VALUES (${resultsssssss.user_id}, ${full_time_counter}, ${half_time_counter})`;
           connection.query(time_query, (error, resultsss) => {
             if (error) {
@@ -106,7 +134,7 @@ const getMonthReport = asyncHandler(async (req, res) => {
       }
     });
 
-    const querys = `SELECT name, month, monthly_attendance.user_id, count(day) as days, full_time, half_time FROM monthly_attendance, device3_users, monthly_time_counter WHERE monthly_attendance.user_id = device3_users.user_id and monthly_attendance.user_id = monthly_time_counter.user_id group by user_id order by day`;
+    const querys = `SELECT name, month, monthly_attendance.user_id, count(day) as days, full_time, half_time FROM monthly_attendance, all_users, monthly_time_counter WHERE monthly_attendance.user_id = all_users.user_id and monthly_attendance.user_id = monthly_time_counter.user_id group by user_id order by day`;
     connection.query(querys, (error, final_result) => {
       if (error) {
         console.log(error);
@@ -121,6 +149,7 @@ const getMonthReport = asyncHandler(async (req, res) => {
   });
 });
 module.exports = {
+  current_report,
   getDailyReport,
   getMonthReport,
 };

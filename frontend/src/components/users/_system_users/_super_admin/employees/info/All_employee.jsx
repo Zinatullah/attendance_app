@@ -1,18 +1,14 @@
-import { getUsers } from "../../../../../../features/userAttendancee/attendanceSlice";
+import { getmultipleusers } from "../../../../../../features/attendance/attendanceSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { logout, reset } from "../../../../../../features/auth/authSlice";
-import LeaveTable from "./LeaveTable";
+import AttendanceTable from "./AttendanceTable";
 
 const Employees = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
-  // const { isError, isSuccess, message } = useSelector(
-  //   (state) => state.attendance
-  // );
-
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -23,7 +19,7 @@ const Employees = () => {
 
   useEffect(() => {
     const handleSubmit = async () => {
-      const data = await dispatch(getUsers());
+      const data = await dispatch(getmultipleusers());
       setUsers(data.payload);
     };
     handleSubmit();
@@ -44,7 +40,7 @@ const Employees = () => {
       >
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <div className="text-2xl text-gray-400 dark:text-gray-500">
-            <LeaveTable users={users} />
+            <AttendanceTable users={users} />
           </div>
         </div>
       </section>

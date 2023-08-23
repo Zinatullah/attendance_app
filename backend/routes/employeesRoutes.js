@@ -2,18 +2,14 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  //   getGoals,
-  setUser,
-  //   deleteGoal,
-  //   updateGoal,
+  setEmployee,
+  getEmployees,
+  updateEmployee,
+  removeEmployee,
 } = require("../controllers/employeesController");
-// router.route('/').get(protect, getGoals);
-router.post("/register", setUser);
-// router.get('/', getGoals)
-// router.post("/", postGoal);
-
-// router.route('/:id').put(protect, updateGoal).delete(protect, deleteGoal)
-// router.put('/:id', putGoal)
-// router.delete('/:id', deleteGoal)
+router.post("/register", setEmployee);
+router.get("/getEmployees", getEmployees);
+router.post("/updateEmployee", updateEmployee);
+router.post("/removeEmployee", removeEmployee);
 
 module.exports = router;

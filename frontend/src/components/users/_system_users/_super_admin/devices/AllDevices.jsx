@@ -8,6 +8,7 @@ import {
   getAttendance,
   clearAttendances,
   getDeviceStatus,
+  getAttendanceCount,
   getAlldeveicesStatus,
   getUsersFromAllDevices,
   getAttendancesFromAllDevices,
@@ -58,6 +59,10 @@ const ViewerDashboard = () => {
     dispatch(getDeviceStatus(e));
   };
 
+  const handleGetAttendanceCount = (e) => {
+    dispatch(getAttendanceCount(e));
+  };
+
   useEffect(() => {
     if (isSuccess) {
       toast.success("Success");
@@ -96,15 +101,27 @@ const ViewerDashboard = () => {
   };
   return (
     <>
-      <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14" dir="rtl">
+      <div>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={open}
+          onClick={handleClose}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </div>
+      <div
+        className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14"
+        dir="rtl"
+      >
         <div className="flex items-center justify-center h-100 mb-4 rounded bg-gray-50 dark:bg-gray-800">
           <div className="text-4xl text-black dark:text-gray-500">
             <Container className="mt-10">
-              <Grid container spacing={3}>
-                <Grid item md={4}>
-                  <div className="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+              <Grid container spacing={2}>
+                <Grid item md={6}>
+                  <div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
                     <p className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white text-center">
-                      Device 1
+                      لمړی وسیله
                     </p>
                     <ul className="my-4 space-y-3">
                       <li>
@@ -126,7 +143,7 @@ const ViewerDashboard = () => {
                             <path d="m18.332 15.376-.283.192c-2.667 1.827-4.348 2.773-4.9 3.083a4.236 4.236 0 0 1-2.085.556 4.092 4.092 0 0 1-2.069-.561 3.965 3.965 0 0 1-1.951-3.373A1.917 1.917 0 0 1 7 15V8c0-.025.009-.049.01-.074A1.499 1.499 0 0 0 6.841 8a1.882 1.882 0 0 0-.82 1.592v6.7c.072 1.56.467 3.087 1.16 4.486A10.474 10.474 0 0 0 21.3 13.047a20.483 20.483 0 0 1-2.968 2.329Z" />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap">
-                            Get device status
+                            د وسیلې حالت کتل
                           </span>
                         </button>
                       </li>
@@ -147,7 +164,7 @@ const ViewerDashboard = () => {
                             <path d="M5 19h10v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2ZM5 7a5.008 5.008 0 0 1 4-4.9 3.988 3.988 0 1 0-3.9 5.859A4.974 4.974 0 0 1 5 7Zm5 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm5-1h-.424a5.016 5.016 0 0 1-1.942 2.232A6.007 6.007 0 0 1 17 17h2a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5ZM5.424 9H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h2a6.007 6.007 0 0 1 4.366-5.768A5.016 5.016 0 0 1 5.424 9Z" />
                           </svg>
                           <span className="flex-1 whitespace-nowrap">
-                            Get all employees
+                            ټول کارکوونکي ترلاسه کول
                           </span>
                         </button>
                       </li>
@@ -173,14 +190,14 @@ const ViewerDashboard = () => {
                             />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap">
-                            Get all attendances
+                            د ټولو کارکوونکو حاضری ترلاسه کول
                           </span>
                         </button>
                       </li>
                       <li>
                         <button
                           onClick={(e) => {
-                            handleClearAttendance(1);
+                            handleGetAttendanceCount(1);
                           }}
                           className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-blue-300 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
                         >
@@ -199,17 +216,45 @@ const ViewerDashboard = () => {
                             />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap ml-3">
-                            Get attendance count
+                            د حاضری تعداد ترلاسه کول
+                          </span>
+                        </button>
+                      </li>
+
+                      <li>
+                        <button
+                          onClick={(e) => {
+                            handleClearAttendance(4);
+                          }}
+                          className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-blue-300 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+                        >
+                          <svg
+                            className="w-[20px] h-[20px] ml-1 text-gray-800 dark:text-white"
+                            aria-hidden="true"
+                            fill="none"
+                            viewBox="0 0 16 20"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="1.6"
+                              d="M6 1v4a1 1 0 0 1-1 1H1m4 6 2 2 4-4m4-8v16a.97.97 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2Z"
+                            />
+                          </svg>
+                          <span className="flex-1 text-center whitespace-nowrap ml-3">
+                            د حاضری پاکول
                           </span>
                         </button>
                       </li>
                     </ul>
                   </div>
                 </Grid>
-                <Grid item md={4}>
-                  <div className="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+
+                <Grid item md={6}>
+                  <div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
                     <p className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white text-center">
-                      Device 2
+                      دوهمه وسیله
                     </p>
                     <ul className="my-4 space-y-3">
                       <li>
@@ -231,7 +276,7 @@ const ViewerDashboard = () => {
                             <path d="m18.332 15.376-.283.192c-2.667 1.827-4.348 2.773-4.9 3.083a4.236 4.236 0 0 1-2.085.556 4.092 4.092 0 0 1-2.069-.561 3.965 3.965 0 0 1-1.951-3.373A1.917 1.917 0 0 1 7 15V8c0-.025.009-.049.01-.074A1.499 1.499 0 0 0 6.841 8a1.882 1.882 0 0 0-.82 1.592v6.7c.072 1.56.467 3.087 1.16 4.486A10.474 10.474 0 0 0 21.3 13.047a20.483 20.483 0 0 1-2.968 2.329Z" />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap">
-                            Get device status
+                            د وسیلې حالت کتل
                           </span>
                         </button>
                       </li>
@@ -252,7 +297,7 @@ const ViewerDashboard = () => {
                             <path d="M5 19h10v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2ZM5 7a5.008 5.008 0 0 1 4-4.9 3.988 3.988 0 1 0-3.9 5.859A4.974 4.974 0 0 1 5 7Zm5 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm5-1h-.424a5.016 5.016 0 0 1-1.942 2.232A6.007 6.007 0 0 1 17 17h2a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5ZM5.424 9H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h2a6.007 6.007 0 0 1 4.366-5.768A5.016 5.016 0 0 1 5.424 9Z" />
                           </svg>
                           <span className="flex-1 whitespace-nowrap">
-                            Get all employees
+                            ټول کارکوونکي ترلاسه کول
                           </span>
                         </button>
                       </li>
@@ -278,14 +323,14 @@ const ViewerDashboard = () => {
                             />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap">
-                            Get all attendances
+                            د ټولو کارکوونکو حاضری ترلاسه کول
                           </span>
                         </button>
                       </li>
                       <li>
                         <button
                           onClick={(e) => {
-                            handleClearAttendance(2);
+                            handleGetAttendanceCount(2);
                           }}
                           className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-blue-300 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
                         >
@@ -304,17 +349,45 @@ const ViewerDashboard = () => {
                             />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap ml-3">
-                            Get attendance count
+                            د حاضری تعداد ترلاسه کول
+                          </span>
+                        </button>
+                      </li>
+
+                      <li>
+                        <button
+                          onClick={(e) => {
+                            handleClearAttendance(4);
+                          }}
+                          className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-blue-300 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+                        >
+                          <svg
+                            className="w-[20px] h-[20px] ml-1 text-gray-800 dark:text-white"
+                            aria-hidden="true"
+                            fill="none"
+                            viewBox="0 0 16 20"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="1.6"
+                              d="M6 1v4a1 1 0 0 1-1 1H1m4 6 2 2 4-4m4-8v16a.97.97 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2Z"
+                            />
+                          </svg>
+                          <span className="flex-1 text-center whitespace-nowrap ml-3">
+                            د حاضری پاکول
                           </span>
                         </button>
                       </li>
                     </ul>
                   </div>
                 </Grid>
-                <Grid item md={4}>
-                  <div className="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+
+                <Grid item md={6}>
+                  <div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
                     <p className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white text-center">
-                      Device 3
+                      دریمه وسیله
                     </p>
                     <ul className="my-4 space-y-3">
                       <li>
@@ -336,7 +409,7 @@ const ViewerDashboard = () => {
                             <path d="m18.332 15.376-.283.192c-2.667 1.827-4.348 2.773-4.9 3.083a4.236 4.236 0 0 1-2.085.556 4.092 4.092 0 0 1-2.069-.561 3.965 3.965 0 0 1-1.951-3.373A1.917 1.917 0 0 1 7 15V8c0-.025.009-.049.01-.074A1.499 1.499 0 0 0 6.841 8a1.882 1.882 0 0 0-.82 1.592v6.7c.072 1.56.467 3.087 1.16 4.486A10.474 10.474 0 0 0 21.3 13.047a20.483 20.483 0 0 1-2.968 2.329Z" />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap">
-                            Get device status
+                            د وسیلې حالت کتل
                           </span>
                         </button>
                       </li>
@@ -357,7 +430,7 @@ const ViewerDashboard = () => {
                             <path d="M5 19h10v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2ZM5 7a5.008 5.008 0 0 1 4-4.9 3.988 3.988 0 1 0-3.9 5.859A4.974 4.974 0 0 1 5 7Zm5 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm5-1h-.424a5.016 5.016 0 0 1-1.942 2.232A6.007 6.007 0 0 1 17 17h2a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5ZM5.424 9H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h2a6.007 6.007 0 0 1 4.366-5.768A5.016 5.016 0 0 1 5.424 9Z" />
                           </svg>
                           <span className="flex-1 whitespace-nowrap">
-                            Get all employees
+                            ټول کارکوونکي ترلاسه کول
                           </span>
                         </button>
                       </li>
@@ -383,14 +456,14 @@ const ViewerDashboard = () => {
                             />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap">
-                            Get all attendances
+                            د ټولو کارکوونکو حاضری ترلاسه کول
                           </span>
                         </button>
                       </li>
                       <li>
                         <button
                           onClick={(e) => {
-                            handleClearAttendance(3);
+                            handleGetAttendanceCount(3);
                           }}
                           className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-blue-300 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
                         >
@@ -409,7 +482,34 @@ const ViewerDashboard = () => {
                             />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap ml-3">
-                            Get attendance count
+                            د حاضری تعداد ترلاسه کول
+                          </span>
+                        </button>
+                      </li>
+
+                      <li>
+                        <button
+                          onClick={(e) => {
+                            handleClearAttendance(4);
+                          }}
+                          className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-blue-300 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+                        >
+                          <svg
+                            className="w-[20px] h-[20px] ml-1 text-gray-800 dark:text-white"
+                            aria-hidden="true"
+                            fill="none"
+                            viewBox="0 0 16 20"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="1.6"
+                              d="M6 1v4a1 1 0 0 1-1 1H1m4 6 2 2 4-4m4-8v16a.97.97 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2Z"
+                            />
+                          </svg>
+                          <span className="flex-1 text-center whitespace-nowrap ml-3">
+                            د حاضری پاکول
                           </span>
                         </button>
                       </li>
@@ -417,10 +517,10 @@ const ViewerDashboard = () => {
                   </div>
                 </Grid>
 
-                <Grid item md={4}>
-                  <div className="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+                {/* <Grid item md={6}>
+                  <div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
                     <p className="mb-3 text-base font-semibold text-gray-900 md:text-xl dark:text-white text-center">
-                      Device 4
+                      څلورمه وسیله
                     </p>
                     <ul className="my-4 space-y-3">
                       <li>
@@ -442,7 +542,7 @@ const ViewerDashboard = () => {
                             <path d="m18.332 15.376-.283.192c-2.667 1.827-4.348 2.773-4.9 3.083a4.236 4.236 0 0 1-2.085.556 4.092 4.092 0 0 1-2.069-.561 3.965 3.965 0 0 1-1.951-3.373A1.917 1.917 0 0 1 7 15V8c0-.025.009-.049.01-.074A1.499 1.499 0 0 0 6.841 8a1.882 1.882 0 0 0-.82 1.592v6.7c.072 1.56.467 3.087 1.16 4.486A10.474 10.474 0 0 0 21.3 13.047a20.483 20.483 0 0 1-2.968 2.329Z" />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap">
-                            Get device status
+                            د وسیلې حالت کتل
                           </span>
                         </button>
                       </li>
@@ -463,7 +563,7 @@ const ViewerDashboard = () => {
                             <path d="M5 19h10v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2ZM5 7a5.008 5.008 0 0 1 4-4.9 3.988 3.988 0 1 0-3.9 5.859A4.974 4.974 0 0 1 5 7Zm5 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm5-1h-.424a5.016 5.016 0 0 1-1.942 2.232A6.007 6.007 0 0 1 17 17h2a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5ZM5.424 9H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h2a6.007 6.007 0 0 1 4.366-5.768A5.016 5.016 0 0 1 5.424 9Z" />
                           </svg>
                           <span className="flex-1 whitespace-nowrap">
-                            Get all employees
+                            ټول کارکوونکي ترلاسه کول
                           </span>
                         </button>
                       </li>
@@ -489,7 +589,34 @@ const ViewerDashboard = () => {
                             />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap">
-                            Get all attendances
+                            د ټولو کارکوونکو حاضری ترلاسه کول
+                          </span>
+                        </button>
+                      </li>
+
+                      <li>
+                        <button
+                          onClick={(e) => {
+                            handleGetAttendanceCount(4);
+                          }}
+                          className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-blue-300 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+                        >
+                          <svg
+                            className="w-[20px] h-[20px] ml-1 text-gray-800 dark:text-white"
+                            aria-hidden="true"
+                            fill="none"
+                            viewBox="0 0 16 20"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="1.6"
+                              d="M6 1v4a1 1 0 0 1-1 1H1m4 6 2 2 4-4m4-8v16a.97.97 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2Z"
+                            />
+                          </svg>
+                          <span className="flex-1 text-center whitespace-nowrap ml-3">
+                            د حاضری تعداد ترلاسه کول
                           </span>
                         </button>
                       </li>
@@ -515,21 +642,21 @@ const ViewerDashboard = () => {
                             />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap ml-3">
-                            Get attendance count
+                            د حاضری پاکول
                           </span>
                         </button>
                       </li>
                     </ul>
                   </div>
-                </Grid>
+                </Grid> */}
 
-                <Grid item md={12}>
-                  <div className="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+                <Grid item md={6}>
+                  <div className="w-full max-w-md p-4 bg-blue-400 border border-gray-200 rounded-lg shadow sm:p-6 dark:bg-gray-800 dark:border-gray-700">
                     <p className="mb-3 w-full text-base font-semibold text-gray-900 md:text-xl dark:text-white text-center">
-                      All Devices Data
+                      ټولې وسیلې
                     </p>
                     <ul className="my-4 space-y-3">
-                      <li>
+                      {/* <li>
                         <button
                           onClick={(e) => {
                             get_all_deveices_status();
@@ -551,14 +678,14 @@ const ViewerDashboard = () => {
                             Get All devices status
                           </span>
                         </button>
-                      </li>
+                      </li> */}
 
                       <li>
                         <button
                           onClick={(e) => {
                             get_users_from_all_devices();
                           }}
-                          className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-blue-300 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+                          className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-red-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
                         >
                           <svg
                             className="w-[20px] h-[20px] ml-1 text-gray-800 dark:text-white"
@@ -570,7 +697,7 @@ const ViewerDashboard = () => {
                             <path d="M5 19h10v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2ZM5 7a5.008 5.008 0 0 1 4-4.9 3.988 3.988 0 1 0-3.9 5.859A4.974 4.974 0 0 1 5 7Zm5 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm5-1h-.424a5.016 5.016 0 0 1-1.942 2.232A6.007 6.007 0 0 1 17 17h2a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5ZM5.424 9H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h2a6.007 6.007 0 0 1 4.366-5.768A5.016 5.016 0 0 1 5.424 9Z" />
                           </svg>
                           <span className="flex-1 whitespace-nowrap">
-                            Get all devices employees
+                            ټول کارکوونکي ترلاسه کول
                           </span>
                         </button>
                       </li>
@@ -580,7 +707,7 @@ const ViewerDashboard = () => {
                           onClick={(e) => {
                             get_attendances_from_all_devices();
                           }}
-                          className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-blue-300 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+                          className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-red-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
                         >
                           <svg
                             className="w-[20px] h-[20px] ml-1 text-gray-800 dark:text-white"
@@ -597,7 +724,7 @@ const ViewerDashboard = () => {
                             />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap">
-                            Get all devices attendances
+                            د ټولو کارکوونکو حاضري ترلاسه کول
                           </span>
                         </button>
                       </li>
@@ -607,7 +734,7 @@ const ViewerDashboard = () => {
                           onClick={(e) => {
                             get_Count_attendances_from_all_devices();
                           }}
-                          className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-blue-300 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+                          className="flex items-center w-full p-3 text-base font-bold text-black rounded-lg bg-gray-100 hover:bg-red-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
                         >
                           <svg
                             className="w-[20px] h-[20px] ml-1 text-gray-800 dark:text-white"
@@ -624,7 +751,7 @@ const ViewerDashboard = () => {
                             />
                           </svg>
                           <span className="flex-1 text-center whitespace-nowrap ml-3">
-                            Get all devices attendances count
+                            د حاضری تعداد
                           </span>
                         </button>
                       </li>

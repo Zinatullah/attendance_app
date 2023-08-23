@@ -1,18 +1,13 @@
-import { getUsers } from "../../../../../../features/userAttendancee/attendanceSlice";
-import { useNavigate, Link } from "react-router-dom";
+import { getEmployees, removeEmployee, updateEmployee } from "../../../../../../features/employees/employeesSlice";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { logout, reset } from "../../../../../../features/auth/authSlice";
-import LeaveTable from "./LeaveTable";
+import Registered_table from "./Registered_table";
 
-const Employees = () => {
+const RegisteredEmployees = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
-  // const { isError, isSuccess, message } = useSelector(
-  //   (state) => state.attendance
-  // );
-
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -23,17 +18,11 @@ const Employees = () => {
 
   useEffect(() => {
     const handleSubmit = async () => {
-      const data = await dispatch(getUsers());
+      const data = await dispatch(getEmployees());
       setUsers(data.payload);
     };
     handleSubmit();
   }, [dispatch]);
-
-  const handleLogout = () => {
-    dispatch(logout());
-    dispatch(reset());
-    navigate("/login");
-  };
 
   return (
     <>
@@ -44,7 +33,7 @@ const Employees = () => {
       >
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <div className="text-2xl text-gray-400 dark:text-gray-500">
-            <LeaveTable users={users} />
+            <Registered_table users={users} />
           </div>
         </div>
       </section>
@@ -52,4 +41,4 @@ const Employees = () => {
   );
 };
 
-export default Employees;
+export default RegisteredEmployees;

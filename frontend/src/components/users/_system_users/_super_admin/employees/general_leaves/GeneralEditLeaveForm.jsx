@@ -42,7 +42,7 @@ const LeaveFrom = ({ handleClose, element }) => {
   return (
     <>
       <form className="w-full max-w-lg mt-5" onSubmit={handleSubmit}>
-        <div className="flex flex-wrap -mx-3 mb-6">
+        <div className="flex flex-wrap -mx-3 mb-6" dir="rtl">
           <div className="w-full md:w-1/1 px-3 mb-6 md:mb-0">
             <label
               className="block uppercase text-right mr-5 tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -62,7 +62,7 @@ const LeaveFrom = ({ handleClose, element }) => {
           </div>
         </div>
 
-        <div className="flex flex-wrap -mx-3 mb-2">
+        <div className="flex flex-wrap -mx-3 mb-2" dir="rtl">
           <div className="w-full md:w-2/4 px-3 mb-6 md:mb-0">
             <label
               className="block  text-right mr-5 uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -179,10 +179,10 @@ const LeaveFrom = ({ handleClose, element }) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-wrap -mx-3 mb-2 mt-10">
+        <div className="flex flex-wrap -mx-3 mb-2 mt-10" dir="rtl">
           <div className="w-full md:w-4/4 px-3 mb-6 md:mb-0">
             <label
-              className="block text-right mr-5 uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              className="block mr-5 uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
               htmlFor="grid-city"
             >
               جزئیات

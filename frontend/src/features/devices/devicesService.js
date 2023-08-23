@@ -14,6 +14,13 @@ const getAttendance = async (id) => {
 };
 
 //////////////////////////////////////////        clear attendances       ///////////////////////////////////////////////////////////////
+const getAttendanceCount = async (id) => {
+  console.log(id)
+  const response = await axios.get(API_URL + `getAttendanceCount/${id}`);
+  return response.data;
+};
+
+//////////////////////////////////////////        clear attendances       ///////////////////////////////////////////////////////////////
 const clearAttendances = async (id) => {
   const response = await axios.get(API_URL + `clearAttendances/${id}`);
   return response.data;
@@ -54,6 +61,7 @@ const devicesService = {
   clearAttendances,
   getDeviceStatus,
   getAlldeveicesStatus,
+  getAttendanceCount,
   getUsersFromAllDevices,
   getAttendancesFromAllDevices,
   getCountAttendancesFromAllDevices,

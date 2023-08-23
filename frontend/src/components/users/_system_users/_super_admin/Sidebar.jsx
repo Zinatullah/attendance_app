@@ -103,6 +103,7 @@ const Sidebar = () => {
                 </span>
               </Link>
             </li>
+            {/* //////////////// System User /////////////////////// */}
 
             <li>
               <span className="flex items-center text-gray-900 rounded-lg dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 group">
@@ -150,6 +151,7 @@ const Sidebar = () => {
               </span>
             </li>
 
+            {/* //////////////// System User /////////////////////// */}
             <li>
               <span className="flex items-center text-gray-900 rounded-lg dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 group">
                 <Accordion
@@ -180,6 +182,12 @@ const Sidebar = () => {
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <PersonAddIcon />
                           <span className="ml-3 pr-5">نوی کار کوونکي</span>
+                        </span>
+                      </Link>
+                      <Link to="/registeredemployees">
+                        <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
+                          <Diversity3Icon />
+                          <span className="ml-3 pr-5">ثبت شوي کار کوونکي</span>
                         </span>
                       </Link>
                       <Link to="/users">
@@ -221,7 +229,7 @@ const Sidebar = () => {
                   </AccordionSummary>
                   <AccordionDetails>
                     <Typography dir="rtl">
-                      <Link to="/Leaveform">
+                      <Link to="/specificUser">
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <PersonIcon />
                           <span className="ml-3 pr-5">د ځانګړي کارکوونکي</span>
@@ -230,7 +238,7 @@ const Sidebar = () => {
                       <Link to="/generalLeaveCheck">
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <GroupsIcon />
-                          <span className="ml-3 pr-5">د ټولو کار کوونکو</span>
+                          <span className="ml-3 pr-5">عمومي رخصتي</span>
                         </span>
                       </Link>
                     </Typography>
@@ -273,7 +281,7 @@ const Sidebar = () => {
                           <span className="ml-3 pr-5">ټولې وسیلې</span>
                         </span>
                       </Link>
-                      <Link>
+                      {/* <Link>
                         <span
                           to="/viewerDashboard"
                           width="100%"
@@ -292,7 +300,7 @@ const Sidebar = () => {
                           <DevicesFoldIcon />
                           <span className="ml-3 pr-5">دریمه وسیله</span>
                         </span>
-                      </Link>
+                      </Link> */}
                     </Typography>
                   </AccordionDetails>
                 </Accordion>
@@ -326,10 +334,22 @@ const Sidebar = () => {
                   </AccordionSummary>
                   <AccordionDetails>
                     <Typography dir="rtl">
+                      <Link to="/currentreport">
+                        <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
+                          <SummarizeIcon />
+                          <span className="ml-3 pr-5">اوسنی راپور</span>
+                        </span>
+                      </Link>
                       <Link to="/dailyreport">
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <SummarizeIcon />
                           <span className="ml-3 pr-5">ورځنی راپور</span>
+                        </span>
+                      </Link>
+                      <Link to="/currentmonth">
+                        <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
+                          <AssessmentIcon />
+                          <span className="ml-3 pr-5">اوسنی میاشت</span>
                         </span>
                       </Link>
                       <Link to="/monthlyreport">

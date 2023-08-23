@@ -7,11 +7,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-const EditLeaveForm = ({ user , handleClose, name }) => {
+const EditLeaveForm = ({ user , handleClose,handleVacation, name }) => {
   const [month, setMonth] = useState();
   const [leaveType, setLeaveType] = useState("");
-
-  console.log(user)
 
   const dispatch = useDispatch();
 
@@ -46,9 +44,6 @@ const EditLeaveForm = ({ user , handleClose, name }) => {
     dispatch(EditleaveForm(userData));
     handleClose();
   };
-
-  console.log(user.user_id)
-  
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { getUserAttendance } from "../../../features/userAttendance/attendanceSlice";
+import { getUserAttendance } from "../../../features/userAttendancee/attendanceSlice";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";

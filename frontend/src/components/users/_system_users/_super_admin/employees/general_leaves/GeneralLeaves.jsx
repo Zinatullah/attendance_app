@@ -9,6 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Slide from "@mui/material/Slide";
 import { Button } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import { useDispatch, useSelector } from "react-redux";
 import {
   removeGeneralLeave,
@@ -24,6 +25,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import GeneralEditLeaveForm from "./GeneralEditLeaveForm";
 import { useEffect } from "react";
+import GeneralLeaveForm from "./GeneralLeaveForm";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,7 +54,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function GeneralLeaves({}) {
   const [vacation, setVacation] = useState();
   const [count, setCount] = useState(vacation ? vacation.length : 0);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [opens, setOpens] = useState(false);
   const [specificElement, setSpecificElement] = useState();
 
   const dispatch = useDispatch();
@@ -73,6 +76,10 @@ export default function GeneralLeaves({}) {
     setOpen(true);
   };
 
+  const handleClickOpens = (e) => {
+    setOpens(true);
+  };
+
   const { isError, isSuccess, message } = useSelector((state) => state.leave);
 
   useEffect(() => {
@@ -83,6 +90,14 @@ export default function GeneralLeaves({}) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleCloses = () => {
+    setOpens(false);
+  };
+
+  // useEffect(()=>{
+  //   general_leave_check()
+  // }, [opens])
   return (
     <>
       <section
@@ -91,21 +106,29 @@ export default function GeneralLeaves({}) {
         dir="rtl"
       >
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
-
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ marginRight: "15px", fontSize: "20px" }}
+            onClick={handleClickOpens}
+          >
+            <AddIcon sx={{ marginLeft: "15px" }} />
+            نوی د رخصتی فورم
+          </Button>
           <TableContainer component={Paper} style={{ marginTop: "5px" }}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
               <TableHead>
                 <TableRow>
-                  <StyledTableCell scope="row">ID</StyledTableCell>
-                  <StyledTableCell>Leave type</StyledTableCell>
-                  <StyledTableCell>Start Date</StyledTableCell>
-                  <StyledTableCell>End Date</StyledTableCell>
-                  <StyledTableCell>Days</StyledTableCell>
-                  <StyledTableCell>Month</StyledTableCell>
+                  <StyledTableCell scope="row">نمبر</StyledTableCell>
+                  <StyledTableCell>د رخصتی ډول</StyledTableCell>
+                  <StyledTableCell>میاشت</StyledTableCell>
+                  <StyledTableCell>شروع</StyledTableCell>
+                  <StyledTableCell>ختم</StyledTableCell>
+                  <StyledTableCell>ورځې</StyledTableCell>
                   <StyledTableCell>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Info
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;نور معلومات
                   </StyledTableCell>
-                  <StyledTableCell>Action</StyledTableCell>
+                  <StyledTableCell>تغیرات راوستل</StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -114,39 +137,39 @@ export default function GeneralLeaves({}) {
                     <StyledTableRow key={index}>
                       <StyledTableCell>{index + 1}</StyledTableCell>
                       <StyledTableCell>{element.leave_type}</StyledTableCell>
+                      <StyledTableCell>{element.month}</StyledTableCell>
                       <StyledTableCell>{element.start_date}</StyledTableCell>
                       <StyledTableCell>{element.end_date}</StyledTableCell>
                       <StyledTableCell>
                         {element.end_date - element.start_date}
                       </StyledTableCell>
-                      <StyledTableCell>{element.month}</StyledTableCell>
                       <StyledTableCell>{element.info}</StyledTableCell>
                       <StyledTableCell>
                         <Button
-                          style={{ marginRight: "2px" }}
-                          variant="outlined"
+                          style={{ marginLeft: "5px" }}
+                          variant="contained"
                           onClick={() => {
                             handleClickOpen(element);
                           }}
-                          color="secondary"
+                          color="info"
                         >
-                          Edit
+                          تغیرول
                         </Button>
                         <Button
-                          variant="outlined"
-                          color="warning"
+                          variant="contained"
+                          color="error"
                           onClick={(e) => {
                             handleClickRemove(element);
                           }}
                         >
-                          Delete
+                          لمنځه ړول
                         </Button>
                       </StyledTableCell>
                     </StyledTableRow>
                   ))
                 ) : (
                   <StyledTableRow>
-                    <StyledTableCell>No record</StyledTableCell>
+                    <StyledTableCell>هېڅ رخصتی شتون نلري</StyledTableCell>
                   </StyledTableRow>
                 )}
               </TableBody>
@@ -156,7 +179,7 @@ export default function GeneralLeaves({}) {
           <React.Fragment>
             <Dialog fullWidth open={open} maxWidth="md" onClose={handleClose}>
               <DialogTitle className="text-center bg-teal-700 text-white">
-                General vacation edit form
+                  عمومي رخصتي تغیر کړئ
               </DialogTitle>
               <DialogContent>
                 <Box
@@ -181,6 +204,30 @@ export default function GeneralLeaves({}) {
           </React.Fragment>
         </div>
       </section>
+
+      <React.Fragment>
+        <Dialog fullWidth open={opens} maxWidth="md" onClose={handleCloses}>
+          <DialogTitle className="text-center bg-teal-700 text-white">
+            د رخصتی فورم
+          </DialogTitle>
+          <DialogContent>
+            <Box
+              noValidate
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                m: "auto",
+                width: "fit-content",
+              }}
+            >
+              <GeneralLeaveForm handleClose={handleCloses}/>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloses}>بندول</Button>
+          </DialogActions>
+        </Dialog>
+      </React.Fragment>
     </>
   );
 }

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import SignUp from "./SignUp";
 import { logout, reset } from "../../../../features/auth/authSlice";
-import { getUsers } from "../../../../features/userAttendance/attendanceSlice";
+import { getUsers } from "../../../../features/userAttendancee/attendanceSlice";
 import Navbar from "./../Navbar";
 
 const UserRegister = () => {

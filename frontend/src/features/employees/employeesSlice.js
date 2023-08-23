@@ -9,9 +9,9 @@ const initialState = {
   message: "",
 };
 
-// Create New Goal
+// Register new employee
 export const setUser = createAsyncThunk(
-  "goals/create",
+  "employee/register",
   async (userData, thunkAPI) => {
     try {
       return await employeesService.setUser(userData);
@@ -27,43 +27,58 @@ export const setUser = createAsyncThunk(
   }
 );
 
-// Get user goals
-// export const getGoals = createAsyncThunk(
-//   "goals/getAll",
-//   async (_, thunkAPI) => {
-//     try {
-//       const token = thunkAPI.getState().auth.user.token;
-//       return await goalService.getGoals(token);
-//     } catch (error) {
-//       const message =
-//         (error.response &&
-//           error.response.data &&
-//           error.response.data.message) ||
-//         error.message ||
-//         error.toString();
-//       return thunkAPI.rejectWithValue(message);
-//     }
-//   }
-// );
+// Get all employees
+export const getEmployees = createAsyncThunk(
+  "emplyees/getemployees",
+  async (thunkAPI) => {
+    try {
+      return await employeesService.getEmployees();
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+// Update employees
+export const updateEmployee = createAsyncThunk(
+  "emplyees/updateEmployee",
+  async (userData, thunkAPI) => {
+    try {
+      return await employeesService.updateEmployee(userData);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+// Remove employees
+export const removeEmployee = createAsyncThunk(
+  "emplyees/removeEmployee",
+  async (userData, thunkAPI) => {
+    try {
+      return await employeesService.removeEmployee(userData);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
-// Delete user goal
-// export const deleteGoal = createAsyncThunk(
-//   "goals/delete",
-//   async (id, thunkAPI) => {
-//     try {
-//       const token = thunkAPI.getState().auth.user.token;
-//       return await goalService.deleteGoal(id, token);
-//     } catch (error) {
-//       const message =
-//         (error.response &&
-//           error.response.data &&
-//           error.response.data.message) ||
-//         error.message ||
-//         error.toString();
-//       return thunkAPI.rejectWithValue(message);
-//     }
-//   }
-// );
 
 export const employeesSlice = createSlice({
   name: "employees",
@@ -90,39 +105,35 @@ export const employeesSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(updateEmployee.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateEmployee.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.goals.push(action.payload);
+      })
+      .addCase(updateEmployee.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(removeEmployee.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(removeEmployee.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.goals.push(action.payload);
+      })
+      .addCase(removeEmployee.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       });
 
-    // Getting Goals
-    // .addCase(getGoals.pending, (state) => {
-    //   state.isLoading = true;
-    // })
-    // .addCase(getGoals.fulfilled, (state, action) => {
-    //   state.isLoading = false;
-    //   state.isSuccess = true;
-    //   state.goals = action.payload;
-    // })
-    // .addCase(getGoals.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.isError = true;
-    //   state.message = action.payload;
-    // })
-
-    // Delete goal
-    // .addCase(deleteGoal.pending, (state) => {
-    //   state.isLoading = true;
-    // })
-    // .addCase(deleteGoal.fulfilled, (state, action) => {
-    //   state.isLoading = false;
-    //   state.isSuccess = true;
-    //   state.goals = state.goals.filter(
-    //     (goal) => goal._id !== action.payload.id
-    //   );
-    // })
-    // .addCase(deleteGoal.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.isError = true;
-    //   state.message = action.payload;
-    // });
+    
   },
 });
 

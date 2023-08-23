@@ -48,7 +48,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 let specific_element = {};
 const VacationTable = ({ username, handleCloses , name}) => {
-  const userId = username.user_id;
+  const userId = username[0].user_id;
   const [open, setOpen] = React.useState(false);
   const [count, setCount] = useState();
   const [month, setMonth] = useState("");
@@ -67,9 +67,7 @@ const VacationTable = ({ username, handleCloses , name}) => {
 
   const handleVacation = async () => {
     const check_vacation = { userId };
-    console.log(check_vacation, "From loop");
     const get_vacation = await dispatch(vacation(check_vacation));
-    console.log("From here");
     setPreviousVacation(get_vacation.payload);
   };
 
@@ -89,12 +87,12 @@ const VacationTable = ({ username, handleCloses , name}) => {
   const handleClickRemove = async (e) => {
     const id = e.id;
     dispatch(removeVacation({ id }));
-    // setCount(vacation ? vacation.length : 0);
+    setCount(vacation ? vacation.length : 0);
   };
 
   useEffect(() => {
     if (isSuccess) {
-      // handleVacation();
+      handleVacation();
     }
   }, [isSuccess, message]);
 

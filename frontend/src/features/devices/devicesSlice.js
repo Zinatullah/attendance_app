@@ -37,6 +37,19 @@ export const getAttendance = createAsyncThunk('userattendances/getAttendance/', 
 })
 
 //////////////////////////////////////////////// Clear //////////////////////////////////////////////////////////////////
+export const getAttendanceCount = createAsyncThunk('userattendances/getAttendanceCount', async (id, thunkAPI) => {
+  try {
+    return await attendanceService.getAttendanceCount(id)
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString()
+    return thunkAPI.rejectWithValue(message)
+  }
+})
+
+//////////////////////////////////////////////// Clear //////////////////////////////////////////////////////////////////
 export const clearAttendances = createAsyncThunk('userattendances/clearAttendances', async (id, thunkAPI) => {
   try {
     return await attendanceService.clearAttendances(id)
@@ -145,6 +158,18 @@ export const attendanceSlice = createSlice({
         state.isSuccess = true
       })
       .addCase(getAttendance.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(getAttendanceCount.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getAttendanceCount.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+      })
+      .addCase(getAttendanceCount.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import authService from "./reportService";
+import authService from "./logsService";
 const user = JSON.parse(localStorage.getItem("user"));
 
 const initialState = {
@@ -10,12 +10,12 @@ const initialState = {
   message: "",
 };
 
-// Current report
-export const getCurrentReport = createAsyncThunk(
-  "reports/getCurrentReport",
-  async (month, thunkAPI) => {
+// Users
+export const getUsers = createAsyncThunk(
+  "logs/getUser",
+  async (thunkAPI) => {
     try {
-      return await authService.getCurrentReport(month);
+      return await authService.getUsers();
     } catch (error) {
       const message =
         (error.response &&
@@ -28,12 +28,12 @@ export const getCurrentReport = createAsyncThunk(
   }
 );
 
-// Daily report
-export const getDailyReport = createAsyncThunk(
-  "reports/getDailyReport",
-  async (month, thunkAPI) => {
+// Employees
+export const getEmployees = createAsyncThunk(
+  "logs/getEmployees",
+  async (thunkAPI) => {
     try {
-      return await authService.getDailyReport(month);
+      return await authService.getEmployees();
     } catch (error) {
       const message =
         (error.response &&
@@ -46,12 +46,12 @@ export const getDailyReport = createAsyncThunk(
   }
 );
 
-// Monthly report
-export const getMonthReport = createAsyncThunk(
-  "reports/getMonthReport",
-  async (month, thunkAPI) => {
+// Attendance
+export const getLogs = createAsyncThunk(
+  "logs/getLogs",
+  async (thunkAPI) => {
     try {
-      return await authService.getMonthReport(month);
+      return await authService.getLogs();
     } catch (error) {
       const message =
         (error.response &&
@@ -64,8 +64,8 @@ export const getMonthReport = createAsyncThunk(
   }
 );
 
-export const authSlice = createSlice({
-  name: "reports",
+export const logsSlice = createSlice({
+  name: "logs",
   initialState,
   reducers: {
     reset: (state) => {
@@ -79,5 +79,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { reset } = authSlice.actions;
-export default authSlice.reducer;
+export const { reset } = logsSlice.actions;
+export default logsSlice.reducer;

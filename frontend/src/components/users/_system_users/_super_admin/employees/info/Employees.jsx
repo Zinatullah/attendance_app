@@ -1,4 +1,4 @@
-import { getUsers } from "../../../../../../features/userAttendance/attendanceSlice";
+import { getmultipleusers } from "../../../../../../features/attendance/attendanceSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -23,7 +23,7 @@ const Employees = () => {
 
   useEffect(() => {
     const handleSubmit = async () => {
-      const data = await dispatch(getUsers());
+      const data = await dispatch(getmultipleusers());
       setUsers(data.payload);
     };
     handleSubmit();

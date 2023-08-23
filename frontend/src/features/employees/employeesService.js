@@ -2,41 +2,33 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5000/api/employees/";
 
-// Create new goal
+/////////////////////////////////////////    Set Employee       ////////////////////////////////////////////////////
 const setUser = async (userData) => {
-  console.log(userData)
-  const response = await axios.post(API_URL+'register', userData);
+  const response = await axios.post(API_URL + "register", userData);
   return response.data;
 };
-// Get user goals
-// const getGoals = async (token) => {
-//   const config = {
-//     headers: {
-//       Authorization: `Bearer ${token}`
-//     }
-//   }
 
-//   const response = await axios.get(API_URL, config)
-//   return response.data
-// }
-
-// Delete user goal
-// const deleteGoal = async (goalId, token) => {
-//   console.log(token)
-//   const config = {
-//     headers: {
-//       Authorization: `Bearer ${token}`
-//     }
-//   }
-
-//   const response = await axios.delete(API_URL  + goalId, config)
-//   return response.data
-// }
+/////////////////////////////////////////    Get Employees       ////////////////////////////////////////////////////
+const getEmployees = async () => {
+  const response = await axios.get(API_URL + "getEmployees");
+  return response.data;
+};
+/////////////////////////////////////////    updateEmployee Employees       ////////////////////////////////////////////////////
+const updateEmployee = async (userData) => {
+  const response = await axios.post(API_URL + "updateEmployee", userData);
+  return response.data;
+};
+/////////////////////////////////////////    Get Employees       ////////////////////////////////////////////////////
+const removeEmployee = async (userData) => {
+  const response = await axios.post(API_URL + "removeEmployee", userData);
+  return response.data;
+};
 
 const employeesService = {
   setUser,
-  // getGoals,
-  // deleteGoal
+  getEmployees,
+  updateEmployee,
+  removeEmployee
 };
 
 export default employeesService;

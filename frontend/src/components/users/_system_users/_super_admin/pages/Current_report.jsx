@@ -1,10 +1,10 @@
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
-import DayReport from "../reports/DayReport";
+import CurrentReport from "../reports/CurrentReport";
 
 import React from "react";
 
-const DailyReport = () => {
+const Current_report = () => {
   return (
     <>
       <nav
@@ -20,7 +20,7 @@ const DailyReport = () => {
       >
         <div className="border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <div className="text-2xl text-gray-400 dark:text-gray-500">
-            <DayReport />
+            <CurrentReport />
           </div>
         </div>
       </div>
@@ -28,4 +28,4 @@ const DailyReport = () => {
   );
 };
 
-export default DailyReport;
+export default Current_report;

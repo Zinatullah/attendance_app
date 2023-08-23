@@ -16,7 +16,6 @@ const LeaveFrom = ({ username, handleClose }) => {
     setMonth(event.target.value);
   };
 
-  console.log(username)
   const handleChangeLeaveType = (event) => {
     setLeaveType(event.target.value);
   };
@@ -32,8 +31,10 @@ const LeaveFrom = ({ username, handleClose }) => {
     dispatch(reset());
   }, [isError, isSuccess, message]);
 
-  const user_name = username.name;
-  const user_id = username.user_id;
+  
+
+  const user_name = username ? username.name : '';
+  const user_id = username ? username.user_id : '';
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -112,7 +113,7 @@ const LeaveFrom = ({ username, handleClose }) => {
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
               htmlFor="grid-city"
             >
-              میاشت 
+              میاشت
             </label>
 
             <div className="flex items-center rounded">

@@ -3,9 +3,10 @@ const router = express.Router();
 const {
   getUsers,
   getAttendance,
-  getAttendanceFromOtherTable,
+  allAttendances,
   clearAttendances,
   getDeviceStatus,
+  getAttendanceCount,
   getUsersFromAllDevices,
   getAttendancesFromAllDevices,
   getAlldeveicesStatus,
@@ -15,8 +16,9 @@ const {
 
 router.get("/getUsers/:id", getUsers);
 router.get("/getAttendance/:id", getAttendance);
-router.get("/getAttendances/:id", getAttendanceFromOtherTable);
+router.get("/allAttendances", allAttendances);
 router.get("/clearAttendances/:id", clearAttendances);
+router.get("/getAttendanceCount/:id", getAttendanceCount);
 router.get("/getDeviceStatus/:id", getDeviceStatus);
 router.get("/getUsersFromAllDevices", getUsersFromAllDevices);
 router.get("/getAttendancesFromAllDevices", getAttendancesFromAllDevices);
