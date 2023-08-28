@@ -18,10 +18,25 @@ const getMonthReport = async (month) => {
   return response.data
 }
 
+// Friday for two months
+const getFridays = async (month_data) => {
+  const response = await axios.post(API_URL + `getFridays`, month_data )
+  return response.data
+}
+
+
+// Friday for two months
+const getFriday = async (month_data) => {
+  const response = await axios.post(API_URL + `getFriday`, month_data )
+  return response.data
+}
+
 const authService = {
   getCurrentReport,
   getDailyReport,
-  getMonthReport
+  getMonthReport,
+  getFridays,
+  getFriday
 }
 
 export default authService

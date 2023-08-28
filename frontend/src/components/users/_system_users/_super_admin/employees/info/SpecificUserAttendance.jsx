@@ -3,26 +3,17 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
-import { removeVacation } from "../../../../../../features/attendance/attendanceSlice";
-
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import CloseIcon from "@mui/icons-material/Close";
-
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
 import {
   getsingleuserattendance,
   getsingleuser,
   vacation,
+  removeVacation
 } from "../../../../../../features/attendance/attendanceSlice";
-import { logout, reset } from "../../../../../../features/auth/authSlice";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getFriday } from './../../../../../../features/report/reportSlice'
+
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import * as React from "react";
@@ -35,8 +26,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Slide from "@mui/material/Slide";
-import VacationTable from "./../leaves/VacationTable";
-import { current } from "@reduxjs/toolkit";
 import EditLeaveForm from "./../leaves/EditLeaveForm";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -73,6 +62,7 @@ const SpecificUserAttendance = () => {
   const [userr, setUser] = useState("");
   const [count, setCount] = useState();
   const [show, setShow] = useState("none");
+  const [fridays, setFridays] = useState("");
 
   const dispatch = useDispatch();
   const location = useLocation();
@@ -96,11 +86,7 @@ const SpecificUserAttendance = () => {
 
   let current_month = hijri_date.split(" ")[1];
 
-  let days = "";
-  const handleChange = (event) => {
-    setMonth(event.target.value);
-    setShow("");
-  };
+  let days = [];
 
   let days_1 = [
     "1",
@@ -227,9 +213,10 @@ const SpecificUserAttendance = () => {
     days = days_3;
   }
 
-  employee.map((person) => {
-    days[person.day - 1] = person;
-  });
+  const handleChange = (event) => {
+    setMonth(event.target.value);
+    setShow("");
+  };
 
   const handleSubmit = async () => {
     const userData = {
@@ -242,6 +229,8 @@ const SpecificUserAttendance = () => {
     setUsername(username.payload);
     const get_vacation = await dispatch(vacation(userData));
     setPreviousVacation(get_vacation.payload);
+    const get_friday = await dispatch(getFriday(userData))
+    setFridays(get_friday.payload)
   };
 
   useEffect(() => {
@@ -276,7 +265,20 @@ const SpecificUserAttendance = () => {
     handleSubmit();
   }, [open, count]);
 
-  let texts = "";
+  if (employee) {
+    employee.map((person) => {
+      days[person.day - 1] = person;
+    });
+  }
+
+  console.log()
+
+  if(fridays){
+    fridays.map((friday)=>{
+      days[friday.day-1] = friday
+    })
+  }
+
   return (
     <>
       <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
@@ -338,28 +340,28 @@ const SpecificUserAttendance = () => {
             </Grid>
           </form>
         </div>
+
         <div style={{ display: show }}>
-          <TableContainer component={Paper} className="mt-5" dir="rtl">
+          <TableContainer component={Paper} className="mt-5" dir="rtl" sx={{textAlign: 'right'}}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
               <TableHead>
                 <TableRow>
-                  <StyledTableCell scope="row">نمبر</StyledTableCell>
-                  <StyledTableCell>نوم</StyledTableCell>
-                  <StyledTableCell>کال</StyledTableCell>
-                  <StyledTableCell>میاشت</StyledTableCell>
-                  <StyledTableCell>ورځ</StyledTableCell>
-                  <StyledTableCell>داخېلېدل</StyledTableCell>
-                  <StyledTableCell>وتل</StyledTableCell>
+                  <StyledTableCell sx={{textAlign: 'right'}} scope="row">ورځ</StyledTableCell>
+                  <StyledTableCell sx={{textAlign: 'right'}}>نوم</StyledTableCell>
+                  <StyledTableCell sx={{textAlign: 'right'}}>کال</StyledTableCell>
+                  <StyledTableCell sx={{textAlign: 'right'}}>میاشت</StyledTableCell>
+                  <StyledTableCell sx={{textAlign: 'right'}}>داخېلېدل</StyledTableCell>
+                  <StyledTableCell sx={{textAlign: 'right'}}>وتل</StyledTableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
+              <TableBody dir='rtl' className='text-right'>
                 {days ? (
                   days.map((row, index) => (
                     <React.Fragment key={index}>
                       <StyledTableRow sx={{ display: "none" }}></StyledTableRow>
                       <StyledTableRow
                         key={index}
-                        className={
+                        className={ row.name == 'جمعه' ?  'bg-blue-400' : '' ||
                           row.entery_time
                             ? row.entery_time.split(":")[0] * 3600 +
                                 row.entery_time.split(":")[1] * 60 +
@@ -370,15 +372,12 @@ const SpecificUserAttendance = () => {
                             : ""
                         }
                       >
-                        <StyledTableCell component="th" scope="row">
-                          {index + 1}
-                        </StyledTableCell>
-                        <StyledTableCell>{row.name}</StyledTableCell>
-                        <StyledTableCell>{row.year}</StyledTableCell>
-                        <StyledTableCell>{row.month}</StyledTableCell>
-                        <StyledTableCell>{row.day}</StyledTableCell>
-                        <StyledTableCell>{row.entery_time}</StyledTableCell>
-                        <StyledTableCell>{row.exit_time}</StyledTableCell>
+                        <StyledTableCell sx={{textAlign: 'right'}}>{row.day}</StyledTableCell>
+                        <StyledTableCell sx={{textAlign: 'right'}} className='text-right'>{row.name}</StyledTableCell>
+                        <StyledTableCell sx={{textAlign: 'right'}}>{row.year}</StyledTableCell>
+                        <StyledTableCell sx={{textAlign: 'right'}}>{row.month}</StyledTableCell>
+                        <StyledTableCell sx={{textAlign: 'right'}}>{row.entery_time}</StyledTableCell>
+                        <StyledTableCell sx={{textAlign: 'right'}}>{row.exit_time}</StyledTableCell>
                       </StyledTableRow>
                     </React.Fragment>
                   ))

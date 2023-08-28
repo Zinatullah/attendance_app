@@ -44,6 +44,7 @@ export default function UpdateEmployeeForm({ element, handleClose }) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userData = {
+      id: element.user_id,
       user_id: data.get("user_id"),
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),

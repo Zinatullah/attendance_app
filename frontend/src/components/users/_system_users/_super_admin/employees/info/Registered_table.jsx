@@ -146,6 +146,9 @@ export default function Registered_table({ users }) {
           <TableHead>
             <TableRow>
               <StyledTableCell style={{ textAlign: "right" }} scope="row">
+                نمبر
+              </StyledTableCell>
+              <StyledTableCell style={{ textAlign: "right" }} scope="row">
                 آیډي
               </StyledTableCell>
               <StyledTableCell style={{ textAlign: "right" }}>
@@ -217,6 +220,9 @@ export default function Registered_table({ users }) {
                       style={{ textAlign: "right" }}
                     >
                       {index + 1}
+                    </StyledTableCell>
+                    <StyledTableCell style={{ textAlign: "right" }}>
+                      {row.user_id}
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "right" }}>
                       {row.name}

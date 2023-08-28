@@ -32,6 +32,9 @@ export default function NewEmployeeRegisterForm() {
     if (isError) {
       toast.error(message);
     }
+    if(isSuccess){
+      toast.success("کارکوونکی ثبت شو")
+    }
     dispatch(reset());
   }, [isError, isSuccess]);
 

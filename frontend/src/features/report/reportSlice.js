@@ -64,6 +64,42 @@ export const getMonthReport = createAsyncThunk(
   }
 );
 
+// Fridays
+export const getFridays = createAsyncThunk(
+  "reports/getFridays",
+  async (month_data, thunkAPI) => {
+    try {
+      return await authService.getFridays(month_data);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+// Fridays
+
+export const getFriday = createAsyncThunk(
+  "reports/getFriday",
+  async (month_data, thunkAPI) => {
+    try {
+      return await authService.getFriday(month_data);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "reports",
   initialState,

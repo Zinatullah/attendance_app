@@ -8,6 +8,84 @@ const connection = mysql.createConnection({
   database: "zk",
 });
 
+///////////////////////////////// Firdays ///////////////////////////////
+
+const getFriday = (year, month) => {
+  let fridays = [];
+  let final_result = [];
+  let month_couner = "";
+  if (month == 1) {
+    month_couner = 31;
+  } else if (month == 2) {
+    month_couner = 28;
+  } else if (month == 3) {
+    month_couner = 31;
+  } else if (month == 4) {
+    month_couner = 30;
+  } else if (month == 5) {
+    month_couner = 31;
+  } else if (month == 6) {
+    month_couner = 30;
+  } else if (month == 7) {
+    month_couner = 31;
+  } else if (month == 8) {
+    month_couner = 31;
+  } else if (month == 9) {
+    month_couner = 30;
+  } else if (month == 10) {
+    month_couner = 31;
+  } else if (month == 11) {
+    month_couner = 30;
+  } else if (month == 12) {
+    month_couner = 31;
+  }
+
+  for (let index = 1; index < month_couner; index++) {
+    let cc = new Date(`${year}/${month}/${index}`).toDateString("en-us");
+    fridays.push(cc);
+  }
+  fridays.map((element) => {
+    if (element.split(" ")[0] === "Fri") {
+      final_result.push(element);
+    }
+  });
+  final_result.map((element) => {
+    let year_month = element.split(" ")[1];
+    let year_days = element.split(" ")[2];
+    let year_year = element.split(" ")[3];
+
+    let dd = new Date(`${year_days}/${year_month}/${year_year}`);
+    dd = dd.toLocaleDateString("Fa-Af", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+    let persian_day = dd.split(" ")[0];
+    let persian_month = dd.split(" ")[1];
+    let persian_year = dd.split(" ")[2];
+
+    const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+    persian_day = p2e(persian_day);
+    persian_year = p2e(persian_year);
+
+    const query = `INSERT INTO fridays(name, day, month, year) VALUES ('جمعه', '${persian_day}', '${persian_month}', '${persian_year}')`;
+    connection.query(query, (error, result) => {
+      if (error) {
+        console.log(error);
+      }
+    });
+  });
+
+  return final_result;
+};
+
+const persian_date = (year) => {
+  for (let index = 1; index < 13; index++) {
+    getFriday(year, index);
+  }
+};
+
 //////////////////////////////////////////  Current report  /////////////////////////////////////////////////////
 const current_report = asyncHandler(async (req, res) => {
   const { today, current_month, year } = req.body;
@@ -65,7 +143,8 @@ const getDailyReport = asyncHandler(async (req, res) => {
 ////////////////////////////////////////////   Monthly report  ////////////////////////////////
 const getMonthReport = asyncHandler(async (req, res) => {
   const { current_month, previous_month, year } = req.body;
-  console.log(current_month, previous_month)
+  // console.log(gregorian_year)
+  // date_generation(gregorian_year);
 
   const query = `create or replace view monthly_attendance as SELECT id, user_id, day, month, year, min(time) as entery_time, max(time) exit_time FROM device3_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id HAVING count(day) >= 2  UNION  SELECT id, user_id, day, month, year, min(time) as entery_time, max(time) exit_time FROM device3_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id HAVING count(day) >= 2`;
   connection.query(query, (error) => {
@@ -148,8 +227,61 @@ const getMonthReport = asyncHandler(async (req, res) => {
     });
   });
 });
+
+const getFridays = asyncHandler(async (req, res) => {
+  const clearQuery = "truncate table fridays";
+  connection.query(clearQuery, (error) => {
+    if (error) {
+      console.log(error);
+    }
+  });
+  
+  let year = new Date().toDateString('En-US', {year: 'long'})
+  year = year.split(' ')[3]
+  persian_date(year);
+
+  const { current_month, previous_month } = req.body;
+  const query = `select * from fridays where day<= 15 and month = '${current_month}' UNION  select * from fridays where day>= 15 and month = '${previous_month}'`;
+
+  connection.query(query, (error, result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "تېروتنه ترسره شوه" });
+    } else {
+      console.log(result);
+      res.status(201).json(result);
+    }
+  });
+});
+
+const get_Friday = asyncHandler(async (req, res) => {
+  const { month } = req.body;
+
+  const clearQuery = "truncate table fridays";
+  connection.query(clearQuery, (error) => {
+    if (error) {
+      console.log(error);
+    }
+  }); 
+  let year = new Date().toDateString('En-US', {year: 'long'})
+  year = year.split(' ')[3]
+  persian_date(year);
+
+  const query = `select * from fridays where month = '${month}'`;
+  connection.query(query, (error, result)=>{
+    if(error){
+      console.log(error)
+      res.status(400).json({message: "هېڅ جمعه پیدا نشوه"})
+    }else{
+      res.status(201).json(result)
+    }
+  })
+});
+
 module.exports = {
   current_report,
   getDailyReport,
   getMonthReport,
+  getFridays,
+  get_Friday,
 };

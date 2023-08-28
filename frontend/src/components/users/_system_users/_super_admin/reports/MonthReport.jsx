@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getMonthReport,
+  getFridays,
   reset,
 } from "../../../../../features/report/reportSlice";
 import { TextField } from "@mui/material";
@@ -25,8 +26,6 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Typography from "@mui/material/Typography";
 import DownloadIcon from "@mui/icons-material/Download";
-
-const JDate = require("jalali-date");
 
 const XLSX = require("xlsx");
 
@@ -69,6 +68,7 @@ const MONTHS = [
   "حوت",
 ];
 
+
 const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
 export default function AttendanceTable() {
   let current_month = new Date();
@@ -96,6 +96,7 @@ export default function AttendanceTable() {
   const [page, setPage] = React.useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [show, setShow] = useState(false);
+  const [fridays, setFridays] = useState()
 
   const itemsPerPage = 50;
   const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -130,6 +131,8 @@ export default function AttendanceTable() {
   const get_monthly_report = async () => {
     const dd = await dispatch(getMonthReport(month_data));
     setData(dd.payload);
+    const fd = await dispatch(getFridays(month_data))
+    setFridays(fd.payload)
     setPage(1);
     handleChanges(1);
     setCurrentPage(1);
@@ -180,6 +183,9 @@ export default function AttendanceTable() {
     const file_name = `${month}.xlsx`;
     XLSX.writeFile(workbook, file_name, { compression: true });
   };
+
+
+  
 
   let counter = 1;
   return (
@@ -324,7 +330,6 @@ export default function AttendanceTable() {
                   currentItems.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell sx={{ display: "none", textAlign:'right'}}>
-                        {console.log(row)}
                       </StyledTableCell>
                       <StyledTableCell sx={{textAlign:'right'}} component="th" scope="row">
                         {counter + index}
@@ -336,10 +341,13 @@ export default function AttendanceTable() {
                       <StyledTableCell sx={{textAlign:'right'}}>
                         {row.full_time * 8 + row.half_time * 4}
                       </StyledTableCell>
-                      {/* <StyledTableCell sx={{textAlign:'right'}}>{row.half_time}</StyledTableCell> */}
                     </StyledTableRow>
                   ))
-                : console.log("Test")}
+                : (
+                  <StyledTableRow>
+                    <StyledTableCell></StyledTableCell>
+                  </StyledTableRow>
+                )}
             </TableBody>
           </Table>
         </TableContainer>

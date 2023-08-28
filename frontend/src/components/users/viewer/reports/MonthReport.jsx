@@ -299,7 +299,6 @@ export default function AttendanceTable() {
                   <StyledTableCell>{row.days}</StyledTableCell>
                   <StyledTableCell>{}</StyledTableCell>
                   <StyledTableCell>{(row.full_time * 8) + (row.half_time * 4)}</StyledTableCell>
-                  {/* <StyledTableCell>{row.half_time}</StyledTableCell> */}
                 </StyledTableRow>
               ))
             ) : (
@@ -327,7 +326,11 @@ export default function AttendanceTable() {
                     {/* <StyledTableCell>{row.half_time}</StyledTableCell> */}
                   </StyledTableRow>
                 ))
-              : console.log("Test")}
+              : (
+                <StyledTableRow>
+                  <StyledTableCell></StyledTableCell>
+                </StyledTableRow>
+              )}
           </TableBody>
         </Table>
       </TableContainer>

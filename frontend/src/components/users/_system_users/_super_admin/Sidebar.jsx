@@ -24,7 +24,11 @@ import ContactMailIcon from "@mui/icons-material/ContactMail";
 import PersonIcon from "@mui/icons-material/Person";
 import GroupsIcon from "@mui/icons-material/Groups";
 import ReduceCapacityIcon from "@mui/icons-material/ReduceCapacity";
-import { Link } from "react-router-dom";
+import { logout, reset } from "../../../../features/auth/authSlice";
+
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
@@ -70,6 +74,15 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 const Sidebar = () => {
   const [expanded, setExpanded] = React.useState();
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(reset());
+    navigate("/login");
+  };
+
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
@@ -86,7 +99,7 @@ const Sidebar = () => {
         <div className="h-full px-3 py-3 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           <ul className="space-y-2 font-medium">
             <li>
-              <Link to='/'>
+              <Link to="/">
                 <span className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 group">
                   <svg
                     className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -337,19 +350,19 @@ const Sidebar = () => {
                       <Link to="/currentreport">
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <SummarizeIcon />
-                          <span className="ml-3 pr-5">اوسنی راپور</span>
+                          <span className="ml-3 pr-5">سهارنۍ راپور</span>
                         </span>
                       </Link>
                       <Link to="/dailyreport">
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <SummarizeIcon />
-                          <span className="ml-3 pr-5">ورځنی راپور</span>
+                          <span className="ml-3 pr-5">ورځنی مکمل راپور</span>
                         </span>
                       </Link>
                       <Link to="/currentmonth">
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <AssessmentIcon />
-                          <span className="ml-3 pr-5">اوسنی میاشت</span>
+                          <span className="ml-3 pr-5">اوسنی میاشت راپور</span>
                         </span>
                       </Link>
                       <Link to="/monthlyreport">
@@ -369,6 +382,7 @@ const Sidebar = () => {
               <span className="flex items-center text-gray-900 rounded-lg dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 group">
                 <Accordion expanded={expanded === "panel4"} dir="ltr">
                   <AccordionSummary
+                    onClick={handleLogout}
                     aria-controls="panel1d-content"
                     id="panel1d-header"
                     className="hover:bg-gray-300"

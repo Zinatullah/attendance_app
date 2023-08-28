@@ -231,7 +231,7 @@ export default function CurrentReport() {
                       {month}
                     </StyledTableCell>
                     <StyledTableCell sx={{ textAlign: "right" }}>
-                      {row.days}
+                      {row.day}
                     </StyledTableCell>
                     <StyledTableCell sx={{ textAlign: "right" }}>
                       {row.time}

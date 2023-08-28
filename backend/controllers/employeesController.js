@@ -10,8 +10,6 @@ const connection = mysql.createConnection({
 
 const setEmployee = asyncHandler(async (req, res) => {
   const { user_id, firstName, lastName, fathername, department } = req.body;
-  console.log(req.body);
-
   const searchQuery = `select user_id from employees_info where user_id = ${user_id}`;
   connection.query(searchQuery, (error, result) => {
     if (error) {
@@ -33,7 +31,7 @@ const setEmployee = asyncHandler(async (req, res) => {
 });
 
 const getEmployees = asyncHandler(async (req, res) => {
-  const query = "SELECT * FROM `employees_info`";
+  const query = "SELECT * FROM `employees_info` order by user_id";
   connection.query(query, (error, result) => {
     if (error) {
       console.log(error);
@@ -45,9 +43,8 @@ const getEmployees = asyncHandler(async (req, res) => {
 });
 
 const updateEmployee = asyncHandler(async (req, res) => {
-  console.log(req.body);
-  const { user_id, firstName, lastName, fathername, department } = req.body;
-  const query = `UPDATE employees_info SET   user_id = ${user_id}, name = '${firstName}', lastname = '${lastName}', fathername = '${fathername}', department = '${department}' WHERE user_id = ${user_id}`;
+  const { id, user_id, firstName, lastName, fathername, department } = req.body;
+  const query = `UPDATE employees_info SET   user_id = ${user_id}, name = '${firstName}', lastname = '${lastName}', fathername = '${fathername}', department = '${department}' WHERE user_id = ${id}`;
   connection.query(query, (error, result)=>{
     if(error){
       console.log(error);

@@ -17,8 +17,6 @@ const connection = mysql.createConnection({
 // //@access   public
 const registerUser = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password, user_type } = req.body;
-  console.log("Test")
-  console.log(req.body)
 
   if ((!firstName, !lastName || !email || !password)) {
     res.status(400);
@@ -65,6 +63,7 @@ const loginUser = asyncHandler(async (req, res) => {
   // Check for user email
   connection.query(query, async (err, data) => {
     if (err) {
+      console.log(err)
       res.status(400).json({ message: "Invalid credentials" });
     } else {
       if (data.length > 0) {
