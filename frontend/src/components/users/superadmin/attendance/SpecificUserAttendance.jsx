@@ -377,7 +377,7 @@ const SpecificUserAttendance = () => {
                         }
                       >
                         <StyledTableCell component="th" scope="row">
-                          {DigitConvertor.toPersian(`${index + 1}`)}
+                          {index}
                         </StyledTableCell>
                         <StyledTableCell>{username[0].name}</StyledTableCell>
                         <StyledTableCell style={{ display: "none" }}>
@@ -409,10 +409,10 @@ const SpecificUserAttendance = () => {
                           {hijriDate.split(" ")[0]}
                         </StyledTableCell>
                         <StyledTableCell>
-                          {DigitConvertor.toPersian(row.entry_time)}
+                          {/* {DigitConvertor.toPersian(row.entry_time)} */}
                         </StyledTableCell>
                         <StyledTableCell>
-                          {DigitConvertor.toPersian(row.exit_time)}
+                          {/* {DigitConvertor.toPersian(row.exit_time)} */}
                         </StyledTableCell>
                       </StyledTableRow>
                     </React.Fragment>
