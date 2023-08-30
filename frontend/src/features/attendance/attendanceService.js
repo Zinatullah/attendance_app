@@ -13,9 +13,7 @@ const getsingleuser = async (id) => {
   return response.data;
 };
 
-
 //////////////////////////////////////////        Get single users Attendance          ///////////////////////////////////////////////////////////////
-
 const getsingleuserattendance = async (userData) => {
   const response = await axios.post(API_URL + `getsingleuserattendance`,  userData);
   return response.data;
@@ -29,6 +27,12 @@ const leaveForm = async (userData) => {
 //////////////////////////////////////////       Leave Check         ///////////////////////////////////////////////////////////////
 const vacation = async (check_vacation) => {
   const response = await axios.post(API_URL + `vacation`, check_vacation)
+  return response.data
+}
+
+//////////////////////////////////////////       Leave Check for month         ///////////////////////////////////////////////////////////////
+const getAllvacation = async (user_data) => {
+  const response = await axios.post(API_URL + `getAllvacation`, user_data)
   return response.data
 }
 
@@ -61,6 +65,7 @@ const attendanceService = {
   getsingleuserattendance,
   leaveForm,
   vacation,
+  getAllvacation,
   generalLeaveCheck,
   generalLeaveForm,
   EditleaveForm,

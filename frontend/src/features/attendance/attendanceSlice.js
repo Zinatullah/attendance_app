@@ -94,6 +94,25 @@ export const vacation = createAsyncThunk(
     }
   }
 );
+////////////////////////////////////////////////  Vacation Check    //////////////////////////////////////////////////////////////////
+export const getAllvacation = createAsyncThunk(
+  "userattendances/getAllvacation",
+  async (user_data, thunkAPI) => {
+    try {
+      return await attendanceService.getAllvacation(user_data);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+
 ////////////////////////////////////////////////  General Leave Form    //////////////////////////////////////////////////////////////////
 export const generalLeaveForm = createAsyncThunk(
   "userattendances/generalLeaveForm",
@@ -111,6 +130,7 @@ export const generalLeaveForm = createAsyncThunk(
     }
   }
 );
+
 ////////////////////////////////////////////////  General Leave Check     //////////////////////////////////////////////////////////////////
 export const generalLeaveCheck = createAsyncThunk(
   "userattendances/generalLeaveCheck",

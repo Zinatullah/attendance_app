@@ -12,9 +12,18 @@ import Grid from "@mui/material/Grid";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getMonthReport,
+  getTwoMonths,
+  getFridays,
   reset,
+  grandReport,
 } from "../../../../../features/report/reportSlice";
+import {
+  generalLeaveCheck,
+  getAllvacation,
+} from "./../../../../../features/attendance/attendanceSlice";
+
+import { currentMonthGeneralLeaves } from "./../../../../../features/leave/leaveSlice";
+
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 
@@ -60,7 +69,7 @@ const MONTHS = [
   "جوزا",
   "سرطان",
   "اسد",
-  "سنبله",
+  "سنبلهٔ",
   "میزان",
   "عقرب",
   "قوس",
@@ -109,13 +118,6 @@ export default function Current_month_report() {
 
   const dispatch = useDispatch();
 
-  const handleChange = (event) => {
-    setMonth(event.target.value);
-    let index_of_current_month = MONTHS.indexOf(event.target.value);
-    index_of_current_month = index_of_current_month - 1;
-    setPrevious_month(MONTHS[index_of_current_month]);
-  };
-
   const handleChanges = (e, value) => {
     setPage(value);
     setCurrentPage(value);
@@ -127,15 +129,27 @@ export default function Current_month_report() {
     year: current_year,
   };
 
+  const [person_vacation, setPersonVacation] = useState();
+  const [general_vacation, setGeneralVacation] = useState();
+  const [off_days, setOffDays] = useState();
+
   const get_monthly_report = async () => {
-    const dd = await dispatch(getMonthReport(month_data));
-    setData(dd.payload);
+    const regular_days = await dispatch(getTwoMonths(month_data));
+    const person_vacation = await dispatch(getAllvacation(month_data));
+    setPersonVacation(person_vacation.payload);
+    const general_vacation = await dispatch(
+      currentMonthGeneralLeaves(month_data)
+    );
+    setGeneralVacation(general_vacation.payload);
+    const off_days = await dispatch(getFridays(month_data));
+    setOffDays(off_days.payload);
+    const rep = await dispatch(grandReport());
+    setData(rep.payload);
     setPage(1);
     handleChanges(1);
     setCurrentPage(1);
     reset();
   };
-  console.log(data);
 
   useEffect(() => {
     setShow(false);
@@ -167,14 +181,49 @@ export default function Current_month_report() {
     download_file();
   };
 
-  const download_file = () => {
-    const worksheet = XLSX.utils.json_to_sheet(data);
+  let Download_File_array = [];
+
+  data.map((element) => {
+    const my_object = {
+      ...element,
+      month: current_month,
+      total_dyas:
+        element.days +
+        element.fridays +
+        element.vacation_days +
+        element.generalLeaveDays,
+    };
+    Download_File_array.push(my_object);
+  });
+
+  console.log(data);
+  console.log(Download_File_array);
+
+  const download_file = async () => {
+    const worksheet = await XLSX.utils.json_to_sheet(Download_File_array);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Dates");
 
-    XLSX.utils.sheet_add_aoa(worksheet, [["Name", "Month", "ID", "Days"]], {
-      origin: "A1",
-    });
+    XLSX.utils.sheet_add_aoa(
+      worksheet,
+      [
+        [
+          "نوم",
+          "میاشت",
+          "آیډي",
+          "حاضر ورځې",
+          "پوره ورځې",
+          "نیمه ورځې",
+          "عمومي رخصتي",
+          "جمعې",
+          "اخستل شوې رخصتي",
+          "پوره میاشت",
+        ],
+      ],
+      {
+        origin: "A1",
+      }
+    );
 
     const max_width = data.reduce((w, r) => Math.max(w, r.name.length), 10);
     worksheet["!cols"] = [{ wch: max_width }];
@@ -193,69 +242,17 @@ export default function Current_month_report() {
         <div className="text-center text-black text-3xl mb-5">
           <h1>د اوسنی میاشتې راپور</h1>
         </div>
-        {/* <form>
+        <form>
           <Grid container spacing={2}>
-            <Grid item xs={5}>
-              <select
-                value={month}
-                onChange={handleChange}
-                className="border-gray-700 mt-5 border-dashed rounded-lg bg-purple-900 text-white"
-                style={{
-                  marginLeft: "50px",
-                  marginRight: "50px",
-                  width: "300px",
-                }}
-              >
-                <option className="text-right pr-12" value="">
-                  میاشت انتخاب کړئ
-                </option>
-                <option className="text-right" value="حمل">
-                  حمل
-                </option>
-                <option className="text-right" value="ثور">
-                  ثور
-                </option>
-                <option className="text-right" value="جوزا">
-                  جوزا
-                </option>
-                <option className="text-right" value="سرطان">
-                  سرطان
-                </option>
-                <option className="text-right" value="اسد">
-                  اسد
-                </option>
-                <option className="text-right" value="سنبله">
-                  سنبله
-                </option>
-                <option className="text-right" value="میزان">
-                  میزان
-                </option>
-                <option className="text-right" value="عقرب">
-                  عقرب
-                </option>
-                <option className="text-right" value="قوس">
-                  قوس
-                </option>
-                <option className="text-right" value="جدی">
-                  جدی
-                </option>
-                <option className="text-right" value="دلو">
-                  دلو
-                </option>
-                <option className="text-right" value="حوت">
-                  حوت
-                </option>
-              </select>
-            </Grid>
-
-            <Grid item xs={3} sx={{ marginTop: "15px", width: "50%" }}>
+            <Grid item xs={2}></Grid>
+            <Grid item xs={5} sx={{ marginTop: "15px", width: "90%" }}>
               <div>
                 <div className="relative mt-1 rounded-md shadow-sm ">
                   <input
                     type="text"
                     name="price"
-                    className="block w-60 rounded-md bg-gray-100 text-black font-xl border-0 text-xl py-1.5 pl-7 pr-20 ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 "
-                    placeholder="Search Name"
+                    className="block w-max rounded-md bg-gray-100 text-center text-black font-xl border-0 text-xl py-1.5 pl-7 pr-20 ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 "
+                    placeholder="نوم ولیکی"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -279,7 +276,7 @@ export default function Current_month_report() {
               </div>
             </Grid>
           </Grid>
-        </form> */}
+        </form>
         <TableContainer component={Paper} sx={{ width: "95%", marginLeft: 4 }}>
           <Table
             stickyHeader
@@ -288,35 +285,85 @@ export default function Current_month_report() {
           >
             <TableHead>
               <TableRow>
-                <StyledTableCell sx={{textAlign:'right'}} scope="row">آیډی</StyledTableCell>
-                <StyledTableCell sx={{textAlign:'right'}}>نوم</StyledTableCell>
-                <StyledTableCell sx={{textAlign:'right'}}>میاشت</StyledTableCell>
-                <StyledTableCell sx={{textAlign:'right'}}>ورځې</StyledTableCell>
-                <StyledTableCell sx={{textAlign:'right'}}>رخصت ورځې</StyledTableCell>
-                <StyledTableCell sx={{textAlign:'right'}}>ساعتونه</StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "right" }} scope="row">
+                  آیډی
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "right" }}>
+                  نوم
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "right" }}>
+                  میاشت
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "right" }}>
+                  رسمي ورځې
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "right" }}>
+                  جمعې
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "right" }}>
+                  رخصتي
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "right" }}>
+                  عمومي رخصتي
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "right" }}>
+                  مجموعه{" "}
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "right" }}>
+                  ساعتونه
+                </StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredData.length > 0 ? (
                 show &&
                 filteredData.map((row, index) => (
-                  <StyledTableRow key={index} dir='rtl'>
-                    <StyledTableCell sx={{textAlign:'right'}}  component="th" scope="row" >
+                  <StyledTableRow key={index} dir="rtl">
+                    <StyledTableCell
+                      sx={{ display: "none", textAlign: "right" }}
+                    ></StyledTableCell>
+                    <StyledTableCell
+                      sx={{ textAlign: "right" }}
+                      component="th"
+                      scope="row"
+                    >
                       {counter + index}
                     </StyledTableCell>
-                    <StyledTableCell sx={{textAlign:'right'}} >{row.name}</StyledTableCell>
-                    <StyledTableCell sx={{textAlign:'right'}} >{month}</StyledTableCell>
-                    <StyledTableCell sx={{textAlign:'right'}} >{row.days}</StyledTableCell>
-                    <StyledTableCell sx={{textAlign:'right'}} >{}</StyledTableCell>
-                    <StyledTableCell sx={{textAlign:'right'}} >
-                      {row.full_time * 8 + row.half_time * 4}
+                    <StyledTableCell sx={{ textAlign: "right" }}>
+                      {row.name}
                     </StyledTableCell>
-                    {/* <StyledTableCell sx={{textAlign:'right'}}>{row.half_time}</StyledTableCell> */}
+                    <StyledTableCell sx={{ textAlign: "right" }}>
+                      {month}
+                    </StyledTableCell>
+                    <StyledTableCell sx={{ textAlign: "right" }}>
+                      {row.days}
+                    </StyledTableCell>
+                    <StyledTableCell sx={{ textAlign: "right" }}>
+                      {row.fridays}
+                    </StyledTableCell>
+                    <StyledTableCell sx={{ textAlign: "right" }}>
+                      {row.vacation_days}
+                    </StyledTableCell>
+                    <StyledTableCell sx={{ textAlign: "right" }}>
+                      {row.generalLeaveDays}
+                    </StyledTableCell>
+                    <StyledTableCell sx={{ textAlign: "right" }}>
+                      {row.days + row.fridays + row.generalLeaveDays}
+                    </StyledTableCell>
+                    <StyledTableCell sx={{ textAlign: "right" }}>
+                      {row.full_time * 8 +
+                        row.half_time * 4 +
+                        row.fridays * 8 +
+                        row.generalLeaveDays * 8 +
+                        row.vacation_days * 8}
+                    </StyledTableCell>
                   </StyledTableRow>
                 ))
               ) : (
                 <StyledTableRow style={{ display: "none" }}>
-                  <StyledTableCell sx={{textAlign:'right'}}>None</StyledTableCell>
+                  <StyledTableCell sx={{ textAlign: "right" }}>
+                    None
+                  </StyledTableCell>
                 </StyledTableRow>
               )}
             </TableBody>
@@ -325,20 +372,47 @@ export default function Current_month_report() {
                 ? !show &&
                   currentItems.map((row, index) => (
                     <StyledTableRow key={index}>
-                      <StyledTableCell sx={{ display: "none", textAlign:'right'}}>
-                        {console.log(row)}
-                      </StyledTableCell>
-                      <StyledTableCell sx={{textAlign:'right'}} component="th" scope="row">
+                      <StyledTableCell
+                        sx={{ display: "none", textAlign: "right" }}
+                      ></StyledTableCell>
+                      <StyledTableCell
+                        sx={{ textAlign: "right" }}
+                        component="th"
+                        scope="row"
+                      >
                         {counter + index}
                       </StyledTableCell>
-                      <StyledTableCell sx={{textAlign:'right'}}>{row.name}</StyledTableCell>
-                      <StyledTableCell sx={{textAlign:'right'}}>{month}</StyledTableCell>
-                      <StyledTableCell sx={{textAlign:'right'}}>{row.days}</StyledTableCell>
-                      <StyledTableCell sx={{textAlign:'right'}}>{}</StyledTableCell>
-                      <StyledTableCell sx={{textAlign:'right'}}>
-                        {row.full_time * 8 + row.half_time * 4}
+                      <StyledTableCell sx={{ textAlign: "right" }}>
+                        {row.name}
                       </StyledTableCell>
-                      {/* <StyledTableCell sx={{textAlign:'right'}}>{row.half_time}</StyledTableCell> */}
+                      <StyledTableCell sx={{ textAlign: "right" }}>
+                        {month}
+                      </StyledTableCell>
+                      <StyledTableCell sx={{ textAlign: "right" }}>
+                        {row.days}
+                      </StyledTableCell>
+                      <StyledTableCell sx={{ textAlign: "right" }}>
+                        {row.fridays}
+                      </StyledTableCell>
+                      <StyledTableCell sx={{ textAlign: "right" }}>
+                        {row.vacation_days}
+                      </StyledTableCell>
+                      <StyledTableCell sx={{ textAlign: "right" }}>
+                        {row.generalLeaveDays}
+                      </StyledTableCell>
+                      <StyledTableCell sx={{ textAlign: "right" }}>
+                        {row.days +
+                          row.fridays +
+                          row.generalLeaveDays +
+                          row.vacation_days}
+                      </StyledTableCell>
+                      <StyledTableCell sx={{ textAlign: "right" }}>
+                        {row.full_time * 8 +
+                          row.half_time * 4 +
+                          row.fridays * 8 +
+                          row.generalLeaveDays * 8 +
+                          row.vacation_days * 8}
+                      </StyledTableCell>
                     </StyledTableRow>
                   ))
                 : console.log("Test")}
@@ -346,7 +420,12 @@ export default function Current_month_report() {
           </Table>
         </TableContainer>
 
-        <Grid container spacing={2} sx={{ marginBottom: 2, marginTop: "1px" }} dir='ltr'>
+        <Grid
+          container
+          spacing={2}
+          sx={{ marginBottom: 2, marginTop: "1px" }}
+          dir="ltr"
+        >
           <Grid item xs={4}></Grid>
           <Grid item xs={3}>
             {
@@ -358,7 +437,7 @@ export default function Current_month_report() {
               />
             }
           </Grid>
-          <Grid item xs={2} dir='rtl'>
+          <Grid item xs={2} dir="rtl">
             صفحه: {page}
           </Grid>
         </Grid>

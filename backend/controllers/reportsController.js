@@ -86,6 +86,67 @@ const persian_date = (year) => {
   }
 };
 
+////////////////////////////////////////////   two months fridays  ////////////////////////////////
+const getFridays = asyncHandler(async (req, res) => {
+  const clearQuery = "truncate table fridays";
+  connection.query(clearQuery, (error) => {
+    if (error) {
+      console.log(error);
+    }
+  });
+
+  let year = new Date().toDateString("En-US", { year: "long" });
+  year = year.split(" ")[3];
+  persian_date(year);
+
+  const { current_month, previous_month } = req.body;
+  const query = `create or REPLACE view month_fridays as SELECT COUNT(*) as fridays 
+  FROM (
+      SELECT * 
+      FROM fridays 
+      WHERE day <= 15 AND month = '${current_month}'
+      UNION  
+      SELECT * 
+      FROM fridays 
+      WHERE day >= 15 AND month = '${previous_month}'
+  ) AS refined_query;`;
+
+  connection.query(query, (error, result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "تېروتنه ترسره شوه" });
+    } else {
+      res.status(201).json({ message: "کړنه ترسره شوه" });
+    }
+  });
+});
+
+////////////////////////////////////////////   Single friday  ////////////////////////////////
+const get_Friday = asyncHandler(async (req, res) => {
+  const { current_month} = req.body;
+  console.log(current_month)
+
+  const clearQuery = "truncate table fridays";
+  connection.query(clearQuery, (error) => {
+    if (error) {
+      console.log(error);
+    }
+  });
+  let year = new Date().toDateString("En-US", { year: "long" });
+  year = year.split(" ")[3];
+  persian_date(year);
+
+  const query = `select count(*) from fridays where month = '${current_month}'`;
+  connection.query(query, (error, result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "هېڅ جمعه پیدا نشوه" });
+    } else {
+      res.status(201).json(result);
+    }
+  });
+});
+
 //////////////////////////////////////////  Current report  /////////////////////////////////////////////////////
 const current_report = asyncHandler(async (req, res) => {
   const { today, current_month, year } = req.body;
@@ -141,12 +202,88 @@ const getDailyReport = asyncHandler(async (req, res) => {
 });
 
 ////////////////////////////////////////////   Monthly report  ////////////////////////////////
-const getMonthReport = asyncHandler(async (req, res) => {
-  const { current_month, previous_month, year } = req.body;
-  // console.log(gregorian_year)
-  // date_generation(gregorian_year);
+// const getMonthReport = asyncHandler(async (req, res) => {
+//   const { current_month, previous_month, year } = req.body;
 
-  const query = `create or replace view monthly_attendance as SELECT id, user_id, day, month, year, min(time) as entery_time, max(time) exit_time FROM device3_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id HAVING count(day) >= 2  UNION  SELECT id, user_id, day, month, year, min(time) as entery_time, max(time) exit_time FROM device3_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id HAVING count(day) >= 2`;
+//   const query = `create or replace view monthly_attendance as SELECT id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id HAVING count(day) >= 2  UNION select id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id HAVING count(day) >= 2`;
+//   connection.query(query, (error) => {
+//     if (error) {
+//       console.log(error);
+//       res.status(400).json({ message: "Error occured" });
+//     }
+//   });
+
+//   const hours_query = ` SELECT * FROM month_view order by day `;
+//   connection.query(hours_query, (error, results) => {
+//     if (error) {
+//       console.log(error);
+//       res.status(400).json({ message: "Hours error occred" });
+//     } else {
+//       const truncate_query = "truncate table time_counter";
+//       connection.query(truncate_query);
+//       results.map((resultsssssss) => {
+//         let full_time_counter = 0;
+//         let half_time_counter = 0;
+//         let hours = resultsssssss.entery_time.split(":")[0];
+//         let minutes = resultsssssss.entery_time.split(":")[1];
+//         let seconds = resultsssssss.entery_time.split(":")[2];
+//         let total_time =
+//           parseInt(hours * 3600) + parseInt(minutes * 60) + parseInt(seconds);
+//         let max_time = 29759;
+//         total_time = total_time < max_time;
+
+//         switch (total_time) {
+//           case true:
+//             full_time_counter++;
+//             break;
+//           case false:
+//             half_time_counter++;
+//             break;
+
+//           default:
+//             break;
+//         }
+
+//         const time_query = `INSERT INTO time_counter (user_id, full_time_counter, half_time_counter) VALUES (${resultsssssss.user_id}, ${full_time_counter}, ${half_time_counter})`;
+//         connection.query(time_query, (error, resultsss) => {
+//           if (error) {
+//             console.log(error);
+//             res.status(400).json({ message: "Time error occured" });
+//           } else {
+//           }
+//         });
+//       });
+//     }
+//   });
+
+//   const time_counter_view = `create or replace view monthly_time_counter as SELECT *, sum(full_time_counter) as full_time, sum(half_time_counter) as half_time FROM time_counter group by user_id`;
+//   connection.query(time_counter_view, (error, grand_result) => {
+//     if (error) {
+//       console.log(error);
+//       res.status(400).json({ message: "check the views" });
+//     } else {
+//     }
+//   });
+
+//   const querys = `SELECT month_view.name, month, month_view.user_id, count(day) as days, full_time, half_time FROM month_view, monthly_time_counter WHERE month_view.user_id = monthly_time_counter.user_id group by user_id order by day`;
+//   connection.query(querys, (error, final_result) => {
+//     if (error) {
+//       console.log(error);
+//       res.status(400).json({
+//         message:
+//           "The error occured between month_view table and time_counter tables",
+//       });
+//     } else {
+//       res.status(201).json(final_result);
+//     }
+//   });
+// });
+
+////////////////////////////////////////////   Two month  ////////////////////////////////
+const getTwoMonths = asyncHandler(async (req, res) => {
+  const { current_month, previous_month, year } = req.body;
+
+  const query = `create or replace view monthly_attendance as SELECT id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id HAVING count(day) >= 2  UNION select id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id HAVING count(day) >= 2`;
   connection.query(query, (error) => {
     if (error) {
       console.log(error);
@@ -154,134 +291,188 @@ const getMonthReport = asyncHandler(async (req, res) => {
     }
   });
 
-  const query_s = `SELECT name, month, monthly_attendance.user_id, count(day) as days, entery_time, exit_time FROM monthly_attendance, device3_users WHERE monthly_attendance.user_id = device3_users.user_id group by user_id order by day`;
-  connection.query(query_s, (error, result) => {
+  const hours_query = ` SELECT * FROM monthly_attendance order by day `;
+  connection.query(hours_query, (error, results) => {
     if (error) {
       console.log(error);
-      res.status(400).json({ message: "Unknow error occured" });
-    }
+      res.status(400).json({ message: "Hours error occred" });
+    } else {
+      const truncate_query = "truncate table time_counter";
+      connection.query(truncate_query);
+      results.map((resultsssssss) => {
+        let full_time_counter = 0;
+        let half_time_counter = 0;
+        let hours = resultsssssss.entery_time.split(":")[0];
+        let minutes = resultsssssss.entery_time.split(":")[1];
+        let seconds = resultsssssss.entery_time.split(":")[2];
+        let total_time =
+          parseInt(hours * 3600) + parseInt(minutes * 60) + parseInt(seconds);
+        let max_time = 29759;
+        total_time = total_time < max_time;
 
-    const hours_query = ` SELECT * FROM monthly_attendance order by day `;
-    connection.query(hours_query, (error, results) => {
-      if (error) {
-        console.log(error);
-        res.status(400).json({ message: "Hours error occred" });
-      } else {
-        const truncate_query = "truncate table time_counter";
-        connection.query(truncate_query);
-        results.map((resultsssssss) => {
-          let full_time_counter = 0;
-          let half_time_counter = 0;
-          let hours = resultsssssss.entery_time.split(":")[0];
-          let minutes = resultsssssss.entery_time.split(":")[1];
-          let seconds = resultsssssss.entery_time.split(":")[2];
-          let total_time =
-            parseInt(hours * 3600) + parseInt(minutes * 60) + parseInt(seconds);
-          let max_time = 29759;
-          total_time = total_time < max_time;
+        switch (total_time) {
+          case true:
+            full_time_counter++;
+            break;
+          case false:
+            half_time_counter++;
+            break;
 
-          switch (total_time) {
-            case true:
-              full_time_counter++;
-              break;
-            case false:
-              half_time_counter++;
-              break;
+          default:
+            break;
+        }
 
-            default:
-              break;
+        const time_query = `INSERT INTO time_counter (user_id, full_time_counter, half_time_counter) VALUES (${resultsssssss.user_id}, ${full_time_counter}, ${half_time_counter})`;
+        connection.query(time_query, (error, resultsss) => {
+          if (error) {
+            console.log(error);
+            res.status(400).json({ message: "Time error occured" });
+          } else {
           }
-
-          const time_query = `INSERT INTO time_counter (user_id, full_time_counter, half_time_counter) VALUES (${resultsssssss.user_id}, ${full_time_counter}, ${half_time_counter})`;
-          connection.query(time_query, (error, resultsss) => {
-            if (error) {
-              console.log(error);
-              res.status(400).json({ message: "Time error occured" });
-            } else {
-            }
-          });
         });
-      }
-    });
+      });
+    }
+  });
 
-    const time_counter_view = `create or replace view monthly_time_counter as SELECT *, sum(full_time_counter) as full_time, sum(half_time_counter) as half_time FROM time_counter group by user_id`;
-    connection.query(time_counter_view, (error, grand_result) => {
-      if (error) {
-        console.log(error);
-        res.status(400).json({ message: "check the views" });
-      } else {
-      }
-    });
+  const time_counter_view = `create or replace view monthly_time_counter as SELECT *, sum(full_time_counter) as full_time, sum(half_time_counter) as half_time FROM time_counter group by user_id`;
+  connection.query(time_counter_view, (error, grand_result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "check the views" });
+    } else {
+    }
+  });
 
-    const querys = `SELECT name, month, monthly_attendance.user_id, count(day) as days, full_time, half_time FROM monthly_attendance, all_users, monthly_time_counter WHERE monthly_attendance.user_id = all_users.user_id and monthly_attendance.user_id = monthly_time_counter.user_id group by user_id order by day`;
-    connection.query(querys, (error, final_result) => {
-      if (error) {
-        console.log(error);
-        res.status(400).json({
-          message:
-            "The error occured between monthly_report table and time_counter tables",
+  const querys = `create or replace view regular_days as SELECT users.name, attendance.month, attendance.user_id, count(attendance.day) as days, counter.full_time, counter.half_time FROM monthly_attendance as attendance, all_users as users, monthly_time_counter as counter WHERE attendance.user_id = users.user_id and attendance.user_id = counter.user_id group by  attendance.user_id order by user_id,day
+    `;
+  connection.query(querys, (error, final_result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({
+        message:
+          "The error occured between monthly_report table and time_counter tables",
+      });
+    } else {
+      res.status(201).json(final_result);
+    }
+  });
+});
+////////////////////////////////////////////   Two month  ////////////////////////////////
+const getMonthReport = asyncHandler(async (req, res) => {
+  const { current_month, previous_month, year } = req.body;
+
+  const query = `create or replace view monthly_attendance as SELECT id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id HAVING count(day) >= 2  UNION select id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id HAVING count(day) >= 2`;
+  connection.query(query, (error) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "Error occured" });
+    }
+  });
+
+  const hours_query = ` SELECT * FROM monthly_attendance order by day `;
+  connection.query(hours_query, (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "Hours error occred" });
+    } else {
+      const truncate_query = "truncate table time_counter";
+      connection.query(truncate_query);
+      results.map((resultsssssss) => {
+        let full_time_counter = 0;
+        let half_time_counter = 0;
+        let hours = resultsssssss.entery_time.split(":")[0];
+        let minutes = resultsssssss.entery_time.split(":")[1];
+        let seconds = resultsssssss.entery_time.split(":")[2];
+        let total_time =
+          parseInt(hours * 3600) + parseInt(minutes * 60) + parseInt(seconds);
+        let max_time = 29759;
+        total_time = total_time < max_time;
+
+        switch (total_time) {
+          case true:
+            full_time_counter++;
+            break;
+          case false:
+            half_time_counter++;
+            break;
+
+          default:
+            break;
+        }
+
+        const time_query = `INSERT INTO time_counter (user_id, full_time_counter, half_time_counter) VALUES (${resultsssssss.user_id}, ${full_time_counter}, ${half_time_counter})`;
+        connection.query(time_query, (error, resultsss) => {
+          if (error) {
+            console.log(error);
+            res.status(400).json({ message: "Time error occured" });
+          } else {
+          }
         });
-      } else {
-        res.status(201).json(final_result);
-      }
-    });
+      });
+    }
+  });
+
+  const time_counter_view = `create or replace view monthly_time_counter as SELECT *, sum(full_time_counter) as full_time, sum(half_time_counter) as half_time FROM time_counter group by user_id`;
+  connection.query(time_counter_view, (error, grand_result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "check the views" });
+    } else {
+    }
+  });
+
+  const querys = `create or replace view regular_days as SELECT users.name, attendance.month, attendance.user_id, count(attendance.day) as days, counter.full_time, counter.half_time FROM monthly_attendance as attendance, all_users as users, monthly_time_counter as counter WHERE attendance.user_id = users.user_id and attendance.user_id = counter.user_id group by  attendance.user_id order by user_id,day
+    `;
+  connection.query(querys, (error, final_result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({
+        message:
+          "The error occured between monthly_report table and time_counter tables",
+      });
+    } else {
+      res.status(201).json(final_result);
+    }
   });
 });
 
-const getFridays = asyncHandler(async (req, res) => {
-  const clearQuery = "truncate table fridays";
-  connection.query(clearQuery, (error) => {
-    if (error) {
-      console.log(error);
-    }
-  });
-  
-  let year = new Date().toDateString('En-US', {year: 'long'})
-  year = year.split(' ')[3]
-  persian_date(year);
-
-  const { current_month, previous_month } = req.body;
-  const query = `select * from fridays where day<= 15 and month = '${current_month}' UNION  select * from fridays where day>= 15 and month = '${previous_month}'`;
-
+////////////////////////////////////////////   Two month report  ////////////////////////////////
+const grandReport = asyncHandler(async (req, res) => {
+  const query = `create or replace view total as select * from regular_days, general_vacation, month_fridays`;
   connection.query(query, (error, result) => {
     if (error) {
       console.log(error);
-      res.status(400).json({ message: "تېروتنه ترسره شوه" });
+    }
+  });
+
+  const grandQuery =
+    "create or replace view final_report as SELECT t.name, t.month, t.user_id, t.days, t.full_time, t.half_time, t.generalLeaveDays, t.fridays, person_vacation.vacation_days from total as t left join person_vacation on t.user_id = person_vacation.user_id";
+  connection.query(grandQuery, (error, result) => {
+    if (error) {
+      console.log(error);
+      res
+        .status(400)
+        .json({ message: "په عمومي راپور کې مشکل رامنځته شوی دی" });
+    }
+  });
+
+  const finalQuery = "select * from final_report";
+  connection.query(finalQuery, (error, result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "په آخری راپور کې مشکل رامنځته شوی دی" });
     } else {
-      console.log(result);
       res.status(201).json(result);
     }
   });
-});
-
-const get_Friday = asyncHandler(async (req, res) => {
-  const { month } = req.body;
-
-  const clearQuery = "truncate table fridays";
-  connection.query(clearQuery, (error) => {
-    if (error) {
-      console.log(error);
-    }
-  }); 
-  let year = new Date().toDateString('En-US', {year: 'long'})
-  year = year.split(' ')[3]
-  persian_date(year);
-
-  const query = `select * from fridays where month = '${month}'`;
-  connection.query(query, (error, result)=>{
-    if(error){
-      console.log(error)
-      res.status(400).json({message: "هېڅ جمعه پیدا نشوه"})
-    }else{
-      res.status(201).json(result)
-    }
-  })
 });
 
 module.exports = {
   current_report,
   getDailyReport,
   getMonthReport,
+  getTwoMonths,
   getFridays,
   get_Friday,
+  grandReport,
 };

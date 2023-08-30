@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import authService from "./leaveService";
+import leaveService from "./leaveService";
 const user = JSON.parse(localStorage.getItem("user"));
 
 const initialState = {
@@ -15,7 +15,7 @@ export const updateGeneralLeave = createAsyncThunk(
   "leaves/updateGeneralLeave",
   async (user, thunkAPI) => {
     try {
-      return await authService.updateGeneralLeave(user);
+      return await leaveService.updateGeneralLeave(user);
     } catch (error) {
       const message =
         (error.response &&
@@ -33,7 +33,24 @@ export const removeGeneralLeave = createAsyncThunk(
   "leaves/removeGeneralLeave",
   async (id, thunkAPI) => {
     try {
-      return await authService.removeGeneralLeave(id);
+      return await leaveService.removeGeneralLeave(id);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+// Current Month General Leaves
+export const currentMonthGeneralLeaves = createAsyncThunk(
+  "leaves/currentMonthGeneralLeaves",
+  async (user_data, thunkAPI) => {
+    try {
+      return await leaveService.currentMonthGeneralLeaves(user_data);
     } catch (error) {
       const message =
         (error.response &&

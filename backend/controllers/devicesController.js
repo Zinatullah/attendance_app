@@ -368,15 +368,9 @@ const getAlldeveicesStatus = asyncHandler(async (req, res) => {
 
 const getUsersFromAllDevices = asyncHandler(async (req, res) => {
   try {
-    await zkInstance1.createSocket();
-    await zkInstance2.createSocket();
     await zkInstance3.createSocket();
-    await zkInstance4.createSocket();
 
-    const device1 = await zkInstance1.getUsers();
-    const device2 = await zkInstance2.getUsers();
     const device3 = await zkInstance3.getUsers();
-    const device4 = await zkInstance4.getUsers();
 
     const clearQuery = "truncate table all_users";
     connection.query(clearQuery, (err, result) => {
@@ -398,10 +392,7 @@ const getUsersFromAllDevices = asyncHandler(async (req, res) => {
       });
     };
 
-    addUsers(device1.data);
-    // addUsers(device2.data);
-    // addUsers(device3.data);
-    // addUsers(device4.data);
+    addUsers(device3.data);
 
     res.status(201).json({ message: "Success" });
   } catch (e) {

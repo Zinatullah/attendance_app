@@ -6,6 +6,7 @@ const {
   getSingleUserAttendance,
   leaveForm,
   vacation,
+  getAllvacation,
   generalLeaveForm,
   generalLeaveCheck,
   EditleaveForm,
@@ -17,6 +18,7 @@ router.get("/getMultipleUsers", getMultipleUsers);
 router.post("/getSingleUserAttendance", getSingleUserAttendance);
 router.post("/leaveForm", leaveForm);
 router.post("/vacation", vacation);
+router.post("/getAllvacation", getAllvacation);
 router.post("/generalLeaveForm", generalLeaveForm);
 router.post("/generalLeaveCheck", generalLeaveCheck);
 router.put("/EditleaveForm", EditleaveForm);

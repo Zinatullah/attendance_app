@@ -32,14 +32,29 @@ const removeGeneralLeave = asyncHandler(async (req, res) => {
   connection.query(query, (error, resutl) => {
     if (error) {
       console.log(error);
-      res.status(400).json({message: "Error occured"});
+      res.status(400).json({ message: "Error occured" });
     } else {
-      res.status(201).json({message: "Item removed"});
+      res.status(201).json({ message: "Item removed" });
     }
+  });
+});
+
+/////////////////////////////   General Vacation Check /////////////////////////////////////////////////////
+const currentMonthGeneralLeaves = asyncHandler(async (req, res) => {
+  const { current_month, previous_month, year } = req.body;
+  const query = `create or replace view general_vacation as SELECT sum(end_date-start_date) as generalLeaveDays FROM general_leave_form where month = '${current_month}'
+  `;
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).json({ message: "No vacation found!" });
+    }
+    res.status(201).json({ message: "کړنه ترسره شوه" });
   });
 });
 
 module.exports = {
   updateGeneralLeave,
-  removeGeneralLeave
+  removeGeneralLeave,
+  currentMonthGeneralLeaves,
 };

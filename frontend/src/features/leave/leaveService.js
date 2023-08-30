@@ -15,9 +15,15 @@ const removeGeneralLeave = async (id) => {
   return response.data
 }
 
+// Current Month General Leaves
+const currentMonthGeneralLeaves = async (userData) => {
+  const response = await axios.post(API_URL + 'currentMonthGeneralLeaves', userData)
+  return response.data
+}
 const authService = {
   updateGeneralLeave,
-  removeGeneralLeave
+  removeGeneralLeave,
+  currentMonthGeneralLeaves
 }
 
 export default authService

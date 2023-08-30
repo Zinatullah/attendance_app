@@ -64,7 +64,25 @@ export const getMonthReport = createAsyncThunk(
   }
 );
 
-// Fridays
+// getTwoMonths report
+export const getTwoMonths = createAsyncThunk(
+  "reports/getTwoMonths",
+  async (month, thunkAPI) => {
+    try {
+      return await authService.getTwoMonths(month);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+//Two months Fridays
 export const getFridays = createAsyncThunk(
   "reports/getFridays",
   async (month_data, thunkAPI) => {
@@ -81,13 +99,31 @@ export const getFridays = createAsyncThunk(
     }
   }
 );
-// Fridays
 
+// single month Friday
 export const getFriday = createAsyncThunk(
   "reports/getFriday",
   async (month_data, thunkAPI) => {
     try {
       return await authService.getFriday(month_data);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// grandReport
+export const grandReport = createAsyncThunk(
+  "reports/grandReport",
+  async (thunkAPI) => {
+    try {
+      return await authService.grandReport();
     } catch (error) {
       const message =
         (error.response &&

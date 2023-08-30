@@ -40,12 +40,6 @@ const getSingleUserAttendance = asyncHandler(async (req, res) => {
   year = p2e(year.split("/")[0]);
 
   const query_important = `select * from all_attendances where user_id =${id}  and month = '${month}'`;
-  // const query_important = `SELECT year, month, day, MIN(time) AS entry_time, MAX(time) AS exit_time FROM ( SELECT * FROM all_attendances WHERE user_id = ${id} and month= '${month}' and year = ${year} ORDER BY day) t GROUP BY year, month, day HAVING COUNT(*) >= 2 ORDER BY year, month, day ASC`;
-  // `SELECT year, month, day, MAX(time) AS entry_time , MIN(time) AS exit_time FROM (SELECT * from test1 where user_id = 23 order by day) t GROUP BY day HAVING COUNT(*) >= 2 ORDER BY t.day ASC`;
-  // `SELECT year, month, day, MAX(time) AS entry_time , MIN(time) AS exit_time FROM (SELECT * from test1 where user_id = ${user_id} order by day) t GROUP BY day HAVING COUNT(*) >= 2 ORDER BY t.day ASC`;
-  // `SELECT year, month, day, MIN(time) AS entry_time , MAX(time) AS exit_time FROM (SELECT * from device_attendances where user_id = ${user_id} order by day) t GROUP BY day HAVING COUNT(*) >= 2 ORDER BY t.day ASC`;
-  // `SELECT t.year, t.month, t.day, MIN(t.time) AS entry_time, MAX(t.time) AS exit_time FROM ( SELECT da1.year, da1.month, da1.day, da1.time FROM device_attendances da1 INNER JOIN ( SELECT year, month, day FROM device_attendances WHERE user_id = ${user_id} GROUP BY year, month, day HAVING COUNT(*) >= 2 ) da2 ON da1.year = da2.year AND da1.month = da2.month AND da1.day = da2.day ) t GROUP BY t.year, t.month, t.day ORDER BY t.year, t.month, t.day ASC`;
-  // const query = `SELECT * from test1, users where users.user_id = test1.user_id and users.user_id = ${user_id} and test1.user_id = ${user_id}`;
   connection.query(query_important, (err, result) => {
     if (err) {
       console.log(err);
@@ -79,8 +73,8 @@ const leaveForm = asyncHandler(async (req, res) => {
 
 //////////////////////////////////////////////////////// VACATION Check  /////////////////////////////////////////////////////
 const vacation = asyncHandler(async (req, res) => {
-  const { id, month } = req.body;
-  const query = await `SELECT * FROM leave_form where user_id = ${id} and month = '${month}'`;
+  const { id, current_month } = req.body;
+  const query = await `SELECT * FROM leave_form where user_id = ${id} and month = '${current_month}'`;
   connection.query(query, (err, result) => {
     if (err) {
       console.log(err);
@@ -90,10 +84,24 @@ const vacation = asyncHandler(async (req, res) => {
   });
 });
 
+//////////////////////////////////////////////////////// Single month vacations  /////////////////////////////////////////////////////
+const getAllvacation = asyncHandler (async (req, res)=>{
+  const {current_month} = req.body
+
+  const query = `create or replace view person_vacation as SELECT user_id, sum(end_date-start_date) as vacation_days FROM leave_form where month = '${current_month}' GROUP by user_id`
+  connection.query(query, (error, result)=>{
+    if(error){
+      console.log(error);
+      res.status(400).json({message: "نا معلومه مشکل رامنځته شوی"})
+    }else {
+      res.status(201).json({message: "کړنه ترسره شوه"})
+    }
+  })
+})
+
 //////////////////////////////////////////////////////// General VACATION /////////////////////////////////////////////////////
 const generalLeaveForm = asyncHandler(async (req, res) => {
   const { month, leave_type, start_date, end_date, info } = req.body;
-
   const query = `INSERT INTO general_leave_form ( leave_type, month, start_date, end_date, info) VALUES ('${leave_type}', '${month}', ${start_date}, ${end_date}, '${info}')`;
   connection.query(query, (error, result) => {
     if (error) {
@@ -142,6 +150,7 @@ const EditleaveForm = asyncHandler(async (req, res) => {
     }
   });
 });
+
 //////////////////////////////////////////////////////// Remove Vacation  /////////////////////////////////////////////////////
 const removeVacation = asyncHandler(async (req, res) => {
   const { id } = req.body;
@@ -162,6 +171,7 @@ module.exports = {
   getSingleUserAttendance,
   leaveForm,
   vacation,
+  getAllvacation,
   generalLeaveForm,
   generalLeaveCheck,
   EditleaveForm,

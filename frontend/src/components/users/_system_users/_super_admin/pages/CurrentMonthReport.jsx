@@ -4,7 +4,7 @@ import Current_month_report from "../reports/Current_month_report";
 
 import React from "react";
 
-const MonthlyReport = () => {
+const CurrentMonthReport = () => {
   return (
     <>
       <nav
@@ -28,4 +28,4 @@ const MonthlyReport = () => {
   );
 };
 
-export default MonthlyReport;
+export default CurrentMonthReport;
