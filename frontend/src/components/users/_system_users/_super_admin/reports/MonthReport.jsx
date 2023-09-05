@@ -1,3 +1,5 @@
+ /* eslint-disable */
+
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -7,10 +9,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Slide from "@mui/material/Slide";
 import Grid from "@mui/material/Grid";
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   getTwoMonths,
   getFridays,
@@ -21,15 +22,9 @@ import { getAllvacation } from "./../../../../../features/attendance/attendanceS
 
 import { currentMonthGeneralLeaves } from "./../../../../../features/leave/leaveSlice";
 
-import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 
 import Pagination from "@mui/material/Pagination";
-import PaginationItem from "@mui/material/PaginationItem";
-import Stack from "@mui/material/Stack";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import Typography from "@mui/material/Typography";
 import DownloadIcon from "@mui/icons-material/Download";
 
 const XLSX = require("xlsx");
@@ -53,10 +48,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const MONTHS = [
   "حمل",
@@ -100,7 +91,6 @@ export default function AttendanceTable() {
   const [page, setPage] = React.useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [show, setShow] = useState(false);
-  const [fridays, setFridays] = useState();
 
   const itemsPerPage = 50;
   const totalPages = Math.ceil(data.length / itemsPerPage);

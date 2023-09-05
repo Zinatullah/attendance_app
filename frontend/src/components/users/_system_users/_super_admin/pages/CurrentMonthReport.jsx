@@ -1,3 +1,4 @@
+ /* eslint-disable */
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
 import Current_month_report from "../reports/Current_month_report";

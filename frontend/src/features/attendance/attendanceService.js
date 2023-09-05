@@ -56,7 +56,7 @@ const EditleaveForm = async (userData) => {
 //////////////////////////////////////////       Edit Vacation          ///////////////////////////////////////////////////////////////
 const removeVacation = async (userData) => {
   const response = await axios.put(API_URL + `removeVacation`, userData)
-  // return response.data
+  return response.data
 }
 
 const attendanceService = {

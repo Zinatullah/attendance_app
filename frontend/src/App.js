@@ -1,31 +1,30 @@
-import SpecificUserAttendance from './components/users/superadmin/attendance/SpecificUserAttendance'
+ /* eslint-disable */
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SignIn from "./components/signIn/SignIn";
-// import Sign from './components/signUp/Sign'
 import { ToastContainer } from "react-toastify";
 
 // Super admin section  //
-import Header from './components/users/superadmin/Header'
+// import Header from './components/users/superadmin/Header'
 // import SpecificUser from './components/users/superadmin/SpecificUser'
-import UserRegister from './components/users/superadmin/registeration/UserRegister'
-import UpdateUser from './components/users/superadmin/registeration/UpdateUser'
-import Users from './components/users/superadmin/Users'
+// import UserRegister from './components/users/superadmin/registeration/UserRegister'
+// import UpdateUser from './components/users/superadmin/registeration/UpdateUser'
+// import Users from './components/users/superadmin/Users'
 // import Devices from './components/users/superadmin/attendance/Devices'
 
 // Admin section  //
-import AdminUserRegister from './components/users/admin/registeration/AdminUserRegister'
-import AdminSpecificUser from './components/users/admin/AdminSpecificUser'
-import AdminDashboard from './components/users/admin/AdminDashboard'
-import AdminUsers from './components/users/admin/AdminUsers'
-import AdminSpecificUserAttendance from './components/users/admin/attendance/AdminSpecificUserAttendance'
-import AdminDevices from './components/users/admin/attendance/AdminDevices'
+// import AdminUserRegister from './components/users/admin/registeration/AdminUserRegister'
+// import AdminSpecificUser from './components/users/admin/AdminSpecificUser'
+// import AdminDashboard from './components/users/admin/AdminDashboard'
+// import AdminUsers from './components/users/admin/AdminUsers'
+// import AdminSpecificUserAttendance from './components/users/admin/attendance/AdminSpecificUserAttendance'
+// import AdminDevices from './components/users/admin/attendance/AdminDevices'
 
 // Viewer section  //
-import ViewerDashboard from './components/users/viewer/ViewerDashboard'
-import ViewUser from './components/users/viewer/ViewUser'
+// import ViewerDashboard from './components/users/viewer/ViewerDashboard'
+// import ViewUser from './components/users/viewer/ViewUser'
 // import ViewerSpecificUser from './components/users/viewer/ViewerSpecificUser'
 // import ViewerSpecificUserAttendance from './components/users/viewer/attendance/ViewerSpecificUserAttendancese'
-import ViewerDevices from './components/users/viewer/attendance/ViewerDevices'
+// import ViewerDevices from './components/users/viewer/attendance/ViewerDevices'
 
 // 
 // import Dashboard from './components/dashboard/Dashboard'

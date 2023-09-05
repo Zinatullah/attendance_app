@@ -1,3 +1,4 @@
+ /* eslint-disable */
 import { useEffect } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";

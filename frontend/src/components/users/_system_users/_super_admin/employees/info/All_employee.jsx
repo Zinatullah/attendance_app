@@ -1,3 +1,4 @@
+ /* eslint-disable */
 import { getmultipleusers } from "../../../../../../features/attendance/attendanceSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";

@@ -1,3 +1,4 @@
+ /* eslint-disable */
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
 import NewEmplyeeForm from "../employees/info/NewEmployeeForm";

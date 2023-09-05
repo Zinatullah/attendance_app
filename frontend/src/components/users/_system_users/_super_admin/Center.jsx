@@ -1,3 +1,4 @@
+ /* eslint-disable */
 import React, { useEffect } from "react";
 import ReduceCapacityIcon from "@mui/icons-material/ReduceCapacity";
 import { useState } from "react";

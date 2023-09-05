@@ -5,7 +5,7 @@ import {
   reset,
 } from "../../../../../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -60,7 +60,7 @@ export default function AllUsers() {
   }, [isError, isSuccess, message, dispatch]);
 
   return (
-    <ul role="list" className="divide-y divide-gray-100">
+    <ul className="divide-y divide-gray-100">
       {allUsers.map((person, index) => (
         <li key={index} className="flex justify-between gap-x-6 py-5">
           <div className="flex gap-x-4">
@@ -87,9 +87,9 @@ export default function AllUsers() {
               </p>
               <p className="mt-1 truncate text-xs leading-5 text-gray-500">
                 ډول:
-                {person.user_type == "superAdmin" ? "مکمل صلاحیت" : ""}
-                {person.user_type == "admin" ? "محدود صلاحیت" : ""}
-                {person.user_type == "viewer" ? "کتونکی" : ""}
+                {person.user_type === "superAdmin" ? "مکمل صلاحیت" : ""}
+                {person.user_type === "admin" ? "محدود صلاحیت" : ""}
+                {person.user_type === "viewer" ? "کتونکی" : ""}
               </p>
             </div>
           </div>

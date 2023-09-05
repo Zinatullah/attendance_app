@@ -6,31 +6,24 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Input from "@mui/material/Input";
 
 import Select from "@mui/material/Select";
 
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { updateUser, reset } from "../../../../../features/auth/authSlice";
+import { useDispatch } from "react-redux";
+import { updateUser } from "../../../../../features/auth/authSlice";
 
-import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { useState } from "react";
 
 const theme = createTheme();
 
 export default function UpdateUserForm({ userToEdit, handleClose }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [user_type, setUser_type] = useState("");
-  const { isError, isSuccess, message } = useSelector((state) => state.auth);
 
   const handleSubmit = (event) => {
     event.preventDefault();

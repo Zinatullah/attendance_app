@@ -1,5 +1,5 @@
 {
-  "name": "agoc_attendance_app",
+  "name": "attendance",
   "version": "1.0.0",
   "description": "ZKTech attendance system",
   "main": "index.js",

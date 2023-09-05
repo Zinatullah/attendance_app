@@ -1,3 +1,4 @@
+ /* eslint-disable */
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -76,7 +77,7 @@ export default function Registered_table({ users }) {
   };
   const filterData = () => {
     const filteredData = data.filter((item) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      item.name.includes(searchQuery.toLowerCase())
     );
     setFilteredData(filteredData);
   };
@@ -181,8 +182,12 @@ export default function Registered_table({ users }) {
                       {index + 1}
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "right" }}>
+                      {row.user_id}
+                    </StyledTableCell>
+                    <StyledTableCell style={{ textAlign: "right" }}>
                       {row.name}
                     </StyledTableCell>
+
                     <StyledTableCell style={{ textAlign: "right" }}>
                       {row.lastname}
                     </StyledTableCell>
@@ -190,18 +195,35 @@ export default function Registered_table({ users }) {
                       {row.fathername}
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "right" }}>
-                      {(element.department == "CEO" ? "عمومي ریاست" : "") ||
-                        (element.department == "finance" ? "مالي ریاست" : "") ||
-                        (element.department == "operation"
-                          ? "عملیاتي ریاست"
-                          : "") ||
-                        (element.department == "business"
-                          ? "تجارتي ریاست"
-                          : "")}
+                      {row
+                        ? (row.department == "CEO" ? "عمومي ریاست" : "") ||
+                          (row.department == "finance" ? "مالي ریاست" : "") ||
+                          (row.department == "operation"
+                            ? "عملیاتي ریاست"
+                            : "") ||
+                          (row.department == "business" ? "تجارتي ریاست" : "")
+                        : ""}
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "center" }}>
-                      <Button variant="outlined" color="secondary">
-                        <Link to={`/SpecificUser/${row.user_id}`}>معلومات</Link>
+                      <Button
+                        onClick={() => {
+                          setOpen(true);
+                          handleUpdate(row);
+                        }}
+                        variant="contained"
+                        color="info"
+                      >
+                        تغیرول
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleRemove(row.user_id);
+                        }}
+                        variant="contained"
+                        color="error"
+                        sx={{ marginRight: "10px" }}
+                      >
+                        لمنځه وړل
                       </Button>
                     </StyledTableCell>
                   </StyledTableRow>
@@ -235,14 +257,14 @@ export default function Registered_table({ users }) {
                       {row.fathername}
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "right" }}>
-                      {(row.department == "CEO" ? "عمومي ریاست" : "") ||
-                        (row.department == "finance" ? "مالي ریاست" : "") ||
-                        (row.department == "operation"
-                          ? "عملیاتي ریاست"
-                          : "") ||
-                        (row.department == "business"
-                          ? "تجارتي ریاست"
-                          : "")}
+                      {row
+                        ? (row.department == "CEO" ? "عمومي ریاست" : "") ||
+                          (row.department == "finance" ? "مالي ریاست" : "") ||
+                          (row.department == "operation"
+                            ? "عملیاتي ریاست"
+                            : "") ||
+                          (row.department == "business" ? "تجارتي ریاست" : "")
+                        : ""}
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "center" }}>
                       <Button

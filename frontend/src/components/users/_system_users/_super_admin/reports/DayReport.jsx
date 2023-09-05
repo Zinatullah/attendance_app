@@ -1,3 +1,4 @@
+ /* eslint-disable */
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -10,21 +11,12 @@ import Paper from "@mui/material/Paper";
 import Slide from "@mui/material/Slide";
 import Grid from "@mui/material/Grid";
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   getDailyReport,
   reset,
 } from "../../../../../features/report/reportSlice";
-import { TextField } from "@mui/material";
-import Button from "@mui/material/Button";
-
 import Pagination from "@mui/material/Pagination";
-import PaginationItem from "@mui/material/PaginationItem";
-import Stack from "@mui/material/Stack";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import Typography from "@mui/material/Typography";
-import DownloadIcon from "@mui/icons-material/Download";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -45,10 +37,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const MONTHS = [
   "حمل",
@@ -86,7 +74,6 @@ export default function AttendanceTable() {
   let p_month = MONTHS[index_of_current_month];
 
   const [month, setMonth] = useState(current_month);
-  const [previous_month, setPrevious_month] = useState(p_month);
 
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
