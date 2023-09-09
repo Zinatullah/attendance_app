@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/reports/";
+const API_URL = "/api/reports/";
 // Daily Report
 const getCurrentReport = async (month) => {
   const response = await axios.post(API_URL + `currentReport`, month);

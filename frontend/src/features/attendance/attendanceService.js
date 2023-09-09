@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL = "http://localhost:5000/api/userattendances/";
+const API_URL = "api/userattendances/";
 
 //////////////////////////////////////////        Get all users          ///////////////////////////////////////////////////////////////
 const getmultipleusers = async () => {

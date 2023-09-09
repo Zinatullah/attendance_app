@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:5000/api/logs/'
+const API_URL = '/api/logs/'
 
 // Users 
 const getUsers = async () => {

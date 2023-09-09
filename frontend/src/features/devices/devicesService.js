@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL = "http://localhost:5000/api/devices/";
+const API_URL = "/api/devices/";
 
 //////////////////////////////////////////        Get Users       ///////////////////////////////////////////////////////////////
 const getUsers = async (id) => {
