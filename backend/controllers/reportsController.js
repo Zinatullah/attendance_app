@@ -123,9 +123,7 @@ const getFridays = asyncHandler(async (req, res) => {
 
 ////////////////////////////////////////////   Single friday  ////////////////////////////////
 const get_Friday = asyncHandler(async (req, res) => {
-  const { current_month} = req.body;
-  console.log(current_month)
-
+  const { month } = req.body;
   const clearQuery = "truncate table fridays";
   connection.query(clearQuery, (error) => {
     if (error) {
@@ -136,7 +134,7 @@ const get_Friday = asyncHandler(async (req, res) => {
   year = year.split(" ")[3];
   persian_date(year);
 
-  const query = `select count(*) from fridays where month = '${current_month}'`;
+  const query = `select * from fridays where month = '${month}'`;
   connection.query(query, (error, result) => {
     if (error) {
       console.log(error);

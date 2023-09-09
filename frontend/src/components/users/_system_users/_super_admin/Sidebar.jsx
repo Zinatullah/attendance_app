@@ -1,4 +1,4 @@
- /* eslint-disable */
+/* eslint-disable */
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -150,7 +150,7 @@ const Sidebar = () => {
                           <span className="ml-3 pr-5">نوی کاروونکی</span>
                         </span>
                       </Link>
-                      <Link to="/UpdateUser">
+                      <Link to="/allUser">
                         <span
                           width="100%"
                           className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700"
@@ -243,7 +243,7 @@ const Sidebar = () => {
                   </AccordionSummary>
                   <AccordionDetails>
                     <Typography dir="rtl">
-                      <Link to="/specificUser">
+                      <Link to="/allemployee">
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <PersonIcon />
                           <span className="ml-3 pr-5">د ځانګړي کارکوونکي</span>
@@ -357,19 +357,19 @@ const Sidebar = () => {
                       <Link to="/dailyreport">
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <SummarizeIcon />
-                          <span className="ml-3 pr-5">ورځنی مکمل راپور</span>
-                        </span>
-                      </Link>
-                      <Link to="/currentmonth">
-                        <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
-                          <AssessmentIcon />
-                          <span className="ml-3 pr-5">اوسنی میاشت راپور</span>
+                          {/* <span className="ml-3 pr-5">ورځنی مکمل راپور</span> */}
                         </span>
                       </Link>
                       <Link to="/monthlyreport">
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <AssessmentIcon />
                           <span className="ml-3 pr-5">میاشتنی راپور</span>
+                        </span>
+                      </Link>
+                      <Link to="/currentmonth">
+                        <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
+                          <AssessmentIcon />
+                          <span className="ml-3 pr-5">اوسنی میاشت راپور</span>
                         </span>
                       </Link>
                     </Typography>

@@ -1,4 +1,4 @@
- /* eslint-disable */
+/* eslint-disable */
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -10,9 +10,9 @@ import {
   getsingleuserattendance,
   getsingleuser,
   vacation,
-  removeVacation
+  removeVacation,
 } from "../../../../../../features/attendance/attendanceSlice";
-import { getFriday } from './../../../../../../features/report/reportSlice'
+import { getFriday } from "./../../../../../../features/report/reportSlice";
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -188,30 +188,32 @@ const SpecificUserAttendance = () => {
     "29",
   ];
 
-  if (month == "حمل") {
-    days = days_1;
-  } else if (month == "ثور") {
-    days = days_1;
-  } else if (month == "جوزا") {
-    days = days_1;
-  } else if (month == "سرطان") {
-    days = days_1;
-  } else if (month == "اسد") {
-    days = days_1;
-  } else if (month == "سنبله") {
-    days = days_1;
-  } else if (month == "میزان") {
-    days = days_2;
-  } else if (month == "عقرب") {
-    days = days_2;
-  } else if (month == "قوس") {
-    days = days_2;
-  } else if (month == "جدی") {
-    days = days_2;
-  } else if (month == "دلو") {
-    days = days_2;
-  } else if (month == "حوت") {
-    days = days_3;
+  {
+    if (month == "حمل") {
+      days = days_1;
+    } else if (month == "ثور") {
+      days = days_1;
+    } else if (month == "جوزا") {
+      days = days_1;
+    } else if (month == "سرطان") {
+      days = days_1;
+    } else if (month == "اسد") {
+      days = days_1;
+    } else if (month == "سنبله") {
+      days = days_1;
+    } else if (month == "میزان") {
+      days = days_2;
+    } else if (month == "عقرب") {
+      days = days_2;
+    } else if (month == "قوس") {
+      days = days_2;
+    } else if (month == "جدی") {
+      days = days_2;
+    } else if (month == "دلو") {
+      days = days_2;
+    } else if (month == "حوت") {
+      days = days_3;
+    }
   }
 
   const handleChange = (event) => {
@@ -230,9 +232,11 @@ const SpecificUserAttendance = () => {
     setUsername(username.payload);
     const get_vacation = await dispatch(vacation(userData));
     setPreviousVacation(get_vacation.payload);
-    const get_friday = await dispatch(getFriday(userData))
-    setFridays(get_friday.payload)
+    const get_friday = await dispatch(getFriday(userData));
+    setFridays(get_friday.payload);
   };
+
+  console.log(previousVacation);
 
   useEffect(() => {
     handleSubmit();
@@ -267,17 +271,17 @@ const SpecificUserAttendance = () => {
   }, [open, count]);
 
   if (employee) {
-    employee.map((person) => {
-      days[person.day - 1] = person;
-    });
+    employee
+      ? employee.map((person) => {
+          days[person.day - 1] = person;
+        })
+      : "";
   }
 
-  console.log()
-
-  if(fridays){
-    fridays.map((friday)=>{
-      days[friday.day-1] = friday
-    })
+  if (fridays) {
+    fridays.map((friday) => {
+      days[friday.day - 1] = friday;
+    });
   }
 
   return (
@@ -343,27 +347,46 @@ const SpecificUserAttendance = () => {
         </div>
 
         <div style={{ display: show }}>
-          <TableContainer component={Paper} className="mt-5" dir="rtl" sx={{textAlign: 'right'}}>
+          <TableContainer
+            component={Paper}
+            className="mt-5"
+            dir="rtl"
+            sx={{ textAlign: "right" }}
+          >
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
               <TableHead>
                 <TableRow>
-                  <StyledTableCell sx={{textAlign: 'right'}} scope="row">ورځ</StyledTableCell>
-                  <StyledTableCell sx={{textAlign: 'right'}}>نوم</StyledTableCell>
-                  <StyledTableCell sx={{textAlign: 'right'}}>کال</StyledTableCell>
-                  <StyledTableCell sx={{textAlign: 'right'}}>میاشت</StyledTableCell>
-                  <StyledTableCell sx={{textAlign: 'right'}}>داخېلېدل</StyledTableCell>
-                  <StyledTableCell sx={{textAlign: 'right'}}>وتل</StyledTableCell>
+                  <StyledTableCell sx={{ textAlign: "right" }} scope="row">
+                    ورځ
+                  </StyledTableCell>
+                  <StyledTableCell sx={{ textAlign: "right" }}>
+                    نوم
+                  </StyledTableCell>
+                  <StyledTableCell sx={{ textAlign: "right" }}>
+                    کال
+                  </StyledTableCell>
+                  <StyledTableCell sx={{ textAlign: "right" }}>
+                    میاشت
+                  </StyledTableCell>
+                  <StyledTableCell sx={{ textAlign: "right" }}>
+                    داخېلېدل
+                  </StyledTableCell>
+                  <StyledTableCell sx={{ textAlign: "right" }}>
+                    وتل
+                  </StyledTableCell>
                 </TableRow>
               </TableHead>
-              <TableBody dir='rtl' className='text-right'>
+              <TableBody dir="rtl" className="text-right">
                 {days ? (
                   days.map((row, index) => (
                     <React.Fragment key={index}>
                       <StyledTableRow sx={{ display: "none" }}></StyledTableRow>
                       <StyledTableRow
                         key={index}
-                        className={ row.name == 'جمعه' ?  'bg-blue-400' : '' ||
-                          row.entery_time
+                        className={
+                          row.name == "جمعه"
+                            ? "bg-blue-400"
+                            : "" || row.entery_time
                             ? row.entery_time.split(":")[0] * 3600 +
                                 row.entery_time.split(":")[1] * 60 +
                                 row.entery_time.split(":")[2] >
@@ -373,12 +396,27 @@ const SpecificUserAttendance = () => {
                             : ""
                         }
                       >
-                        <StyledTableCell sx={{textAlign: 'right'}}>{row.day}</StyledTableCell>
-                        <StyledTableCell sx={{textAlign: 'right'}} className='text-right'>{row.name}</StyledTableCell>
-                        <StyledTableCell sx={{textAlign: 'right'}}>{row.year}</StyledTableCell>
-                        <StyledTableCell sx={{textAlign: 'right'}}>{row.month}</StyledTableCell>
-                        <StyledTableCell sx={{textAlign: 'right'}}>{row.entery_time}</StyledTableCell>
-                        <StyledTableCell sx={{textAlign: 'right'}}>{row.exit_time}</StyledTableCell>
+                        <StyledTableCell sx={{ textAlign: "right" }}>
+                          {index + 1}
+                        </StyledTableCell>
+                        <StyledTableCell
+                          sx={{ textAlign: "right" }}
+                          className="text-right"
+                        >
+                          {row.name}
+                        </StyledTableCell>
+                        <StyledTableCell sx={{ textAlign: "right" }}>
+                          {row.year}
+                        </StyledTableCell>
+                        <StyledTableCell sx={{ textAlign: "right" }}>
+                          {row.month}
+                        </StyledTableCell>
+                        <StyledTableCell sx={{ textAlign: "right" }}>
+                          {row.entery_time}
+                        </StyledTableCell>
+                        <StyledTableCell sx={{ textAlign: "right" }}>
+                          {row.exit_time}
+                        </StyledTableCell>
                       </StyledTableRow>
                     </React.Fragment>
                   ))
@@ -400,13 +438,13 @@ const SpecificUserAttendance = () => {
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
               <TableRow>
-                <StyledTableCell scope="row">نمبر</StyledTableCell>
-                <StyledTableCell>د رخصتی ډول</StyledTableCell>
-                <StyledTableCell>د شروع وخت</StyledTableCell>
-                <StyledTableCell>ختمېدل</StyledTableCell>
-                <StyledTableCell>میاشت</StyledTableCell>
-                <StyledTableCell>ورځې</StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell sx={{textAlign: 'center'}} scope="row">نمبر</StyledTableCell>
+                <StyledTableCell sx={{textAlign: 'center'}}>د رخصتی ډول</StyledTableCell>
+                <StyledTableCell sx={{textAlign: 'center'}}>د شروع وخت</StyledTableCell>
+                <StyledTableCell sx={{textAlign: 'center'}}>ختمېدل</StyledTableCell>
+                <StyledTableCell sx={{textAlign: 'center'}}>ورځې</StyledTableCell>
+                <StyledTableCell sx={{textAlign: 'center'}}>میاشت</StyledTableCell>
+                <StyledTableCell sx={{textAlign: 'center'}}>
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;معلومات
                 </StyledTableCell>
                 <StyledTableCell>نور معلومات</StyledTableCell>
@@ -428,10 +466,10 @@ const SpecificUserAttendance = () => {
                     </StyledTableCell>
                     <StyledTableCell>{element.start_date}</StyledTableCell>
                     <StyledTableCell>{element.end_date}</StyledTableCell>
-                    <StyledTableCell>{element.month}</StyledTableCell>
                     <StyledTableCell>
                       {element.end_date - element.start_date}
                     </StyledTableCell>
+                    <StyledTableCell>{element.month}</StyledTableCell>
                     <StyledTableCell className="w-60 text-right">
                       {element.info}
                     </StyledTableCell>

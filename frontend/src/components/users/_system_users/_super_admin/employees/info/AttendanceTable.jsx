@@ -171,7 +171,7 @@ export default function AttendanceTable({ users }) {
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "center" }}>
                       <Button variant="outlined" color="secondary">
-                        <Link to={`/SpecificUser/${row.user_id}`}>معلومات</Link>
+                        <Link to={`/user/${row.user_id}`}>معلومات</Link>
                       </Button>
                     </StyledTableCell>
                   </StyledTableRow>

@@ -194,7 +194,10 @@ export default function AttendanceTable() {
                   
                 </StyledTableCell>
                 <StyledTableCell sx={{ textAlign: "right" }}>
-                  وخت
+                  داخېلېدل
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "right" }}>
+                  وتل
                 </StyledTableCell>
               </TableRow>
             </TableHead>
@@ -225,7 +228,9 @@ export default function AttendanceTable() {
                     <StyledTableCell sx={{ textAlign: "right" }}>
                       {row.time}
                     </StyledTableCell>
-                    {/* <StyledTableCell sx={{textAlign:'right'}}>{row.half_time}</StyledTableCell> */}
+                    <StyledTableCell sx={{ textAlign: "right" }}>
+                      {row.time}
+                    </StyledTableCell>
                   </StyledTableRow>
                 ))
               ) : (
@@ -266,7 +271,9 @@ export default function AttendanceTable() {
                     <StyledTableCell sx={{ textAlign: "right" }}>
                       {row.time}
                     </StyledTableCell>
-                    {/* <StyledTableCell sx={{textAlign:'right'}}>{row.half_time}</StyledTableCell> */}
+                    <StyledTableCell sx={{ textAlign: "right" }}>
+                      {row.time}
+                    </StyledTableCell>
                   </StyledTableRow>
                 ))
               ) : (

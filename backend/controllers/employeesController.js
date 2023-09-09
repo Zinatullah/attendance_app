@@ -58,7 +58,6 @@ const updateEmployee = asyncHandler(async (req, res) => {
 const removeEmployee = asyncHandler(async (req, res) => {
   const { id } = req.body;
   const query = `DELETE FROM employees_info WHERE user_id = ${id}`;
-  console.log(query);
   connection.query(query, (error, result) => {
     if (error) {
       console.log(error);

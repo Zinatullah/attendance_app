@@ -63,23 +63,27 @@ function App() {
           {/* <Route path="/updateuser" element={<UpdateUser />} /> */}
 
           <Route path='/' element= {<Dashboard />} />
-          <Route path='/users' element= {<AllEmployeesInfo />} />
-          <Route path='/user/:id' element= {<SpecificUser />} />
+          
           <Route path="/userRegister" element={<Signup_page />} />
-          <Route path="/updateuser" element={<All_users_page />} />
+          <Route path="/allUser" element={<All_users_page />} />
+          
           <Route path="/newemployee" element={<NewEmployee />} />
           <Route path="/registeredemployees" element={<Registered_Employees />} />
+          <Route path='/users' element= {<AllEmployeesInfo />} />
+          <Route path='/user/:id' element= {<SpecificUser />} />
 
-          <Route path='/SpecificUser' element= {< Leaev_AllEmployees/>} />
+          <Route path='/allemployee' element= {< Leaev_AllEmployees/>} />
           <Route path='/SpecificUser/:id' element= {<Leave_specific_user />} />
           <Route path='/generalLeaveCheck' element= {<GeneralLeaveCheck />} />
           <Route path='/Leaveform' element= {<AllEmployeesLeaveForm />} />
+          
 
           <Route path='/devices' element= {<Devices />} />
+
+          <Route path='/currentreport' element= {<Current_report/>} />
+          <Route path='/dailyreport' element= {<DailyReport/>} />
           <Route path='/monthlyreport' element= {<MonthlyReport/>} />
           <Route path='/currentmonth' element= {<CurrentMonthReport/>} />
-          <Route path='/dailyreport' element= {<DailyReport/>} />
-          <Route path='/currentreport' element= {<Current_report/>} />
           
           {/* <Route path='/adminDashboard' element= {<AdminDashboard />} />
           <Route path='/AdminSpecificUser/:id' element= {<AdminSpecificUser />} />

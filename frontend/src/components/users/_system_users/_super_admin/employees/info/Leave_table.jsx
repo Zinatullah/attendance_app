@@ -1,4 +1,4 @@
- /* eslint-disable */
+/* eslint-disable */
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -160,8 +160,23 @@ export default function AttendanceTable({ users }) {
                       {row.name}
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "center" }}>
-                      <Button variant="outlined" color="secondary">
-                        <Link to={`/SpecificUser/${row.user_id}`}>معلومات</Link>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        sx={{ marginLeft: "5px" }}
+                        onClick={() => {
+                          handleClickOpen();
+                          setUser(row);
+                        }}
+                      >
+                        د رخصتی فورم
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ marginRight: "5px" }}
+                      >
+                        ټوله رخصتی کتل
                       </Button>
                     </StyledTableCell>
                   </StyledTableRow>
@@ -190,7 +205,7 @@ export default function AttendanceTable({ users }) {
                   <StyledTableCell style={{ textAlign: "center" }}>
                     <Button
                       variant="contained"
-                      color="info"
+                      color="secondary"
                       sx={{ marginLeft: "5px" }}
                       onClick={() => {
                         handleClickOpen();
@@ -199,12 +214,9 @@ export default function AttendanceTable({ users }) {
                     >
                       د رخصتی فورم
                     </Button>
-                    <Button variant="contained" color="secondary">
-                      <Link to={`/SpecificUser/${row.user_id}`}>معلومات</Link>
-                    </Button>
                     <Button
                       variant="contained"
-                      color="success"
+                      color="primary"
                       sx={{ marginRight: "5px" }}
                     >
                       ټوله رخصتی کتل
@@ -265,7 +277,7 @@ export default function AttendanceTable({ users }) {
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Close</Button>
+            <Button onClick={handleClose}>بندول</Button>
           </DialogActions>
         </Dialog>
       </React.Fragment>

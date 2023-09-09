@@ -73,8 +73,8 @@ const leaveForm = asyncHandler(async (req, res) => {
 
 //////////////////////////////////////////////////////// VACATION Check  /////////////////////////////////////////////////////
 const vacation = asyncHandler(async (req, res) => {
-  const { id, current_month } = req.body;
-  const query = await `SELECT * FROM leave_form where user_id = ${id} and month = '${current_month}'`;
+  const { id, month } = req.body;
+  const query = await `SELECT * FROM leave_form where user_id = ${id} and month = '${month}'`;
   connection.query(query, (err, result) => {
     if (err) {
       console.log(err);
