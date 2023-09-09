@@ -32,7 +32,7 @@ export default function UpdateUserForm({ userToEdit, handleClose }) {
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
       email: data.get("email"),
-      password: data.get("password") ? data.get("password") : userToEdit.password,
+      password: data.get("password") ? data.get("password") : '',
       user_type: user_type ? user_type : userToEdit.user_type,
     };
     dispatch(updateUser(userData));

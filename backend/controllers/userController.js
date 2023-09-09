@@ -63,7 +63,7 @@ const loginUser = asyncHandler(async (req, res) => {
   // Check for user email
   connection.query(query, async (err, data) => {
     if (err) {
-      console.log(err)
+      console.log(err);
       res.status(400).json({ message: "Invalid credentials" });
     } else {
       if (data.length > 0) {
@@ -81,8 +81,6 @@ const loginUser = asyncHandler(async (req, res) => {
         } else {
           res.status(400).json({ message: "Sorry invalid credentials" });
         }
-
-        // res.send("Good");
       } else {
         res.status(404).send({ message: "Invalid credentials" });
       }
@@ -120,7 +118,6 @@ const deleteUser = asyncHandler(async (req, res) => {
     if (err) {
       console.log("Error occured");
     }
-    console.log(result);
     res.status(201).json(result);
   });
 });
@@ -133,23 +130,35 @@ const deleteUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password, user_type } = req.body;
 
-  if ((!firstName, !lastName || !email || !password)) {
-    res.status(400);
-    throw new Error("Please fill all the fields");
-  } else {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const token = generateToken(email);
+  const salt = await bcrypt.genSalt(10);
 
-    const query = `UPDATE \`auth_users\` set \`firstName\` = '${firstName}', \`lastName\` = '${lastName}', \`password\` = '${hashedPassword}', \`user_type\` = '${user_type}' , \`token\` = '${token}' where email = '${email}'`;
-    connection.query(query, async (err, data) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.status(201).json({ message: "User updated successfully" });
-      }
-    });
+  let hashedPassword;
+  if (password.length > 0) {
+    hashedPassword = await bcrypt.hash(password, salt);
+  }else{
+    hashedPassword = 'none';
   }
+
+  const token = generateToken(email);
+
+  const check_query = `select * from auth_users where email = '${email}'`;
+  connection.query(check_query, (error, result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "کاروونکی پیدا نشو" });
+    } else {
+      const old_password = result[0].password;
+      const change_password = hashedPassword == 'none' ? old_password : hashedPassword;
+      const query = `UPDATE \`auth_users\` set \`firstName\` = '${firstName}', \`lastName\` = '${lastName}', \`password\` = '${change_password}', \`user_type\` = '${user_type}' , \`token\` = '${token}' where email = '${email}'`;
+      connection.query(query, async (err, data) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.status(201).json({ message: "User updated successfully" });
+        }
+      });
+    }
+  });
 });
 ////////////////////////////////////////////////    Update password     ////////////////////////////////////////////////////////
 
@@ -181,9 +190,8 @@ const updatePassword = asyncHandler(async (req, res) => {
           console.log(result);
         });
         res.status(200).json({ message: "User updated successfully" });
-      }else{
+      } else {
         res.status(400).json({ message: "Incorrect old password" });
-
       }
 
       // if (!decryptedPassword) {
@@ -191,7 +199,6 @@ const updatePassword = asyncHandler(async (req, res) => {
       // }
     }
   });
-
 });
 
 // Generate JWT

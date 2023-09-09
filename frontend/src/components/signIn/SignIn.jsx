@@ -34,14 +34,14 @@ export default function SignIn() {
       if(user_type === 'superAdmin'){
         navigate('/')
       }
-      if(user_type === 'admin'){
-        navigate('/adminDashboard')
-      }
-      if(user_type === 'viewer'){
-        navigate('/viewerDashboard')
-      }
+  //     if(user_type === 'admin'){
+  //       navigate('/adminDashboard')
+  //     }
+  //     if(user_type === 'viewer'){
+  //       navigate('/viewerDashboard')
+  //     }
     }  
-  }, [user, navigate]);
+  }, [user]);
 
   useEffect(() => {
     if (isError) {
@@ -65,21 +65,21 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" dir='rtl'>
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 14,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main"}}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
+          <Typography component="h1" variant="h5" sx={{marginTop: '30px'}}>
+            د حاضری سیستم ته ښه راغلاست
           </Typography>
           <Box
             component="form"
@@ -93,17 +93,18 @@ export default function SignIn() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              placeholder="ایمیل آدرس مو ولیکئ"
               name="email"
               autoComplete="email"
               variant='filled'
+              
             />
             <TextField
               margin="normal"
               required
               fullWidth
               name="password"
-              label="Password"
+              placeholder="خپل پټ نوم ولیکی"
               type="password"
               id="password"
               autoComplete="current-password"
@@ -115,7 +116,7 @@ export default function SignIn() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              سیستم ته ننوتل
             </Button>
           </Box>
         </Box>
