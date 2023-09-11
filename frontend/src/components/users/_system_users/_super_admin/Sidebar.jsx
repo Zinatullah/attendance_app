@@ -357,7 +357,7 @@ const Sidebar = () => {
                       <Link to="/dailyreport">
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <SummarizeIcon />
-                          {/* <span className="ml-3 pr-5">ورځنی مکمل راپور</span> */}
+                          <span className="ml-3 pr-5">ورځنی مکمل راپور</span>
                         </span>
                       </Link>
                       <Link to="/monthlyreport">

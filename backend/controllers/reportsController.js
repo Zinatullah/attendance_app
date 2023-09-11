@@ -150,12 +150,13 @@ const current_report = asyncHandler(async (req, res) => {
   const { today, current_month, year } = req.body;
 
   const query = `CREATE or REPLACE VIEW current_report as 
-    SELECT u.name, d.month, d.day, d.time  FROM device2_attendances as d, all_users as u WHERE day = ${today} and month = '${current_month}' and year = ${year} and d.user_id = u.user_id
+    SELECT u.name, d.month, d.day, d.time  FROM device1_attendances as d, all_users as u WHERE day = ${today} and month = '${current_month}' and year = ${year} and d.user_id = u.user_id group by d.user_id
     UNION
-    SELECT u.name, d.month, d.day, d.time  FROM device2_attendances as d, all_users as u WHERE day = ${today} and month = '${current_month}' and year = ${year} and d.user_id = u.user_id
+    SELECT u.name, d.month, d.day, d.time  FROM device2_attendances as d, all_users as u WHERE day = ${today} and month = '${current_month}' and year = ${year} and d.user_id = u.user_id group by d.user_id
     UNION
-    SELECT u.name, d.month, d.day, d.time  FROM device3_attendances as d, all_users as u WHERE day = ${today} and month = '${current_month}' and year = ${year} and d.user_id = u.user_id`;
+    SELECT u.name, d.month, d.day, d.time  FROM device3_attendances as d, all_users as u WHERE day = ${today} and month = '${current_month}' and year = ${year} and d.user_id = u.user_id group by d.user_id`;
 
+    // console.log(query)
   connection.query(query, (error, result) => {
     if (error) {
       res.status(400).json({ message: "Result not found!!!" });
@@ -176,9 +177,12 @@ const current_report = asyncHandler(async (req, res) => {
 /////////////////////////////////////     Daily report    ////////////////////////////////////////////
 const getDailyReport = asyncHandler(async (req, res) => {
   const { today, current_month, year } = req.body;
-  const query = `select u.name, d.user_id, d.month, d.day, d.time from device1_attendances as d, all_users as u where day = ${today} and month = '${current_month}' and year = '${year}' and u.user_id = d.user_id
-  UNION select uu.name, dd.user_id, dd.month, dd.day, dd.time from device2_attendances as dd, all_users as uu where day = ${today} and month = '${current_month}' and year = '${year}' 
-  UNION select uuu.name, ddd.user_id, ddd.month, ddd.day, ddd.time from device3_attendances as ddd, all_users as uuu where day = ${today} and month = '${current_month}' and year = '${year}'
+  const query = `create or replace view dailyReport as  
+  select uuu.name, ddd.user_id, ddd.month, ddd.day, min(time) as entry_time, max(time) as exit_time from device1_attendances as ddd, all_users as uuu where day = ${today ? today : 1} and month = '${current_month}' and year = '${year}' and uuu.user_id = ddd.user_id group by day, user_id HAVING count(day) >= 2
+  UNION
+  select uuu.name, ddd.user_id, ddd.month, ddd.day, min(time) as entry_time, max(time) as exit_time from device2_attendances as ddd, all_users as uuu where day = ${today ? today : 1} and month = '${current_month}' and year = '${year}' and uuu.user_id = ddd.user_id group by day, user_id HAVING count(day) >= 2
+  UNION  
+  select uuu.name, ddd.user_id, ddd.month, ddd.day, min(time) as entry_time, max(time) as exit_time from device3_attendances as ddd, all_users as uuu where day = ${today ? today : 1} and month = '${current_month}' and year = '${year}' and uuu.user_id = ddd.user_id group by day, user_id HAVING count(day) >= 2
   `;
 
   connection.query(query, (error, result) => {
@@ -199,163 +203,7 @@ const getDailyReport = asyncHandler(async (req, res) => {
   });
 });
 
-////////////////////////////////////////////   Monthly report  ////////////////////////////////
-// const getMonthReport = asyncHandler(async (req, res) => {
-//   const { current_month, previous_month, year } = req.body;
-
-//   const query = `create or replace view monthly_attendance as SELECT id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id HAVING count(day) >= 2  UNION select id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id HAVING count(day) >= 2`;
-//   connection.query(query, (error) => {
-//     if (error) {
-//       console.log(error);
-//       res.status(400).json({ message: "Error occured" });
-//     }
-//   });
-
-//   const hours_query = ` SELECT * FROM month_view order by day `;
-//   connection.query(hours_query, (error, results) => {
-//     if (error) {
-//       console.log(error);
-//       res.status(400).json({ message: "Hours error occred" });
-//     } else {
-//       const truncate_query = "truncate table time_counter";
-//       connection.query(truncate_query);
-//       results.map((resultsssssss) => {
-//         let full_time_counter = 0;
-//         let half_time_counter = 0;
-//         let hours = resultsssssss.entery_time.split(":")[0];
-//         let minutes = resultsssssss.entery_time.split(":")[1];
-//         let seconds = resultsssssss.entery_time.split(":")[2];
-//         let total_time =
-//           parseInt(hours * 3600) + parseInt(minutes * 60) + parseInt(seconds);
-//         let max_time = 29759;
-//         total_time = total_time < max_time;
-
-//         switch (total_time) {
-//           case true:
-//             full_time_counter++;
-//             break;
-//           case false:
-//             half_time_counter++;
-//             break;
-
-//           default:
-//             break;
-//         }
-
-//         const time_query = `INSERT INTO time_counter (user_id, full_time_counter, half_time_counter) VALUES (${resultsssssss.user_id}, ${full_time_counter}, ${half_time_counter})`;
-//         connection.query(time_query, (error, resultsss) => {
-//           if (error) {
-//             console.log(error);
-//             res.status(400).json({ message: "Time error occured" });
-//           } else {
-//           }
-//         });
-//       });
-//     }
-//   });
-
-//   const time_counter_view = `create or replace view monthly_time_counter as SELECT *, sum(full_time_counter) as full_time, sum(half_time_counter) as half_time FROM time_counter group by user_id`;
-//   connection.query(time_counter_view, (error, grand_result) => {
-//     if (error) {
-//       console.log(error);
-//       res.status(400).json({ message: "check the views" });
-//     } else {
-//     }
-//   });
-
-//   const querys = `SELECT month_view.name, month, month_view.user_id, count(day) as days, full_time, half_time FROM month_view, monthly_time_counter WHERE month_view.user_id = monthly_time_counter.user_id group by user_id order by day`;
-//   connection.query(querys, (error, final_result) => {
-//     if (error) {
-//       console.log(error);
-//       res.status(400).json({
-//         message:
-//           "The error occured between month_view table and time_counter tables",
-//       });
-//     } else {
-//       res.status(201).json(final_result);
-//     }
-//   });
-// });
-
-////////////////////////////////////////////   Two month  ////////////////////////////////
-const getTwoMonths = asyncHandler(async (req, res) => {
-  const { current_month, previous_month, year } = req.body;
-
-  const query = `create or replace view monthly_attendance as SELECT id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id HAVING count(day) >= 2  UNION select id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id HAVING count(day) >= 2`;
-  connection.query(query, (error) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json({ message: "Error occured" });
-    }
-  });
-
-  const hours_query = ` SELECT * FROM monthly_attendance order by day `;
-  connection.query(hours_query, (error, results) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json({ message: "Hours error occred" });
-    } else {
-      const truncate_query = "truncate table time_counter";
-      connection.query(truncate_query);
-      results.map((resultsssssss) => {
-        let full_time_counter = 0;
-        let half_time_counter = 0;
-        let hours = resultsssssss.entery_time.split(":")[0];
-        let minutes = resultsssssss.entery_time.split(":")[1];
-        let seconds = resultsssssss.entery_time.split(":")[2];
-        let total_time =
-          parseInt(hours * 3600) + parseInt(minutes * 60) + parseInt(seconds);
-        let max_time = 29759;
-        total_time = total_time < max_time;
-
-        switch (total_time) {
-          case true:
-            full_time_counter++;
-            break;
-          case false:
-            half_time_counter++;
-            break;
-
-          default:
-            break;
-        }
-
-        const time_query = `INSERT INTO time_counter (user_id, full_time_counter, half_time_counter) VALUES (${resultsssssss.user_id}, ${full_time_counter}, ${half_time_counter})`;
-        connection.query(time_query, (error, resultsss) => {
-          if (error) {
-            console.log(error);
-            res.status(400).json({ message: "Time error occured" });
-          } else {
-          }
-        });
-      });
-    }
-  });
-
-  const time_counter_view = `create or replace view monthly_time_counter as SELECT *, sum(full_time_counter) as full_time, sum(half_time_counter) as half_time FROM time_counter group by user_id`;
-  connection.query(time_counter_view, (error, grand_result) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json({ message: "check the views" });
-    } else {
-    }
-  });
-
-  const querys = `create or replace view regular_days as SELECT users.name, attendance.month, attendance.user_id, count(attendance.day) as days, counter.full_time, counter.half_time FROM monthly_attendance as attendance, all_users as users, monthly_time_counter as counter WHERE attendance.user_id = users.user_id and attendance.user_id = counter.user_id group by  attendance.user_id order by user_id,day
-    `;
-  connection.query(querys, (error, final_result) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json({
-        message:
-          "The error occured between monthly_report table and time_counter tables",
-      });
-    } else {
-      res.status(201).json(final_result);
-    }
-  });
-});
-////////////////////////////////////////////   Two month  ////////////////////////////////
+////////////////////////////////////////////   Single month  ////////////////////////////////
 const getMonthReport = asyncHandler(async (req, res) => {
   const { current_month, previous_month, year } = req.body;
 
@@ -433,6 +281,86 @@ const getMonthReport = asyncHandler(async (req, res) => {
     }
   });
 });
+
+////////////////////////////////////////////   Two month report  ////////////////////////////////
+const getTwoMonths = asyncHandler(async (req, res) => {
+  const { current_month, previous_month, year } = req.body;
+
+  const query = `create or replace view monthly_attendance as SELECT id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id HAVING count(day) >= 2  UNION select id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id HAVING count(day) >= 2`;
+  connection.query(query, (error) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "Error occured" });
+    }
+  });
+
+  const hours_query = ` SELECT * FROM monthly_attendance order by day `;
+  connection.query(hours_query, (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "Hours error occred" });
+    } else {
+      const truncate_query = "truncate table time_counter";
+      connection.query(truncate_query);
+      results.map((resultsssssss) => {
+        let full_time_counter = 0;
+        let half_time_counter = 0;
+        let hours = resultsssssss.entery_time.split(":")[0];
+        let minutes = resultsssssss.entery_time.split(":")[1];
+        let seconds = resultsssssss.entery_time.split(":")[2];
+        let total_time =
+          parseInt(hours * 3600) + parseInt(minutes * 60) + parseInt(seconds);
+        let max_time = 29759;
+        total_time = total_time < max_time;
+
+        switch (total_time) {
+          case true:
+            full_time_counter++;
+            break;
+          case false:
+            half_time_counter++;
+            break;
+
+          default:
+            break;
+        }
+
+        const time_query = `INSERT INTO time_counter (user_id, full_time_counter, half_time_counter) VALUES (${resultsssssss.user_id}, ${full_time_counter}, ${half_time_counter})`;
+        connection.query(time_query, (error, resultsss) => {
+          if (error) {
+            console.log(error);
+            res.status(400).json({ message: "Time error occured" });
+          } else {
+          }
+        });
+      });
+    }
+  });
+
+  const time_counter_view = `create or replace view monthly_time_counter as SELECT *, sum(full_time_counter) as full_time, sum(half_time_counter) as half_time FROM time_counter group by user_id`;
+  connection.query(time_counter_view, (error, grand_result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: "check the views" });
+    } else {
+    }
+  });
+
+  const querys = `create or replace view regular_days as SELECT users.name, attendance.month, attendance.user_id, count(attendance.day) as days, counter.full_time, counter.half_time FROM monthly_attendance as attendance, all_users as users, monthly_time_counter as counter WHERE attendance.user_id = users.user_id and attendance.user_id = counter.user_id group by  attendance.user_id order by user_id,day
+    `;
+  connection.query(querys, (error, final_result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({
+        message:
+          "The error occured between monthly_report table and time_counter tables",
+      });
+    } else {
+      res.status(201).json(final_result);
+    }
+  });
+});
+
 
 ////////////////////////////////////////////   Two month report  ////////////////////////////////
 const grandReport = asyncHandler(async (req, res) => {

@@ -1,4 +1,4 @@
- /* eslint-disable */
+/* eslint-disable */
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -62,12 +62,14 @@ export default function AttendanceTable() {
     day: "numeric",
     nu: "ps",
   });
+  let get_today = current_month.split(" ")[0];
 
   let current_year = current_month.split(" ")[2];
-  let today = current_month.split(" ")[0];
 
   current_year = p2e(current_year);
   current_month = current_month.split(" ")[1];
+
+  console.log(get_today, 'Today');
 
   let index_of_current_month = MONTHS.indexOf(current_month);
   index_of_current_month = index_of_current_month - 1;
@@ -81,28 +83,16 @@ export default function AttendanceTable() {
   const [page, setPage] = React.useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [show, setShow] = useState(false);
-
-  const itemsPerPage = 50;
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data
-    ? data.slice(indexOfFirstItem, indexOfLastItem)
-    : "";
-  // const currentItems = "";
-
-  const dispatch = useDispatch();
-
-  const handleChanges = (e, value) => {
-    setPage(value);
-    setCurrentPage(value);
-  };
+  const [today, setDay] = useState(p2e(get_today));
 
   const month_data = {
     current_month: month,
-    today: p2e(today),
+    today: today,
     year: current_year,
+  };
+
+  const handleChange = (event) => {
+    setMonth(event.target.value);
   };
 
   const get_daily_report = async () => {
@@ -114,7 +104,19 @@ export default function AttendanceTable() {
     reset();
   };
 
-  console.log(page)
+  let mapped_arry = [];
+  data.map((row) => {
+    let before_time = row.entry_time;
+    before_time = before_time.split(":")[0];
+
+    let after_time = row.exit_time;
+    after_time = after_time.split(":")[0];
+
+    if (before_time < 12 && after_time > 12) {
+      mapped_arry.push(row);
+    }
+  });
+
   useEffect(() => {
     setShow(false);
     get_daily_report();
@@ -122,7 +124,7 @@ export default function AttendanceTable() {
   }, [month]);
 
   const filterData = () => {
-    const filteredData = data.filter((item) =>
+    const filteredData = mapped_arry.filter((item) =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredData(filteredData);
@@ -139,6 +141,29 @@ export default function AttendanceTable() {
     filterData();
   }, [searchQuery]);
 
+  const handleDay = (e) => {
+    setDay(e.target.value);
+  };
+
+  useEffect(() => {
+    get_daily_report();
+  }, [today, month]);
+
+  const itemsPerPage = 50;
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data
+    ? mapped_arry.slice(indexOfFirstItem, indexOfLastItem)
+    : "";
+  const dispatch = useDispatch();
+
+  const handleChanges = (e, value) => {
+    setPage(value);
+    setCurrentPage(value);
+  };
+
   let counter = 1;
   return (
     <>
@@ -152,24 +177,91 @@ export default function AttendanceTable() {
 
         <form>
           <Grid container spacing={2}>
-            <Grid item xs={2}></Grid>
-            <Grid item xs={10} sx={{ marginTop: "15px", marginBottom: "15px" }}>
+            <Grid item xs={5}>
+              <select
+                value={month}
+                onChange={handleChange}
+                className="border-gray-700 mt-5 mb-5 border-dashed rounded-lg bg-purple-900 text-white"
+                style={{
+                  marginLeft: "50px",
+                  marginRight: "50px",
+                  width: "300px",
+                }}
+              >
+                <option className="text-right pr-12" value="">
+                  میاشت انتخاب کړئ
+                </option>
+                <option className="text-right" value="حمل">
+                  حمل
+                </option>
+                <option className="text-right" value="ثور">
+                  ثور
+                </option>
+                <option className="text-right" value="جوزا">
+                  جوزا
+                </option>
+                <option className="text-right" value="سرطان">
+                  سرطان
+                </option>
+                <option className="text-right" value="اسد">
+                  اسد
+                </option>
+                <option className="text-right" value="سنبله">
+                  سنبله
+                </option>
+                <option className="text-right" value="میزان">
+                  میزان
+                </option>
+                <option className="text-right" value="عقرب">
+                  عقرب
+                </option>
+                <option className="text-right" value="قوس">
+                  قوس
+                </option>
+                <option className="text-right" value="جدی">
+                  جدی
+                </option>
+                <option className="text-right" value="دلو">
+                  دلو
+                </option>
+                <option className="text-right" value="حوت">
+                  حوت
+                </option>
+              </select>
+            </Grid>
+
+            <Grid item xs={3} sx={{ marginTop: "15px", width: "50%" }}>
+              <input
+                type="number"
+                onChange={handleDay}
+                min="1"
+                max="31"
+                className="block w-32 rounded-md bg-gray-100 text-black border-0 text-xl placeholder:text-gray-500 "
+                placeholder="ورځ"
+              />
+            </Grid>
+
+            <Grid item xs={3} sx={{ marginTop: "15px", width: "50%" }}>
               <div>
                 <div className="relative mt-1 rounded-md shadow-sm ">
                   <input
                     type="text"
                     name="price"
-                    className="block rounded-md bg-gray-100 text-center text-black font-xl border-0 text-2xl py-1.5 pl-7 pr-20 ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 "
+                    className="block w-60 rounded-md bg-gray-100 text-black font-xl border-0 text-xl py-1.5 pl-7 pr-20 ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 "
                     placeholder="نوم ولیکی"
-                    style={{ width: "80%" }}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
               </div>
             </Grid>
+
+            <Grid item xs={2} sx={{ marginTop: "15px", marginRight: "100px" }}>
+              <div className="relative mt-1 mb-2 rounded-md shadow-sm flex flex-end"></div>
+            </Grid>
           </Grid>
         </form>
+
         <TableContainer component={Paper} sx={{ width: "95%", marginLeft: 4 }}>
           <Table
             stickyHeader
@@ -190,9 +282,7 @@ export default function AttendanceTable() {
                 <StyledTableCell sx={{ textAlign: "right" }}>
                   ورځ
                 </StyledTableCell>
-                <StyledTableCell sx={{ textAlign: "right" }}>
-                  
-                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "right" }}></StyledTableCell>
                 <StyledTableCell sx={{ textAlign: "right" }}>
                   داخېلېدل
                 </StyledTableCell>
@@ -220,16 +310,16 @@ export default function AttendanceTable() {
                       {month}
                     </StyledTableCell>
                     <StyledTableCell sx={{ textAlign: "right" }}>
-                      {row.days}
+                      {row.day}
                     </StyledTableCell>
                     <StyledTableCell sx={{ textAlign: "right" }}>
                       {}
                     </StyledTableCell>
                     <StyledTableCell sx={{ textAlign: "right" }}>
-                      {row.time}
+                      {row.entry_time}
                     </StyledTableCell>
                     <StyledTableCell sx={{ textAlign: "right" }}>
-                      {row.time}
+                      {row.exit_time}
                     </StyledTableCell>
                   </StyledTableRow>
                 ))
@@ -244,7 +334,7 @@ export default function AttendanceTable() {
             <TableBody>
               {currentItems ? (
                 !show &&
-                currentItems.map((row, index) => (
+                mapped_arry.map((row, index) => (
                   <StyledTableRow key={index}>
                     <StyledTableCell
                       sx={{ display: "none", textAlign: "right" }}
@@ -269,10 +359,10 @@ export default function AttendanceTable() {
                       {}
                     </StyledTableCell>
                     <StyledTableCell sx={{ textAlign: "right" }}>
-                      {row.time}
+                      {row.entry_time}
                     </StyledTableCell>
                     <StyledTableCell sx={{ textAlign: "right" }}>
-                      {row.time}
+                      {row.exit_time}
                     </StyledTableCell>
                   </StyledTableRow>
                 ))

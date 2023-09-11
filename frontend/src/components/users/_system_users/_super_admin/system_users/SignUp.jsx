@@ -32,7 +32,7 @@ export default function SignUp() {
     }
     if (isSuccess) {
       toast.success("User registered successfully");
-      navigate('/UpdateUser')
+      navigate('/allUser')
       dispatch(reset());
     }
     dispatch(reset());

@@ -93,7 +93,7 @@ export default function AttendanceTable() {
   const [show, setShow] = useState(false);
 
   const itemsPerPage = 50;
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const totalPages = Math.ceil(data ? data.length / itemsPerPage : '');
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

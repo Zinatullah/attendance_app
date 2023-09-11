@@ -23,7 +23,7 @@ const getUsers = asyncHandler(async (req, res) => {
 //////////////////////////////////////////////////////// Monthly report  /////////////////////////////////////////////////////
 const getEmployees = asyncHandler(async (req, res) => {
   const query =
-    "SELECT max(users_count) as employees, sum(attendance_count) as attendances FROM `devices_logs`";
+    "SELECT sum(users_count) as employees, sum(attendance_count) as attendances FROM `devices_logs`";
   connection.query(query, (error, result) => {
     if (error) {
       res.status(400).json({ message: "No logs found" });

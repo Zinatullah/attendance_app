@@ -1,12 +1,12 @@
 var mysql = require("mysql");
 const asyncHandler = require("express-async-handler");
 const ZKLib = require("qr-zklib");
-let zkInstance1 = new ZKLib("192.168.5.20", 4370, 60000, 60000);
-let zkInstance2 = new ZKLib("192.168.5.21", 4370, 60000, 60000);
+let zkInstance1 = new ZKLib("192.168.5.26", 4370, 60000, 60000);
+let zkInstance2 = new ZKLib("192.168.5.36", 4370, 60000, 60000);
 // let zkInstance2 = new ZKLib("192.168.5.69", 4370, 60000, 60000);
-let zkInstance3 = new ZKLib("192.168.5.69", 4370, 60000, 60000);
+let zkInstance3 = new ZKLib("192.168.5.103", 4370, 60000, 60000);
 // let zkInstance3 = new ZKLib("192.168.5.36", 4370, 60000, 60000);
-let zkInstance4 = new ZKLib("192.168.5.23", 4370, 60000, 60000);
+// let zkInstance4 = new ZKLib("192.168.5.23", 4370, 60000, 60000);
 // let zkInstance4 = new ZKLib("192.168.5.169", 4370, 30000, 30000);
 
 const connection = mysql.createConnection({
@@ -194,22 +194,22 @@ const getAttendance = asyncHandler(async (req, res) => {
 
 ////////////////////////////////////        Get Attendance from all devices        ////////////////////////////////////
 const allAttendances = asyncHandler(async (req, res) => {
-  const query = `INSERT INTO all_attendances (name, user_id, year, month, day, entery_time, exit_time) 
-  select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device1_attendances as d, device1_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2 
-  UNION 
-  select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device2_attendances as d, device2_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2 
-  UNION
-  select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device3_attendances as d, device3_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2
-  `;
-  connection.query(query, (error, result) => {
-    if (error) {
-      console.log(error);
-      res.status(400).json({
-        message:
-          "The error occured between All_attendance and three other tables",
-      });
-    }
-  });
+  // const query = `INSERT INTO all_attendances (name, user_id, year, month, day, entery_time, exit_time) 
+  // select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device1_attendances as d, device1_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2 
+  // UNION 
+  // select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device2_attendances as d, device2_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2 
+  // UNION
+  // select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device3_attendances as d, device3_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2
+  // `;
+  // connection.query(query, (error, result) => {
+  //   if (error) {
+  //     console.log(error);
+  //     res.status(400).json({
+  //       message:
+  //         "The error occured between All_attendance and three other tables",
+  //     });
+  //   }
+  // });
 });
 
 ////////////////////////////////////        Get Attendance from all devices        ////////////////////////////////////
@@ -273,7 +273,6 @@ const clearAttendances = asyncHandler(async (req, res) => {
 
 const getAttendanceCount = asyncHandler(async (req, res) => {
   const device_id = req.params.id;
-
   try {
     await zkInstance1.createSocket();
     // await zkInstance2.createSocket();
@@ -286,26 +285,19 @@ const getAttendanceCount = asyncHandler(async (req, res) => {
     const addLogs = (device_id, users, attendance) => {
       const clearQuery = `truncate table device${device_id}_info`;
       connection.query(clearQuery);
-
       const query = `INSERT INTO device${device_id}_info( users_count, attendance_count) VALUES (${users}, ${attendance})`;
-      connection.query(query, (err, result) => {
-        if (err) {
-          console.log(err);
-        }
-      });
+      connection.query(query, (err, result) => { if (err) { console.log(err); res.status(400).json({message: 'ډیټابیس ته ډېټا داخله نشوه'})}});
     };
-
     if (device_id == 1) {
       addLogs(device_id, device1.userCounts, device1.logCounts);
       console.log(device1.userCounts, device1.logCounts);
     } else if (device_id == 2) {
       addLogs(device_id, device2.userCounts, device2.logCounts);
-      console.log(device1.userCounts, device1.logCounts);
+      console.log(device2.userCounts, device2.logCounts);
     } else if (device_id == 3) {
       addLogs(device_id, device3.userCounts, device3.logCounts);
       console.log(device3.userCounts, device3.logCounts);
     }
-
     res.status(201).json({ message: "Success" });
   } catch (e) {
     console.log(e.message);
@@ -314,7 +306,6 @@ const getAttendanceCount = asyncHandler(async (req, res) => {
 });
 
 /////////////////////////////////////////         Get device status       ///////////////////////////////////////////////////
-
 const getDeviceStatus = asyncHandler(async (req, res) => {
   const device_id = req.params.id;
   try {
@@ -334,72 +325,6 @@ const getDeviceStatus = asyncHandler(async (req, res) => {
   }
 });
 
-/////////////////////////////////////////////     Status     /////////////////////////////////////////////////////////
-const getAlldeveicesStatus = asyncHandler(async (req, res) => {
-  try {
-    await zkInstance1.createSocket();
-    await zkInstance2.createSocket();
-    await zkInstance3.createSocket();
-    if (zkInstance1.getInfo()) {
-      console.log(await zkInstance1.getInfo());
-      device1 = true;
-    }
-
-    if (zkInstance2.getInfo()) {
-      console.log(await zkInstance2.getInfo());
-      device2 = true;
-    }
-    if (zkInstance3.getInfo()) {
-      console.log(await zkInstance3.getInfo());
-      device3 = true;
-    }
-    if (device1 && device2 && device3) {
-      res.status(201).json({ message: "All devices connected" });
-    } else {
-      res.status(400).json({ message: `Devices is not connected` });
-    }
-  } catch (e) {
-    console.log(e);
-    res.status(400).json({ message: "All devices are not connected" });
-  }
-});
-
-///////////////////////////////////////////  All Users  ///////////////////////////////////////////////////////////
-
-const getUsersFromAllDevices = asyncHandler(async (req, res) => {
-  try {
-    await zkInstance3.createSocket();
-
-    const device3 = await zkInstance3.getUsers();
-
-    const clearQuery = "truncate table all_users";
-    connection.query(clearQuery, (err, result) => {
-      if (err) {
-        console.log(err);
-        res.status(400).json({ message: "Unknown error occured" });
-      }
-    });
-
-    const addUsers = (data) => {
-      data.map((person) => {
-        const query = `INSERT INTO all_users (user_id, name ) VALUES (${person.userId} , '${person.name}')`;
-        connection.query(query, (err, result) => {
-          if (err) {
-            console.log(err);
-            res.status(400).send(err);
-          }
-        });
-      });
-    };
-
-    addUsers(device3.data);
-
-    res.status(201).json({ message: "Success" });
-  } catch (e) {
-    console.log(e);
-    res.status(400).json({ message: "Users not imported" });
-  }
-});
 
 ///////////////////////////////////////////  All Logs  ///////////////////////////////////////////////////////////
 const getCountAttendancesFromAllDevices = asyncHandler(async (req, res) => {
@@ -424,6 +349,12 @@ const getCountAttendancesFromAllDevices = asyncHandler(async (req, res) => {
   }
   res.status(201).json({ message: "Successfully data inserted" });
 });
+
+
+/////////////////////////////////////////////     Status     /////////////////////////////////////////////////////////
+const getAlldeveicesStatus = asyncHandler(async (req, res) => {});
+///////////////////////////////////////////  All Users  ///////////////////////////////////////////////////////////
+const getUsersFromAllDevices = asyncHandler(async (req, res) => {});
 
 module.exports = {
   getUsers,
