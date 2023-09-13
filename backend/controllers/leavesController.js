@@ -8,6 +8,23 @@ const connection = mysql.createConnection({
   database: "zk",
 });
 
+//////////////////////////////////////////////////////// single User All Leaves  /////////////////////////////////////////////////////
+const singleUserAllLeaves = asyncHandler(async (req, res) => {
+  const { username } = req.body;
+
+  const query = `select * from leave_form where user_id = ${username}`;
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.log(err);
+      res
+        .status(400)
+        .json({ message: "Unknown error occured, please try again" });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
 //////////////////////////////////////////////////////// Update General Leave  /////////////////////////////////////////////////////
 const updateGeneralLeave = asyncHandler(async (req, res) => {
   const { id, month, leave_type, start_date, end_date, info } = req.body;
@@ -54,6 +71,7 @@ const currentMonthGeneralLeaves = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  singleUserAllLeaves,
   updateGeneralLeave,
   removeGeneralLeave,
   currentMonthGeneralLeaves,

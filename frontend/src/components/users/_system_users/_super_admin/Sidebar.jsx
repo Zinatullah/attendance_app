@@ -204,12 +204,6 @@ const Sidebar = () => {
                           <span className="ml-3 pr-5">ثبت شوي کار کوونکي</span>
                         </span>
                       </Link>
-                      <Link to="/users">
-                        <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
-                          <Diversity3Icon />
-                          <span className="ml-3 pr-5">ټول کار کوونکي</span>
-                        </span>
-                      </Link>
                     </Typography>
                   </AccordionDetails>
                 </Accordion>
@@ -348,6 +342,12 @@ const Sidebar = () => {
                   </AccordionSummary>
                   <AccordionDetails>
                     <Typography dir="rtl">
+                      <Link to="/users">
+                        <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
+                          <Diversity3Icon />
+                          <span className="ml-3 pr-5">ځانګړی کار کوونکي</span>
+                        </span>
+                      </Link>
                       <Link to="/currentreport">
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <SummarizeIcon />
@@ -364,12 +364,6 @@ const Sidebar = () => {
                         <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
                           <AssessmentIcon />
                           <span className="ml-3 pr-5">میاشتنی راپور</span>
-                        </span>
-                      </Link>
-                      <Link to="/currentmonth">
-                        <span className="flex items-center p-1 pr-5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-400 dark:hover:bg-gray-700">
-                          <AssessmentIcon />
-                          <span className="ml-3 pr-5">اوسنی میاشت راپور</span>
                         </span>
                       </Link>
                     </Typography>

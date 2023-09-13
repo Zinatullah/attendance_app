@@ -92,13 +92,13 @@ const LeaveFrom = ({ username, handleClose }) => {
                 <option className="text-right" disabled value="">
                   د رخصتی ډول انتخاب کړئ
                 </option>
-                <option value={1}>حج</option>
-                <option value={2}>تفریحی</option>
-                <option value={3}>مریضی ولادی</option>
-                <option value={4}>مریضی</option>
-                <option value={5}>ضرورت</option>
-                <option value={6}>کسر معاش</option>
-                <option value={7}>خدمتی</option>
+                <option value="حج">حج</option>
+                <option value="تفریحی">تفریحی</option>
+                <option value="ولادی مریضی">ولادی مریضی</option>
+                <option value="مریضی">مریضی</option>
+                <option value="ضروری">ضروری</option>
+                <option value="کسر معاش"> کسر معاش</option>
+                <option value="خدمتی">خدمتی</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <svg className="fill-current h-4 w-4" viewBox="0 0 20 20">

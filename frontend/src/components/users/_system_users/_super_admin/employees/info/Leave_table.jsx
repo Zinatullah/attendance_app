@@ -16,6 +16,7 @@ import Grid from "@mui/material/Grid";
 import { useState, useEffect } from "react";
 
 import LeaveFrom from "./../leaves/LeaveFrom";
+import AllLeaves from "../leaves/All_leaves";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -55,6 +56,7 @@ export default function AttendanceTable({ users }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [show, setShow] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const [opens, setOpens] = React.useState(false);
   const [user, setUser] = useState();
 
   const itemsPerPage = 50;
@@ -97,8 +99,13 @@ export default function AttendanceTable({ users }) {
     setOpen(true);
   };
 
+  const handleClickOpens = () => {
+    setOpens(true);
+  };
+
   const handleClose = () => {
     setOpen(false);
+    setOpens(false);
   };
 
   return (
@@ -171,12 +178,8 @@ export default function AttendanceTable({ users }) {
                       >
                         د رخصتی فورم
                       </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{ marginRight: "5px" }}
-                      >
-                        ټوله رخصتی کتل
+                      <Button variant="contained" color="secondary">
+                        <Link to={`/allleaves/${row.user_id}`}>ټوله رخصتي </Link>
                       </Button>
                     </StyledTableCell>
                   </StyledTableRow>
@@ -205,7 +208,7 @@ export default function AttendanceTable({ users }) {
                   <StyledTableCell style={{ textAlign: "center" }}>
                     <Button
                       variant="contained"
-                      color="secondary"
+                      color="error"
                       sx={{ marginLeft: "5px" }}
                       onClick={() => {
                         handleClickOpen();
@@ -214,12 +217,8 @@ export default function AttendanceTable({ users }) {
                     >
                       د رخصتی فورم
                     </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      sx={{ marginRight: "5px" }}
-                    >
-                      ټوله رخصتی کتل
+                    <Button variant="contained" color="success">
+                      <Link to={`/allleaves/${row.user_id}`}>ټوله رخصتي </Link>
                     </Button>
                   </StyledTableCell>
                 </StyledTableRow>
@@ -281,6 +280,33 @@ export default function AttendanceTable({ users }) {
           </DialogActions>
         </Dialog>
       </React.Fragment>
+
+      {/* <React.Fragment>
+        <Dialog fullWidth open={opens} maxWidth="md" onClose={handleClose}>
+          <DialogTitle className="text-center bg-teal-700 text-white">
+            د رخصتی فورم
+          </DialogTitle>
+          <DialogContent>
+            <Box
+              noValidate
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                m: "auto",
+                width: "fit-content",
+              }}
+            >
+              <AllLeaves
+                username={user ? user : ""}
+                handleClose={handleClose}
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>بندول</Button>
+          </DialogActions>
+        </Dialog>
+      </React.Fragment> */}
     </>
   );
 }

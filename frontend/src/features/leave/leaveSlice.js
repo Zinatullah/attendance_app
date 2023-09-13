@@ -10,6 +10,23 @@ const initialState = {
   message: "",
 };
 
+// single User All Leaves
+export const singleUserAllLeaves = createAsyncThunk(
+  "leaves/singleUserAllLeaves",
+  async (user, thunkAPI) => {
+    try {
+      return await leaveService.singleUserAllLeaves(user);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 // Update General Leave
 export const updateGeneralLeave = createAsyncThunk(
   "leaves/updateGeneralLeave",

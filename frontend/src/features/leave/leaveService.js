@@ -3,6 +3,15 @@ import axios from 'axios'
 const API_URL = '/api/leaves/'
 
 
+// single User All Leaves
+const singleUserAllLeaves = async (userData) => {
+
+  console.log(userData)
+  
+  const response = await axios.put(API_URL + 'singleUserAllLeaves', userData)
+  return response.data
+}
+
 // Update General Leave  
 const updateGeneralLeave = async (userData) => {
   const response = await axios.put(API_URL + 'updateGeneralLeave', userData)
@@ -21,6 +30,7 @@ const currentMonthGeneralLeaves = async (userData) => {
   return response.data
 }
 const authService = {
+  singleUserAllLeaves,
   updateGeneralLeave,
   removeGeneralLeave,
   currentMonthGeneralLeaves

@@ -28,8 +28,6 @@ const Center = () => {
     getInfo();
   }, []);
 
-  console.log(userCounter, employeesCounter);
-
   let gregorian_date = new Date().toLocaleDateString("En-US", {
     weekday: "long",
     year: "numeric",
@@ -281,7 +279,7 @@ const Center = () => {
                 </div>
                 <div className="mt-8">
                   <p className="text-xl font-semibold my-2 text-black">
-                    Business Compare
+                    {/* Business Compare */}
                   </p>
 
                   <div className="border-t-2 "></div>
@@ -289,7 +287,7 @@ const Center = () => {
                   <div className="flex justify-between text-black">
                     <div className="my-2">
                       <p className="font-semibold text-base mb-2">
-                        Team Member
+                        {/* Team Member */}
                       </p>
                     </div>
                   </div>

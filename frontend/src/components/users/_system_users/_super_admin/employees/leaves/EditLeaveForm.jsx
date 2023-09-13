@@ -1,4 +1,4 @@
- /* eslint-disable */
+/* eslint-disable */
 import React, { useEffect } from "react";
 import { useState } from "react";
 import {
@@ -8,7 +8,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-const EditLeaveForm = ({ user , handleClose,handleVacation, name }) => {
+const EditLeaveForm = ({ user, handleClose, handleVacation, name }) => {
   const [month, setMonth] = useState();
   const [leaveType, setLeaveType] = useState("");
 
@@ -48,7 +48,7 @@ const EditLeaveForm = ({ user , handleClose,handleVacation, name }) => {
 
   return (
     <>
-      <form className="w-full max-w-lg mt-5" onSubmit={handleSubmit} dir='rtl'>
+      <form className="w-full max-w-lg mt-5" onSubmit={handleSubmit} dir="rtl">
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
             <label
@@ -82,25 +82,16 @@ const EditLeaveForm = ({ user , handleClose,handleVacation, name }) => {
                 defaultValue={user.leave_type}
                 onChange={handleChangeLeaveType}
               >
-                <option
-                  defaultValue={user.leave_type}
-                  className="bg-red-200"
-                >
-                  {(user.leave_type == 1 ? "حج" : "") ||
-                    (user.leave_type == 2 ? "تفریحي" : "") ||
-                    (user.leave_type == 3 ? "مریضی ولادی" : "") ||
-                    (user.leave_type == 4 ? "کسر معاش" : "") ||
-                    (user.leave_type == 5 ? "ضرورت" : "") ||
-                    (user.leave_type == 6 ? "کسر معاش" : "") ||
-                    (user.leave_type == 7 ? "خدمتی" : "")}
+                <option defaultValue={user.leave_type} className="bg-red-200">
+                  {user.leave_type}
                 </option>
-                <option value={1}>حج</option>
-                <option value={2}>تفریحی</option>
-                <option value={3}>مریضی ولادی</option>
-                <option value={4}>مریضی</option>
-                <option value={5}>ضرورت</option>
-                <option value={6}>کسر معاش</option>
-                <option value={7}>خدمتی</option>
+                <option value="حج">حج</option>
+                <option value="تفریحی">تفریحی</option>
+                <option value="ولادی مریضی">ولادی مریضی</option>
+                <option value="مریضی">مریضی</option>
+                <option value="ضروری">ضروری</option>
+                <option value="کسر معاش"> کسر معاش</option>
+                <option value="خدمتی">خدمتی</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <svg className="fill-current h-4 w-4" viewBox="0 0 20 20">

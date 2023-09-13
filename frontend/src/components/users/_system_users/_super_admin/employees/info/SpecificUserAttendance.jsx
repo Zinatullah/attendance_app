@@ -6,6 +6,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
+import DownloadIcon from "@mui/icons-material/Download";
+const XLSX = require("xlsx");
+
 import {
   getsingleuserattendance,
   getsingleuser,
@@ -236,8 +239,6 @@ const SpecificUserAttendance = () => {
     setFridays(get_friday.payload);
   };
 
-  console.log(previousVacation);
-
   useEffect(() => {
     handleSubmit();
   }, [userId, month, dispatch]);
@@ -284,13 +285,77 @@ const SpecificUserAttendance = () => {
     });
   }
 
+  const handleDownload = () => {
+    download_file();
+  };
+
+  let Download_File_array = [];
+
+  days.map((element) => {
+    let before_time = element.entery_time ? element.entery_time : "";
+    before_time = before_time.split(":")[0];
+
+    let after_time = element.exit_time ? element.exit_time : "";
+    after_time = after_time.split(":")[0];
+
+    if (before_time < 12 && after_time > 12) {
+      const { timestamp, ...modifiedObject } = element;
+
+      element = modifiedObject;
+      const arrangedObject = {
+        day: element.day,
+        id: element.id,
+        name: element.name,
+        year: element.year,
+        month: element.month,
+        entery_time: element.entery_time,
+        exit_time: element.exit_time,
+      };
+      Download_File_array.push(arrangedObject);
+    }
+  });
+
+  const download_file = async () => {
+    const worksheet = await XLSX.utils.json_to_sheet(Download_File_array);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Dates");
+
+    XLSX.utils.sheet_add_aoa(
+      worksheet,
+      [["ورځ", "آیډي", "نوم", "کال", "میاشت", "داخلېدل", "وتل"]],
+      {
+        origin: "A1",
+      }
+    );
+
+    const max_width = employee.reduce((w, r) => Math.max(w, r.name.length), 10);
+    worksheet["!cols"] = [{ wch: max_width }];
+
+    const file_name = `${month}.xlsx`;
+    XLSX.writeFile(workbook, file_name, { compression: true });
+  };
+
   return (
     <>
       <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
         <div className="w-full text-white relative">
           <form>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={2} sx={{ marginLeft: "20px" }}>
+                <div className="relative mt-1 mb-2 rounded-md shadow-sm flex flex-end text-xl">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    fullWidth
+                    size="large"
+                    onClick={handleDownload}
+                  >
+                    اکسل فایل
+                    <DownloadIcon sx={{ marginRight: "10px" }} />
+                  </Button>
+                </div>
+              </Grid>
+              <Grid item xs={8}>
                 <select
                   value={month}
                   onChange={handleChange}
@@ -298,7 +363,7 @@ const SpecificUserAttendance = () => {
                   style={{
                     marginLeft: "50px",
                     marginRight: "50px",
-                    width: "80%",
+                    width: "90%",
                   }}
                 >
                   <option className="text-right pr-12" value="" disabled>
@@ -438,13 +503,25 @@ const SpecificUserAttendance = () => {
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
               <TableRow>
-                <StyledTableCell sx={{textAlign: 'center'}} scope="row">نمبر</StyledTableCell>
-                <StyledTableCell sx={{textAlign: 'center'}}>د رخصتی ډول</StyledTableCell>
-                <StyledTableCell sx={{textAlign: 'center'}}>د شروع وخت</StyledTableCell>
-                <StyledTableCell sx={{textAlign: 'center'}}>ختمېدل</StyledTableCell>
-                <StyledTableCell sx={{textAlign: 'center'}}>ورځې</StyledTableCell>
-                <StyledTableCell sx={{textAlign: 'center'}}>میاشت</StyledTableCell>
-                <StyledTableCell sx={{textAlign: 'center'}}>
+                <StyledTableCell sx={{ textAlign: "center" }} scope="row">
+                  نمبر
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "center" }}>
+                  د رخصتی ډول
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "center" }}>
+                  د شروع وخت
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "center" }}>
+                  ختمېدل
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "center" }}>
+                  ورځې
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "center" }}>
+                  میاشت
+                </StyledTableCell>
+                <StyledTableCell sx={{ textAlign: "center" }}>
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;معلومات
                 </StyledTableCell>
                 <StyledTableCell>نور معلومات</StyledTableCell>
@@ -455,15 +532,7 @@ const SpecificUserAttendance = () => {
                 previousVacation.map((element, index) => (
                   <StyledTableRow key={index}>
                     <StyledTableCell>{index + 1}</StyledTableCell>
-                    <StyledTableCell>
-                      {(element.leave_type == 1 ? "حج" : "") ||
-                        (element.leave_type == 2 ? "تفریحي" : "") ||
-                        (element.leave_type == 3 ? "مریضی ولادی" : "") ||
-                        (element.leave_type == 4 ? "کسر معاش" : "") ||
-                        (element.leave_type == 5 ? "ضرورت" : "") ||
-                        (element.leave_type == 6 ? "کسر معاش" : "") ||
-                        (element.leave_type == 7 ? "خدمتی" : "")}
-                    </StyledTableCell>
+                    <StyledTableCell>{element.leave_type}</StyledTableCell>
                     <StyledTableCell>{element.start_date}</StyledTableCell>
                     <StyledTableCell>{element.end_date}</StyledTableCell>
                     <StyledTableCell>
@@ -476,18 +545,18 @@ const SpecificUserAttendance = () => {
                     <StyledTableCell>
                       <Button
                         style={{ marginLeft: "5px" }}
-                        variant="outlined"
+                        variant="contained"
                         onClick={() => {
                           handleClickOpen(element);
                           setUser(element);
                         }}
-                        color="secondary"
+                        color="success"
                       >
                         تغیرول
                       </Button>
                       <Button
-                        variant="outlined"
-                        color="warning"
+                        variant="contained"
+                        color="error"
                         onClick={(e) => {
                           handleClickRemove(element);
                         }}

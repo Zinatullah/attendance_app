@@ -156,7 +156,7 @@ const current_report = asyncHandler(async (req, res) => {
     UNION
     SELECT u.name, d.month, d.day, d.time  FROM device3_attendances as d, all_users as u WHERE day = ${today} and month = '${current_month}' and year = ${year} and d.user_id = u.user_id group by d.user_id`;
 
-    // console.log(query)
+    // console.log(grandQuery)
   connection.query(query, (error, result) => {
     if (error) {
       res.status(400).json({ message: "Result not found!!!" });
@@ -207,7 +207,11 @@ const getDailyReport = asyncHandler(async (req, res) => {
 const getMonthReport = asyncHandler(async (req, res) => {
   const { current_month, previous_month, year } = req.body;
 
+  console.log(current_month, previous_month, "From here")
+
   const query = `create or replace view monthly_attendance as SELECT id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id HAVING count(day) >= 2  UNION select id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id HAVING count(day) >= 2`;
+
+  
   connection.query(query, (error) => {
     if (error) {
       console.log(error);
@@ -286,7 +290,8 @@ const getMonthReport = asyncHandler(async (req, res) => {
 const getTwoMonths = asyncHandler(async (req, res) => {
   const { current_month, previous_month, year } = req.body;
 
-  const query = `create or replace view monthly_attendance as SELECT id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id HAVING count(day) >= 2  UNION select id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id HAVING count(day) >= 2`;
+  const query = `create or replace view monthly_attendance as SELECT id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${previous_month}' and day >= 15 and year = ${year} group by day, user_id  UNION select id, name, user_id, year, month, day, entery_time, exit_time FROM all_attendances where month = '${current_month}' and day < 15 and year = ${year} group by day, user_id`;
+
   connection.query(query, (error) => {
     if (error) {
       console.log(error);
@@ -371,9 +376,14 @@ const grandReport = asyncHandler(async (req, res) => {
     }
   });
 
-  const grandQuery =
-    "create or replace view final_report as SELECT t.name, t.month, t.user_id, t.days, t.full_time, t.half_time, t.generalLeaveDays, t.fridays, person_vacation.vacation_days from total as t left join person_vacation on t.user_id = person_vacation.user_id";
-  connection.query(grandQuery, (error, result) => {
+  // const grandQuery =
+    // "create or replace view final_report as SELECT t.name, t.month, t.user_id, t.days, t.full_time, t.half_time, t.generalLeaveDays, t.fridays, person_vacation.leave_type, person_vacation.vacation_days from total as t left join person_vacation on t.user_id = person_vacation.user_id";
+
+
+    const newQuery = "create or replace view final_report as SELECT t.name, t.month, t.user_id, t.days, t.full_time, t.half_time, t.generalLeaveDays, t.fridays, SUM(person_vacation.vacation_days) AS total_leave_days, GROUP_CONCAT(COALESCE(CONCAT(person_vacation.leave_type, ' : ', vacation_days))) AS leave_types FROM total AS t LEFT JOIN person_vacation ON t.user_id = person_vacation.user_id GROUP BY t.name, t.month, t.user_id, t.days, t.full_time, t.half_time, t.generalLeaveDays, t.fridays order by user_id"
+
+    
+  connection.query(newQuery, (error, result) => {
     if (error) {
       console.log(error);
       res

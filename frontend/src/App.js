@@ -49,6 +49,7 @@ import CurrentMonthReport from './components/users/_system_users/_super_admin/pa
 import AllEmployeesLeaveForm from './components/users/_system_users/_super_admin/pages/All_employees_leave_form';
 import Leave_specific_user from './components/users/_system_users/_super_admin/pages/Leave_specific_User';
 import AllEmployeesInfo from './components/users/_system_users/_super_admin/pages/AllEmployeesInfo';
+import AllLeaves from "./components/users/_system_users/_super_admin/pages/AllLeaves";
 
 
 
@@ -73,6 +74,7 @@ function App() {
           <Route path='/user/:id' element= {<SpecificUser />} />
 
           <Route path='/allemployee' element= {< Leaev_AllEmployees/>} />
+          <Route path='/allleaves/:id' element= {< AllLeaves/>} />
           <Route path='/SpecificUser/:id' element= {<Leave_specific_user />} />
           <Route path='/generalLeaveCheck' element= {<GeneralLeaveCheck />} />
           <Route path='/Leaveform' element= {<AllEmployeesLeaveForm />} />

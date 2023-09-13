@@ -10,12 +10,8 @@ const Employees = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
-  // const { isError, isSuccess, message } = useSelector(
-  //   (state) => state.attendance
-  // );
 
   const { user } = useSelector((state) => state.auth);
-
   useEffect(() => {
     if (!user) {
       navigate("/login");

@@ -21,7 +21,7 @@ const getSingleUser = asyncHandler(async (req, res) => {
 });
 
 const getMultipleUsers = asyncHandler(async (req, res) => {
-  const query = "select * from all_users";
+  const query = "select * from all_users ";
   connection.query(query, (err, result) => {
     if (err) {
       res.json({ message: "Users not found, an error occured!!!" });
@@ -34,11 +34,6 @@ const getMultipleUsers = asyncHandler(async (req, res) => {
 
 const getSingleUserAttendance = asyncHandler(async (req, res) => {
   const { id, month } = req.body;
-  const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-
-  let year = new Date().toLocaleDateString("fa-af");
-  year = p2e(year.split("/")[0]);
-
   const query_important = `select * from all_attendances where user_id =${id}  and month = '${month}'`;
   connection.query(query_important, (err, result) => {
     if (err) {
@@ -48,8 +43,6 @@ const getSingleUserAttendance = asyncHandler(async (req, res) => {
       res.status(201).json(result);
     }
   });
-
-  // res.send("Get single user attendance");
 });
 
 //////////////////////////////////////////////////////// Leave Form /////////////////////////////////////////////////////
@@ -88,7 +81,8 @@ const vacation = asyncHandler(async (req, res) => {
 const getAllvacation = asyncHandler (async (req, res)=>{
   const {current_month} = req.body
 
-  const query = `create or replace view person_vacation as SELECT user_id, sum(end_date-start_date) as vacation_days FROM leave_form where month = '${current_month}' GROUP by user_id`
+  const query = `create or replace view person_vacation as SELECT user_id, leave_type, sum(end_date-start_date) as vacation_days FROM leave_form where month = '${current_month}' GROUP by user_id, leave_type`
+  
   connection.query(query, (error, result)=>{
     if(error){
       console.log(error);
@@ -136,7 +130,7 @@ const EditleaveForm = asyncHandler(async (req, res) => {
       console.log(err);
       res.status(404).json({ message: "User not matched" });
     } else {
-      const query = ` UPDATE leave_form SET leave_type=${leave_type}, month='${month}', start_date=${start_date}, end_date=${end_date}, info='${info}' WHERE id = ${id}`;
+      const query = ` UPDATE leave_form SET leave_type='${leave_type}', month='${month}', start_date=${start_date}, end_date=${end_date}, info='${info}' WHERE id = ${id}`;
       connection.query(query, (err, result) => {
         if (err) {
           console.log(err);

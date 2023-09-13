@@ -47,9 +47,6 @@ export default function SignIn() {
     if (isError) {
       toast.error(message);
     }
-    if (isSuccess) {
-      toast.success("You have logged in successfully")
-    }
     dispatch(reset());
   }, [isError, isSuccess, message, dispatch]);
 

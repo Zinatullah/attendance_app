@@ -121,7 +121,7 @@ export default function AttendanceTable() {
     setShow(false);
     get_daily_report();
     reset();
-  }, [month]);
+  }, [month, today]);
 
   const filterData = () => {
     const filteredData = mapped_arry.filter((item) =>
@@ -271,7 +271,7 @@ export default function AttendanceTable() {
             <TableHead>
               <TableRow>
                 <StyledTableCell sx={{ textAlign: "right" }} scope="row">
-                  آیډی
+                  نمبر
                 </StyledTableCell>
                 <StyledTableCell sx={{ textAlign: "right" }}>
                   نوم

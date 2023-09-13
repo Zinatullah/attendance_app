@@ -194,10 +194,10 @@ const getAttendance = asyncHandler(async (req, res) => {
 
 ////////////////////////////////////        Get Attendance from all devices        ////////////////////////////////////
 const allAttendances = asyncHandler(async (req, res) => {
-  // const query = `INSERT INTO all_attendances (name, user_id, year, month, day, entery_time, exit_time) 
-  // select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device1_attendances as d, device1_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2 
-  // UNION 
-  // select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device2_attendances as d, device2_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2 
+  // const query = `INSERT INTO all_attendances (name, user_id, year, month, day, entery_time, exit_time)
+  // select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device1_attendances as d, device1_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2
+  // UNION
+  // select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device2_attendances as d, device2_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2
   // UNION
   // select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device3_attendances as d, device3_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2
   // `;
@@ -221,14 +221,26 @@ const getAttendancesFromAllDevices = asyncHandler(async (req, res) => {
       res.status(400).json({ message: " Table not found!!!" });
     }
   });
-  const query = `INSERT INTO all_attendances (name, user_id, year, month, day, entery_time, exit_time) 
+  const clear_query1 = "truncate table filtered_attendance";
+  connection.query(clear_query1, (error, result) => {
+    if (error) {
+      console.log(error);
+      res.status(400).json({ message: " Table not found!!!" });
+    }
+  });
+  const query = `INSERT INTO filtered_attendance (name, user_id, year, month, day, entery_time, exit_time) 
   select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device1_attendances as d, all_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2 
   UNION 
   select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device2_attendances as d, all_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2 
   UNION
   select u.name, d.user_id, d.year, d.month, d.day, min(d.time), max(d.time) from device3_attendances as d, all_users as u where d.year = '1402'and u.user_id = d.user_id GROUP by user_id, d.day, d.month, d.year HAVING count(day) >= 2
   `;
-  connection.query(query, (error, result) => {
+
+  connection.query(query);
+
+  const filter_query = `INSERT INTO all_attendances(id, name, user_id, year, month, day, entery_time, exit_time) select id, name, user_id, year, month, day, entery_time, exit_time from filtered_attendance where entery_time < '08:16:00' and exit_time > '12:00:00'`
+
+  connection.query(filter_query, (error, result) => {
     if (error) {
       console.log(error);
       res.status(400).json({
@@ -286,7 +298,12 @@ const getAttendanceCount = asyncHandler(async (req, res) => {
       const clearQuery = `truncate table device${device_id}_info`;
       connection.query(clearQuery);
       const query = `INSERT INTO device${device_id}_info( users_count, attendance_count) VALUES (${users}, ${attendance})`;
-      connection.query(query, (err, result) => { if (err) { console.log(err); res.status(400).json({message: 'ډیټابیس ته ډېټا داخله نشوه'})}});
+      connection.query(query, (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(400).json({ message: "ډیټابیس ته ډېټا داخله نشوه" });
+        }
+      });
     };
     if (device_id == 1) {
       addLogs(device_id, device1.userCounts, device1.logCounts);
@@ -325,7 +342,6 @@ const getDeviceStatus = asyncHandler(async (req, res) => {
   }
 });
 
-
 ///////////////////////////////////////////  All Logs  ///////////////////////////////////////////////////////////
 const getCountAttendancesFromAllDevices = asyncHandler(async (req, res) => {
   try {
@@ -350,9 +366,9 @@ const getCountAttendancesFromAllDevices = asyncHandler(async (req, res) => {
   res.status(201).json({ message: "Successfully data inserted" });
 });
 
-
 /////////////////////////////////////////////     Status     /////////////////////////////////////////////////////////
 const getAlldeveicesStatus = asyncHandler(async (req, res) => {});
+
 ///////////////////////////////////////////  All Users  ///////////////////////////////////////////////////////////
 const getUsersFromAllDevices = asyncHandler(async (req, res) => {});
 

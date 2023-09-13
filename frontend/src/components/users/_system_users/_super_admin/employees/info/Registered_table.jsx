@@ -1,4 +1,4 @@
- /* eslint-disable */
+/* eslint-disable */
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -147,9 +147,6 @@ export default function Registered_table({ users }) {
           <TableHead>
             <TableRow>
               <StyledTableCell style={{ textAlign: "right" }} scope="row">
-                نمبر
-              </StyledTableCell>
-              <StyledTableCell style={{ textAlign: "right" }} scope="row">
                 آیډي
               </StyledTableCell>
               <StyledTableCell style={{ textAlign: "right" }}>
@@ -175,13 +172,10 @@ export default function Registered_table({ users }) {
                 filteredData.map((row, index) => (
                   <StyledTableRow key={index}>
                     <StyledTableCell
+                      style={{ textAlign: "right" }}
                       component="th"
                       scope="row"
-                      style={{ textAlign: "right" }}
                     >
-                      {index + 1}
-                    </StyledTableCell>
-                    <StyledTableCell style={{ textAlign: "right" }}>
                       {row.user_id}
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "right" }}>
@@ -236,14 +230,9 @@ export default function Registered_table({ users }) {
               ? !show &&
                 currentItems.map((row, index) => (
                   <StyledTableRow key={index}>
-                    <StyledTableCell
+                    <StyledTableCell style={{ textAlign: "right" }} 
                       component="th"
-                      scope="row"
-                      style={{ textAlign: "right" }}
-                    >
-                      {index + 1}
-                    </StyledTableCell>
-                    <StyledTableCell style={{ textAlign: "right" }}>
+                      scope="row">
                       {row.user_id}
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "right" }}>

@@ -86,9 +86,10 @@ export default function GeneralLeaves({}) {
   useEffect(() => {
     general_leave_check();
     reset();
-  }, [isSuccess, count]);
+  }, [isSuccess, count, open, opens]);
 
   const handleClose = () => {
+    general_leave_check();
     setOpen(false);
   };
 

@@ -159,7 +159,7 @@ export default function CurrentReport() {
         dir="rtl"
       >
         <div className="text-center text-black text-3xl mb-5 mb-5">
-          <h1>اوسنی راپور</h1>
+          <h1>سهارنی راپور</h1>
         </div>
 
         <form>

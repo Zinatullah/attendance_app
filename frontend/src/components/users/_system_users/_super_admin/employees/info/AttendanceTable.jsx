@@ -1,4 +1,4 @@
- /* eslint-disable */
+/* eslint-disable */
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -13,7 +13,7 @@ import Slide from "@mui/material/Slide";
 import { Link } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
 import Grid from "@mui/material/Grid";
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -67,7 +67,6 @@ export default function AttendanceTable({ users }) {
     setFilteredData(filteredData);
   };
 
-
   useEffect(() => {
     if (searchQuery.length == 0) {
       setShow(false);
@@ -79,18 +78,16 @@ export default function AttendanceTable({ users }) {
     filterData();
   }, [searchQuery]);
 
-  useEffect(()=>{
-    console.log("Test")
-    setData(users)
-  }, [users])
-  console.log(data)
+  useEffect(() => {
+    setData(users);
+  }, [users]);
 
   return (
     <>
       <form>
         <Grid container spacing={2}>
           <Grid item xs={2}></Grid>
-          <Grid item xs={10} sx={{ marginTop: "15px"  , marginBottom: '15px'}}>
+          <Grid item xs={10} sx={{ marginTop: "15px", marginBottom: "15px" }}>
             <div>
               <div className="relative mt-1 rounded-md shadow-sm ">
                 <input
@@ -98,14 +95,13 @@ export default function AttendanceTable({ users }) {
                   name="price"
                   className="block rounded-md bg-gray-100 text-center text-black font-xl border-0 text-2xl py-1.5 pl-7 pr-20 ring-1 ring-inset ring-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 "
                   placeholder="نوم ولیکی"
-                  style={{width: '80%'}}
+                  style={{ width: "80%" }}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
           </Grid>
-
         </Grid>
       </form>
       <TableContainer component={Paper} dir="rtl" className="text-right">
@@ -121,34 +117,49 @@ export default function AttendanceTable({ users }) {
               <StyledTableCell style={{ textAlign: "right" }}>
                 د پلار نوم
               </StyledTableCell>
+              <StyledTableCell style={{ textAlign: "right" }}>
+                تخلص
+              </StyledTableCell>
+              <StyledTableCell style={{ textAlign: "right" }}>
+                څانګه
+              </StyledTableCell>
               <StyledTableCell style={{ textAlign: "center" }}>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; نور معلومات
               </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredData ? show && filteredData.map((row, index) => (
-              <StyledTableRow key={index}>
-                <StyledTableCell
-                  component="th"
-                  scope="row"
-                  style={{ textAlign: "right" }}
-                >
-                  {index + 1}
-                </StyledTableCell>
-                <StyledTableCell style={{ textAlign: "right" }}>
-                  {row.name}
-                </StyledTableCell>
-                <StyledTableCell style={{ textAlign: "right" }}>
-                  {row.name}
-                </StyledTableCell>
-                <StyledTableCell style={{ textAlign: "center" }}>
+            {filteredData
+              ? show &&
+                filteredData.map((row, index) => (
+                  <StyledTableRow key={index}>
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      style={{ textAlign: "right" }}
+                    >
+                      {index + 1}
+                    </StyledTableCell>
+                    <StyledTableCell style={{ textAlign: "right" }}>
+                      {row.name}
+                    </StyledTableCell>
+                    <StyledTableCell style={{ textAlign: "right" }}>
+                      {row.name}
+                    </StyledTableCell>
+                    <StyledTableCell
+                      style={{ textAlign: "right" }}
+                    ></StyledTableCell>
+                    <StyledTableCell
+                      style={{ textAlign: "right" }}
+                    ></StyledTableCell>
+                    <StyledTableCell style={{ textAlign: "center" }}>
                   <Button variant="outlined" color="secondary">
                     <Link to={`/SpecificUser/${row.user_id}`}>معلومات</Link>
                   </Button>
                 </StyledTableCell>
-              </StyledTableRow>
-            )): console.log("Test")}
+                  </StyledTableRow>
+                ))
+              : console.log("Test")}
           </TableBody>
 
           <TableBody>
@@ -168,6 +179,10 @@ export default function AttendanceTable({ users }) {
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "right" }}>
                       {row.name}
+                    </StyledTableCell>
+                    <StyledTableCell style={{ textAlign: "right" }}>
+                    </StyledTableCell>
+                    <StyledTableCell style={{ textAlign: "right" }}>
                     </StyledTableCell>
                     <StyledTableCell style={{ textAlign: "center" }}>
                       <Button variant="outlined" color="secondary">

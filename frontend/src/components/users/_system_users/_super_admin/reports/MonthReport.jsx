@@ -1,4 +1,4 @@
- /* eslint-disable */
+/* eslint-disable */
 
 import * as React from "react";
 import { styled } from "@mui/material/styles";
@@ -18,9 +18,9 @@ import {
   reset,
   grandReport,
 } from "../../../../../features/report/reportSlice";
-import { getAllvacation } from "./../../../../../features/attendance/attendanceSlice";
+import { getAllvacation } from "../../../../../features/attendance/attendanceSlice";
 
-import { currentMonthGeneralLeaves } from "./../../../../../features/leave/leaveSlice";
+import { currentMonthGeneralLeaves } from "../../../../../features/leave/leaveSlice";
 
 import Button from "@mui/material/Button";
 
@@ -65,7 +65,9 @@ const MONTHS = [
 ];
 
 const p2e = (s) => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-export default function AttendanceTable() {
+var complete_month = 0;
+
+export default function MonthReport() {
   let current_month = new Date();
   current_month = current_month.toLocaleDateString("Fa-AF", {
     year: "numeric",
@@ -93,7 +95,7 @@ export default function AttendanceTable() {
   const [show, setShow] = useState(false);
 
   const itemsPerPage = 50;
-  const totalPages = Math.ceil(data ? data.length / itemsPerPage : '');
+  const totalPages = Math.ceil(data ? data.length / itemsPerPage : "");
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -128,16 +130,21 @@ export default function AttendanceTable() {
 
   const get_monthly_report = async () => {
     const regular_days = await dispatch(getTwoMonths(month_data));
+
     const person_vacation = await dispatch(getAllvacation(month_data));
     setPersonVacation(person_vacation.payload);
+
     const general_vacation = await dispatch(
       currentMonthGeneralLeaves(month_data)
     );
     setGeneralVacation(general_vacation.payload);
+
     const off_days = await dispatch(getFridays(month_data));
     setOffDays(off_days.payload);
+
     const rep = await dispatch(grandReport());
     setData(rep.payload);
+
     setPage(1);
     handleChanges(1);
     setCurrentPage(1);
@@ -176,18 +183,71 @@ export default function AttendanceTable() {
 
   let Download_File_array = [];
 
-  data.map((element) => {
-    const my_object = {
-      ...element,
-      month: current_month,
-      total_dyas:
-        element.days +
-        element.fridays +
-        element.vacation_days +
-        element.generalLeaveDays,
-    };
-    Download_File_array.push(my_object);
-  });
+  //   `
+  //   {
+  //     "name": ".NaseerAmeeri",
+  //     "month": "اسد",
+  //     "user_id": 476,
+  //     "days": 21,
+  //     "full_time": 21,
+  //     "half_time": 0,
+  //     "generalLeaveDays": null,
+  //     "fridays": 4,
+  //     "total_leave_days": null,
+  //     "leave_types": "No Leave"
+  // }
+  // `;
+
+  useEffect(() => {
+    if (current_month == "حمل") {
+      complete_month = 31;
+    } else if (current_month == "ثور") {
+      complete_month = 31;
+    } else if (current_month == "جوزا") {
+      complete_month = 31;
+    } else if (current_month == "سرطان") {
+      complete_month = 31;
+    } else if (current_month == "اسد") {
+      complete_month = 31;
+    } else if (current_month == "سنبلهٔ") {
+      complete_month = 31;
+    } else if (current_month == "میزان") {
+      complete_month = 30;
+    } else if (current_month == "عقرب") {
+      complete_month = 30;
+    } else if (current_month == "قوس") {
+      complete_month = 30;
+    } else if (current_month == "جدی") {
+      complete_month = 30;
+    } else if (current_month == "دلو") {
+      complete_month = 30;
+    } else if (current_month == "حوت") {
+      complete_month = 29;
+    }
+  }, [data, current_month]);
+
+  useEffect(() => {
+    data.map((element) => {
+      const my_object = {
+        ...element,
+        month: current_month,
+        total_dyas:
+          element.days +
+          element.fridays +
+          element.total_leave_days +
+          element.generalLeaveDays,
+        absent:
+          (
+          element.days +
+          element.fridays +
+          element.total_leave_days +
+          element.generalLeaveDays)  - 
+          complete_month ,
+        complete_month,
+      };
+      Download_File_array.push(my_object);
+    });
+  }, [month, current_month, data]);
 
   const download_file = async () => {
     const worksheet = await XLSX.utils.json_to_sheet(Download_File_array);
@@ -207,6 +267,9 @@ export default function AttendanceTable() {
           "عمومي رخصتي",
           "جمعې",
           "اخستل شوې رخصتي",
+          "د رخصتی ډول",
+          "ټولې حاضر ورځې",
+          "غیر حاضر ورځې",
           "پوره میاشت",
         ],
       ],
@@ -263,7 +326,7 @@ export default function AttendanceTable() {
                 <option className="text-right" value="اسد">
                   اسد
                 </option>
-                <option className="text-right" value="سنبله">
+                <option className="text-right" value="سنبلهٔ">
                   سنبله
                 </option>
                 <option className="text-right" value="میزان">
@@ -385,7 +448,7 @@ export default function AttendanceTable() {
                       {row.fridays}
                     </StyledTableCell>
                     <StyledTableCell sx={{ textAlign: "right" }}>
-                      {row.vacation_days}
+                      {row.total_leave_days}
                     </StyledTableCell>
                     <StyledTableCell sx={{ textAlign: "right" }}>
                       {row.generalLeaveDays}
@@ -398,7 +461,7 @@ export default function AttendanceTable() {
                         row.half_time * 4 +
                         row.fridays * 8 +
                         row.generalLeaveDays * 8 +
-                        row.vacation_days * 8}
+                        row.total_leave_days * 8}
                     </StyledTableCell>
                   </StyledTableRow>
                 ))
@@ -438,7 +501,7 @@ export default function AttendanceTable() {
                         {row.fridays}
                       </StyledTableCell>
                       <StyledTableCell sx={{ textAlign: "right" }}>
-                        {row.vacation_days}
+                        {row.total_leave_days}
                       </StyledTableCell>
                       <StyledTableCell sx={{ textAlign: "right" }}>
                         {row.generalLeaveDays}
@@ -447,14 +510,14 @@ export default function AttendanceTable() {
                         {row.days +
                           row.fridays +
                           row.generalLeaveDays +
-                          row.vacation_days}
+                          row.total_leave_days}
                       </StyledTableCell>
                       <StyledTableCell sx={{ textAlign: "right" }}>
                         {row.full_time * 8 +
                           row.half_time * 4 +
                           row.fridays * 8 +
                           row.generalLeaveDays * 8 +
-                          row.vacation_days * 8}
+                          row.total_leave_days * 8}
                       </StyledTableCell>
                     </StyledTableRow>
                   ))

@@ -287,12 +287,12 @@ export default function AttendanceTable({ users }) {
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Close</Button>
+            <Button onClick={handleClose}>بندول</Button>
           </DialogActions>
         </Dialog>
       </React.Fragment>
 
-      <React.Fragment>
+      {/* <React.Fragment>
         <Dialog fullScreen open={opens} TransitionComponent={Transition}>
           <AppBar sx={{ position: "relative", background: "lightgray" }}>
             <Toolbar>
@@ -304,7 +304,7 @@ export default function AttendanceTable({ users }) {
                 onClick={handleCloses}
                 className="cursor-pointer"
               >
-                Close
+                بندول
               </Typography>
               <IconButton
                 edge="start"
@@ -319,7 +319,7 @@ export default function AttendanceTable({ users }) {
           </AppBar>
           <VacationTable username={username} name={name} handleCloses={handleCloses} />
         </Dialog>
-      </React.Fragment>
+      </React.Fragment> */}
     </>
   );
 }
